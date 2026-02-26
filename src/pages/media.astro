@@ -1,57 +1,807 @@
 ---
+/**
+ * Media page — gallery, videos, and press coverage from Ghostbusters Virginia.
+ * PRD 008: Media & Gallery Page Redesign
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const galleryItems = await getCollection("gallery");
+
+// Sort by date descending (newest first); undated items go last
+const sorted = galleryItems.sort((a, b) => {
+  if (a.data.date && b.data.date) return b.data.date.getTime() - a.data.date.getTime();
+  if (a.data.date) return -1;
+  if (b.data.date) return 1;
+  return 0;
+});
+
+const videos = [
+  {
+    id: "nkb_sAiDSRU",
+    title: "Ghostbusters, Virginia Trailer 2020 HD",
+  },
+  {
+    id: "NrVYVayRA7s",
+    title: "I Am Ghostbusters Spot (2021)",
+  },
+  {
+    id: "YcRhksZDeQw",
+    title: "PlasmaCon 2021 Opening Ceremonies",
+  },
+];
+
+const newsLinks = [
+  {
+    title: "Ghostbusters, Virginia teams up with Dominos for Toys for Tots",
+    date: "November 27, 2024",
+    location: "Woodbridge, Va.",
+    url: "https://www.facebook.com/share/p/1Ashb35y1u/",
+    source: "Facebook",
+    image: "/images/news/in-the-news-3.jpg",
+    excerpt:
+      "Ghostbusters, Virginia has teamed up with Domino's pizza stores across Woodbridge to help gather toys for the annual Toys for Tots donation drive. Domino's has kindly offered to customers who bring in a toy to donate a one-topping large pizza for $6.",
+  },
+  {
+    title: "Ecto-1 will be on-hand for opening night premiere of 'Ghostbusters: Afterlife'",
+    date: "November 19, 2021",
+    location: "Chesapeake, Va.",
+    url: "https://www.13newsnow.com/article/news/community/ghostbusters-virginia-premiere-afterlife-charity-cinema-cafe/291-ca4322bf-dae9-4321-9408-43e5c2887077",
+    source: "13 News Now",
+    image: "/images/news/in-the-news-1.png",
+    excerpt:
+      'Thirty-seven years after the original movie, "Ghostbusters: Afterlife" is set for opening night on Friday. Over in Chesapeake, there is one man ready to arrive in style. "Saw original movie in the theatre back in \'84," said Jeremy West. West is a member of Ghostbusters, Virginia.',
+  },
+  {
+    title: "Who You Gonna Call? Ghostbusters, Virginia!",
+    date: "September 28, 2021",
+    location: "Portsmouth, Va.",
+    url: "https://www.wavy.com/hr-show/cc-who-you-gonna-call-ghostbusters-virginia/",
+    source: "WAVY TV 10",
+    image: "/images/news/in-the-news-2.png",
+    excerpt:
+      "Looking to raise money or awareness for your organization in Hampton Roads? You better call the Ghostbusters for this one! You may have seen their Ecto-1 on the streets of Hampton Roads with 20 years of experience in ghostbusting.",
+  },
+];
 ---
 
 <BaseLayout title="Media">
-  <section class="container page">
-    <h1>Media</h1>
-    <p>Photos, videos, and press coverage from Ghostbusters Virginia events.</p>
+  <section class="container page" aria-labelledby="media-title">
+    <h1 id="media-title" class="page-title">Media</h1>
+    <p class="page-intro">
+      Photos, videos, and press coverage from our events. Click any photo to enlarge.
+    </p>
 
-    <div class="gallery-placeholder">
-      <img
-        src="/images/ghostbusters-car.jpg"
-        alt="Ghostbusters Virginia Ecto vehicle"
-        loading="lazy"
-      />
-      <img src="/images/virginia-logo.jpg" alt="Ghostbusters Virginia logo" loading="lazy" />
+    <!-- ── Videos ── -->
+    <div class="media-section">
+      <h2 class="section-heading">Videos</h2>
+      <div class="video-grid">
+        {
+          videos.map((video) => (
+            <button
+              class="video-card"
+              type="button"
+              aria-label={`Play video: ${video.title}`}
+              data-video-id={video.id}
+              data-video-title={video.title}
+            >
+              <div class="video-card__thumb">
+                <img
+                  src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+                  alt={`Thumbnail for ${video.title}`}
+                  loading="lazy"
+                  class="video-card__image"
+                />
+                <div class="video-card__play" aria-hidden="true">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.6)" />
+                    <polygon points="19,14 19,34 36,24" fill="white" />
+                  </svg>
+                </div>
+              </div>
+              <p class="video-card__title">{video.title}</p>
+            </button>
+          ))
+        }
+      </div>
     </div>
 
-    <p class="note">More media coming soon — check back after our next event!</p>
+    <!-- ── Gallery ── -->
+    <div class="media-section">
+      <h2 class="section-heading">Gallery</h2>
+      {
+        sorted.length > 0 ? (
+          <>
+            <ul class="gallery-grid" role="list" id="gallery-grid">
+              {sorted.map((item, index) => (
+                <li class:list={[{ "gallery-hidden": index >= 6 }]}>
+                  <button
+                    class="gallery-card"
+                    type="button"
+                    aria-label={`View full image: ${item.data.title}`}
+                    data-image={item.data.image}
+                    data-alt={item.data.alt}
+                    data-title={item.data.title}
+                  >
+                    <div class="gallery-card__image-wrapper">
+                      <img
+                        src={item.data.image}
+                        alt={item.data.alt}
+                        loading="lazy"
+                        class="gallery-card__image"
+                      />
+                    </div>
+                    <div class="gallery-card__info">
+                      <span class="gallery-card__title">{item.data.title}</span>
+                      {item.data.date && (
+                        <time
+                          class="gallery-card__date"
+                          datetime={item.data.date.toISOString().split("T")[0]}
+                        >
+                          {item.data.date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </time>
+                      )}
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {sorted.length > 6 && (
+              <div class="gallery-toggle">
+                <button class="btn btn--secondary gallery-toggle__btn" type="button" id="gallery-show-more">
+                  Show More ({sorted.length - 6} more)
+                </button>
+                <button class="btn btn--secondary gallery-toggle__btn" type="button" id="gallery-show-less" hidden>
+                  Show Less
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <p class="empty-state">No media yet — check back after our next event!</p>
+        )
+      }
+    </div>
+
+    <!-- ── In the News ── -->
+    <div class="media-section">
+      <h2 class="section-heading">In the News</h2>
+      <ul class="news-list" role="list">
+        {
+          newsLinks.map((link) => (
+            <li class="news-item">
+              <a href={link.url} target="_blank" rel="noopener noreferrer" class="news-link">
+                <div class="news-link__image-wrapper">
+                  <img
+                    src={link.image}
+                    alt={`${link.title} article thumbnail`}
+                    loading="lazy"
+                    class="news-link__image"
+                  />
+                </div>
+                <div class="news-link__body">
+                  <span class="news-link__title">{link.title}</span>
+                  <span class="news-link__meta">
+                    <span class="news-link__date">{link.date}</span>
+                    <span class="news-link__location">{link.location}</span>
+                  </span>
+                  <p class="news-link__excerpt">
+                    <em class="news-link__source">{link.source}</em> — {link.excerpt}
+                  </p>
+                </div>
+                <svg
+                  class="news-link__external"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <>
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </>
+                </svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </section>
+
+  <!-- ── Lightbox overlay ── -->
+  <div
+    class="lightbox"
+    id="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Media viewer"
+    hidden
+  >
+    <button class="lightbox__close" type="button" aria-label="Close viewer">&times;</button>
+    <div class="lightbox__content">
+      <img class="lightbox__image" id="lightbox-image" src="" alt="" />
+      <div class="lightbox__video" id="lightbox-video" hidden>
+        <iframe
+          id="lightbox-iframe"
+          src=""
+          title=""
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <p class="lightbox__caption" id="lightbox-caption"></p>
+    </div>
+  </div>
 </BaseLayout>
 
-<style>
-  .page {
-    padding-block: 3rem;
+<script>
+  // Lightbox functionality — supports images and videos
+  const lightbox = document.getElementById("lightbox") as HTMLElement;
+  const lightboxImage = document.getElementById("lightbox-image") as HTMLImageElement;
+  const lightboxVideo = document.getElementById("lightbox-video") as HTMLElement;
+  const lightboxIframe = document.getElementById("lightbox-iframe") as HTMLIFrameElement;
+  const lightboxCaption = document.getElementById("lightbox-caption") as HTMLParagraphElement;
+  const closeBtn = lightbox?.querySelector(".lightbox__close") as HTMLButtonElement;
+  let previousFocus: HTMLElement | null = null;
+
+  function openImageLightbox(image: string, alt: string, title: string) {
+    if (!lightbox || !lightboxImage || !lightboxCaption) return;
+    previousFocus = document.activeElement as HTMLElement;
+    lightboxImage.src = image;
+    lightboxImage.alt = alt;
+    lightboxImage.hidden = false;
+    lightboxVideo!.hidden = true;
+    lightboxCaption.textContent = title;
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+    closeBtn?.focus();
   }
-  .page h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+
+  function openVideoLightbox(videoId: string, title: string) {
+    if (!lightbox || !lightboxIframe || !lightboxCaption) return;
+    previousFocus = document.activeElement as HTMLElement;
+    lightboxIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    lightboxIframe.title = title;
+    lightboxImage!.hidden = true;
+    lightboxVideo!.hidden = false;
+    lightboxCaption.textContent = title;
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+    closeBtn?.focus();
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.hidden = true;
+    document.body.style.overflow = "";
+    lightboxImage!.src = "";
+    lightboxImage!.hidden = false;
+    lightboxIframe!.src = "";
+    lightboxVideo!.hidden = true;
+    previousFocus?.focus();
+  }
+
+  // Gallery card clicks
+  document.querySelectorAll<HTMLButtonElement>(".gallery-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const image = card.dataset.image ?? "";
+      const alt = card.dataset.alt ?? "";
+      const title = card.dataset.title ?? "";
+      openImageLightbox(image, alt, title);
+    });
+  });
+
+  // Video card clicks
+  document.querySelectorAll<HTMLButtonElement>(".video-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const videoId = card.dataset.videoId ?? "";
+      const title = card.dataset.videoTitle ?? "";
+      openVideoLightbox(videoId, title);
+    });
+  });
+
+  // Close button
+  closeBtn?.addEventListener("click", closeLightbox);
+
+  // Click outside content
+  lightbox?.addEventListener("click", (e) => {
+    if (e.target === lightbox || (e.target as Element).classList.contains("lightbox__content")) {
+      closeLightbox();
+    }
+  });
+
+  // Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && lightbox && !lightbox.hidden) {
+      closeLightbox();
+    }
+  });
+
+  // Gallery show more / show less
+  const showMoreBtn = document.getElementById("gallery-show-more") as HTMLButtonElement | null;
+  const showLessBtn = document.getElementById("gallery-show-less") as HTMLButtonElement | null;
+  const hiddenItems = document.querySelectorAll<HTMLElement>("#gallery-grid .gallery-hidden");
+
+  showMoreBtn?.addEventListener("click", () => {
+    hiddenItems.forEach((item) => item.classList.remove("gallery-hidden"));
+    showMoreBtn.hidden = true;
+    showLessBtn!.hidden = false;
+  });
+
+  showLessBtn?.addEventListener("click", () => {
+    hiddenItems.forEach((item) => item.classList.add("gallery-hidden"));
+    showLessBtn.hidden = true;
+    showMoreBtn!.hidden = false;
+    document.getElementById("gallery-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+</script>
+
+<style>
+  /* ── Page layout ── */
+  .page {
+    padding-block: var(--text-3xl);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
     color: var(--color-accent-hover);
     text-align: center;
+    line-height: var(--leading-tight);
   }
-  .page p {
-    margin-bottom: 1rem;
+
+  .page-intro {
+    font-size: var(--text-lg);
     color: var(--color-text-muted);
+    text-align: center;
     max-width: 55rem;
     margin-inline: auto;
   }
-  .gallery-placeholder {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-    margin-block: 2rem;
-    max-width: 55rem;
+
+  /* ── Section headings ── */
+  .media-section {
+    max-width: 64rem;
     margin-inline: auto;
-  }
-  .gallery-placeholder img {
-    border-radius: 0.5rem;
-    object-fit: cover;
     width: 100%;
-    aspect-ratio: 16/9;
   }
-  .note {
+
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ── Video grid ── */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .video-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .video-card {
+    display: block;
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-panel);
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      transform var(--transition-fast);
+  }
+
+  .video-card:hover,
+  .video-card:focus-visible {
+    border-color: var(--color-border-accent);
+    box-shadow: var(--shadow-glow), var(--shadow-panel);
+    transform: translateY(-2px);
+  }
+
+  .video-card__thumb {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .video-card__image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  .video-card__play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--transition-fast);
+  }
+
+  .video-card:hover .video-card__play {
+    opacity: 0.8;
+  }
+
+  .video-card__title {
+    padding: 0.75rem 1rem;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  /* ── Gallery grid — fixed 3 columns ── */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (max-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Gallery card (now a button) ── */
+  .gallery-card {
+    display: block;
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-panel);
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      transform var(--transition-fast);
+  }
+
+  .gallery-card:hover,
+  .gallery-card:focus-visible {
+    border-color: var(--color-border-accent);
+    box-shadow: var(--shadow-glow), var(--shadow-panel);
+    transform: translateY(-2px);
+  }
+
+  .gallery-card__image-wrapper {
+    overflow: hidden;
+  }
+
+  .gallery-card__image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .gallery-card__info {
+    padding: 0.75rem 1rem;
+  }
+
+  .gallery-card__title {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .gallery-card__date {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  /* ── News list ── */
+  .news-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .news-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .news-item:hover {
+    border-color: var(--color-border-accent);
+    box-shadow: var(--shadow-glow), var(--shadow-panel);
+  }
+
+  .news-link {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .news-link__image-wrapper {
+    flex-shrink: 0;
+    width: 200px;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+
+  .news-link__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .news-link__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .news-link__title {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--color-link);
+    line-height: var(--leading-tight);
+  }
+
+  .news-link:hover .news-link__title {
+    color: var(--color-accent-hover);
+  }
+
+  .news-link__date {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent-hover);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .news-link__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .news-link__location {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .news-link__excerpt {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+  }
+
+  .news-link__source {
     font-style: italic;
-    font-size: 0.9rem;
+    color: var(--color-text);
+    font-weight: var(--weight-semibold);
+  }
+
+  .news-link__external {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--color-text-muted);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    flex-shrink: 0;
+  }
+
+  .news-item:hover .news-link__external {
+    opacity: 1;
+  }
+
+  @media (max-width: 640px) {
+    .news-link {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .news-link__image-wrapper {
+      width: 100%;
+      max-height: 200px;
+    }
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox__close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.25rem;
+    z-index: 10;
+    transition: color var(--transition-fast);
+  }
+
+  .lightbox__close:hover,
+  .lightbox__close:focus-visible {
+    color: var(--color-accent-hover);
+  }
+
+  .lightbox__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+
+  .lightbox__image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightbox__video {
+    width: 80vw;
+    max-width: 960px;
+    aspect-ratio: 16 / 9;
+  }
+
+  .lightbox__video[hidden] {
+    display: none;
+  }
+
+  .lightbox__video iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightbox__caption {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  /* ── Gallery toggle buttons ── */
+  .gallery-hidden {
+    display: none;
+  }
+
+  .gallery-toggle {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .gallery-toggle__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      background var(--transition-base);
+  }
+
+  .gallery-toggle__btn:hover,
+  .gallery-toggle__btn:focus-visible {
+    border-color: var(--color-border-accent);
+    box-shadow: var(--shadow-glow);
+    background: var(--color-surface-hover, var(--color-surface));
+  }
+
+  .gallery-toggle__btn[hidden] {
+    display: none;
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding-block: 3rem;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: var(--text-2xl);
+    }
   }
 </style>
