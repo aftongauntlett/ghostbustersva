@@ -1,14 +1,23 @@
 ---
 /**
- * Home page — hero section with a brief intro.
+ * Home page — hero, gallery, upcoming events, join CTA, swag.
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
 import Panel from "../components/ui/Panel.astro";
 import RadarAccent from "../components/ui/RadarAccent.astro";
+import { getCollection } from "astro:content";
+
+const allEvents = await getCollection("events");
+const upcoming = allEvents
+  .filter((e) => !e.data.past)
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+
+const galleryItems = await getCollection("gallery");
 ---
 
 <BaseLayout title="Home">
+  <!-- ───── HERO ───── -->
   <section class="hero container" aria-labelledby="home-hero-title">
     <Panel class="hero-panel hero-panel--image">
       <div class="hero-image-shell">
@@ -41,6 +50,102 @@ import RadarAccent from "../components/ui/RadarAccent.astro";
         <RadarAccent size="86px" color="green" class="hero-radar" />
       </div>
     </Panel>
+  </section>
+
+  <!-- ───── GALLERY CAROUSEL ───── -->
+  {
+    galleryItems.length > 0 && (
+      <section class="container section" aria-labelledby="gallery-heading">
+        <h2 id="gallery-heading" class="section-heading">
+          Gallery
+        </h2>
+        <div class="gallery-scroll">
+          {galleryItems.map((item) => (
+            <img src={item.data.image} alt={item.data.alt} loading="lazy" class="gallery-thumb" />
+          ))}
+        </div>
+        <p class="gallery-blurb">
+          We participate in community events all over Virginia to help raise money and awareness for
+          other charities, and spread the love of Ghostbusters all over the Commonwealth in a safe,
+          fun, and family friendly manner.
+        </p>
+      </section>
+    )
+  }
+
+  <!-- ───── UPCOMING EVENTS ───── -->
+  {
+    upcoming.length > 0 && (
+      <section class="container section" aria-labelledby="upcoming-heading">
+        <h2 id="upcoming-heading" class="section-heading">
+          Upcoming Events
+        </h2>
+        <ul class="event-list">
+          {upcoming.map((event) => (
+            <li class="event-card">
+              {event.data.image && (
+                <img
+                  src={event.data.image}
+                  alt={`Photo for ${event.data.title}`}
+                  loading="lazy"
+                  class="event-img"
+                />
+              )}
+              <div class="event-info">
+                <h3>{event.data.title}</h3>
+                <time datetime={event.data.date.toISOString().split("T")[0]}>
+                  {event.data.date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+                {event.data.location && <p class="location">{event.data.location}</p>}
+                <p>{event.data.summary}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div class="section-cta">
+          <Button variant="secondary" href="/events">
+            See All Events
+          </Button>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ───── JOIN US ───── -->
+  <section class="container section join-section" aria-labelledby="join-heading">
+    <h2 id="join-heading" class="section-heading">Join Us</h2>
+    <blockquote class="join-quote">
+      <p>
+        "Do you believe in UFOs, astral projections, mental telepathy, ESP, clairvoyance, spirit
+        photography, telekinetic movement, full trance mediums, the Loch Ness monster and the theory
+        of Atlantis?"
+      </p>
+      <p>
+        Ready to get out there and start busting some ghosts? Excellent news rookie, we have
+        openings!
+      </p>
+    </blockquote>
+    <div class="section-cta">
+      <Button variant="primary" href="/join">Join Now</Button>
+    </div>
+  </section>
+
+  <!-- ───── GBVA SWAG ───── -->
+  <section class="container section swag-section" aria-labelledby="swag-heading">
+    <h2 id="swag-heading" class="section-heading">GBVA Swag</h2>
+    <p class="swag-text">
+      Show your support for Ghostbusters Virginia. We're ready to believe you! You can purchase
+      t-shirts, hoodies, stickers, magnets, pins, and more.
+    </p>
+    <div class="section-cta">
+      <Button variant="primary" href="https://www.teepublic.com/user/ghostbustersva" external>
+        Visit Our Store
+      </Button>
+    </div>
   </section>
 </BaseLayout>
 
@@ -161,5 +266,129 @@ import RadarAccent from "../components/ui/RadarAccent.astro";
     .hero-radar {
       align-self: flex-end;
     }
+  }
+
+  /* ── Shared section styles ── */
+  .section {
+    padding-block: 3rem;
+  }
+
+  .section-heading {
+    font-size: 1.6rem;
+    margin-bottom: 1.25rem;
+    color: var(--color-accent-hover);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 0.5rem;
+  }
+
+  .section-cta {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Gallery carousel ── */
+  .gallery-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .gallery-thumb {
+    flex: 0 0 auto;
+    width: 300px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius-md, 0.5rem);
+    scroll-snap-align: start;
+  }
+
+  .gallery-blurb {
+    margin-top: 1rem;
+    color: var(--color-text-muted);
+    max-width: 55rem;
+  }
+
+  /* ── Upcoming events ── */
+  .event-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .event-card {
+    background: var(--color-surface);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 600px) {
+    .event-card {
+      flex-direction: row;
+    }
+  }
+
+  .event-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+  }
+  @media (min-width: 600px) {
+    .event-img {
+      max-width: 250px;
+      max-height: unset;
+    }
+  }
+
+  .event-info {
+    padding: 1.25rem;
+  }
+  .event-info h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.25rem;
+  }
+  .event-info time {
+    font-size: 0.85rem;
+    color: var(--color-accent-hover);
+  }
+  .location {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+  }
+  .event-info p {
+    margin-top: 0.5rem;
+    color: var(--color-text-muted);
+  }
+
+  /* ── Join section ── */
+  .join-quote {
+    border-left: 3px solid var(--color-accent);
+    padding: 1.25rem 1.5rem;
+    background: var(--color-surface);
+    border-radius: 0 var(--radius-md, 0.5rem) var(--radius-md, 0.5rem) 0;
+    max-width: 55rem;
+  }
+  .join-quote p {
+    font-style: italic;
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .join-quote p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ── Swag section ── */
+  .swag-text {
+    color: var(--color-text-muted);
+    max-width: 55rem;
   }
 </style>

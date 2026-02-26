@@ -139,7 +139,7 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         width: 100%;
         max-width: var(--max-width);
         margin-inline: auto;
-        padding-inline: 1rem;
+        padding-inline: clamp(1rem, 5vw, 3rem);
       }
     </style>
   </body>

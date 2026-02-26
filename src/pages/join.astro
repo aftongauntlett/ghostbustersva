@@ -1,25 +1,69 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/ui/Button.astro";
 ---
 
 <BaseLayout title="Join">
   <section class="container page">
     <h1>Join Ghostbusters Virginia</h1>
+
+    <blockquote class="join-quote">
+      <p>
+        "Do you believe in UFOs, astral projections, mental telepathy, ESP, clairvoyance, spirit
+        photography, telekinetic movement, full trance mediums, the Loch Ness monster and the theory
+        of Atlantis?"
+      </p>
+      <p>
+        Ready to get out there and start busting some ghosts? Excellent news rookie, we have
+        openings!
+      </p>
+    </blockquote>
+
+    <h2>How to Join</h2>
     <p>
-      Interested in suiting up with us? We're always looking for new members who are passionate
-      about the Ghostbusters franchise and community service.
+      To apply for membership in Ghostbusters, Virginia we simply ask that you review our
+      <a href="/code-of-conduct">Code of Conduct</a>, and have at least one Ghostbusters canon
+      costume. To meet these requirements, a canon costume needs to include the following:
     </p>
-    <h2>What We Look For</h2>
-    <ul>
-      <li>Enthusiasm for the Ghostbusters franchise</li>
-      <li>Willingness to participate in community events and charity work</li>
-      <li>A positive, team-oriented attitude</li>
+    <ul class="gear-list">
+      <li>A flight suit</li>
+      <li>Black boots</li>
+      <li>White web belt</li>
+      <li>Elbow pads</li>
+      <li>
+        At least one belt gizmo. Examples:
+        <ul>
+          <li>MT500 Motorola Walkie Talkie</li>
+          <li>Belt Gizmo (circuit board + daughter board)</li>
+          <li>Leather belt fobs with clips</li>
+          <li>LifeGard 2</li>
+          <li>PKE Meter</li>
+        </ul>
+      </li>
     </ul>
-    <h2>How to Apply</h2>
+
+    <h2>Ready to Apply?</h2>
     <p>
-      Reach out to us on our <a href="/contact">Contact page</a> and let us know a bit about yourself
-      — we'd love to hear from you!
+      Got all your gear and ready to show us you ain't afraid of no ghosts? Message our
+      <a href="https://www.facebook.com/GhostbustersVA" target="_blank" rel="noopener noreferrer">
+        Facebook page<span class="sr-only"> (opens in new tab)</span>
+      </a>
+      and let us know; you will be provided a link to the membership survey and once complete, you will
+      be notified of results following Membership Liaison Officer verification.
     </p>
+
+    <p class="note">
+      <strong>Please Note:</strong> We ask all applicants be able to pass a high-level background check
+      to verify no felonies are on their record; this includes a verification with no results found on
+      the national sex offender registry.
+    </p>
+
+    <div class="join-cta">
+      <Button variant="primary" href="https://www.facebook.com/GhostbustersVA" external>
+        Message Us on Facebook
+      </Button>
+      <Button variant="secondary" href="/code-of-conduct"> Read Code of Conduct </Button>
+    </div>
   </section>
 </BaseLayout>
 
@@ -31,22 +75,83 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     font-size: 2rem;
     margin-bottom: 1rem;
     color: var(--color-accent-hover);
+    text-align: center;
   }
   .page h2 {
     margin-top: 2rem;
     margin-bottom: 0.75rem;
     font-size: 1.4rem;
+    max-width: 55rem;
+    margin-inline: auto;
   }
   .page p {
     margin-bottom: 1rem;
     color: var(--color-text-muted);
     max-width: 55rem;
+    margin-inline: auto;
   }
-  .page ul {
+
+  .join-quote {
+    border-left: 3px solid var(--color-accent);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    background: var(--color-surface);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    max-width: 55rem;
+    margin-inline: auto;
+  }
+  .join-quote p {
+    font-style: italic;
+    font-size: var(--text-lg);
+    margin-bottom: 0.75rem;
+  }
+  .join-quote p:last-child {
+    margin-bottom: 0;
+  }
+
+  .gear-list {
     padding-left: 1.5rem;
     color: var(--color-text-muted);
+    max-width: 55rem;
+    margin-inline: auto;
+    margin-bottom: 1.5rem;
   }
-  .page li {
+  .gear-list li {
     margin-bottom: 0.5rem;
+  }
+  .gear-list ul {
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    list-style: disc;
+  }
+
+  .note {
+    font-size: 0.9rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    max-width: 55rem;
+    margin-inline: auto;
+  }
+
+  .join-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    max-width: 55rem;
+    margin-inline: auto;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
   }
 </style>

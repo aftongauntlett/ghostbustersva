@@ -1,0 +1,145 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Code of Conduct">
+  <section class="container page">
+    <h1>Code of Conduct</h1>
+
+    <p>
+      Ghostbusters, Virginia recognizes that our members portray characters and ideas from the
+      Ghostbusters Universe, which is owned by Sony Corporation. As such, members carry the
+      responsibility of portraying these characters professionally and with respect while in public
+      or when representing themselves as a steward of Ghostbusters, Virginia. For these reasons, all
+      members are prohibited from acting in a manner disrespectful toward the image they are
+      portraying, toward fellow club members, or toward the public at large while in costume at an
+      event or acting as a representative of the group. Examples of unacceptable conduct include,
+      but are not limited to, the following:
+    </p>
+
+    <div class="conduct-items">
+      <div class="conduct-item">
+        <h2>Public Image</h2>
+        <p>
+          Foul language, obscene gestures, and use of alcohol or tobacco are not allowed while in
+          costume in view of the public (especially children) as it jeopardizes the group's image.
+          Any convention or gathering where adult content is prevalent may be considered a private
+          venue and a non-Ghostbusters event and behavioral standards shall be relaxed on an
+          equivalent basis in consideration.
+        </p>
+      </div>
+
+      <div class="conduct-item">
+        <h2>Prohibited Behavior</h2>
+        <p>
+          Acting in a threatening or violent manner, sexual harassment or misconduct, theft,
+          breaking the law, and illegal substance abuse are all prohibited and considered
+          unacceptable behavior. This applies to members in or out of costume at events or while
+          representing the Ghostbusters, Virginia.
+        </p>
+      </div>
+
+      <div class="conduct-item">
+        <h2>Digital Communication</h2>
+        <p>
+          Breaking any established Ghostbusters, Virginia forum or social media rules and policies,
+          in grossly negligent volume, will cause a member to be banned. This item specifically
+          shall pertain to only those means of digital communication as established and administered
+          by the Ghostbusters, Virginia.
+        </p>
+      </div>
+
+      <div class="conduct-item">
+        <h2>Merchandise</h2>
+        <p>
+          Creating and distributing unauthorized merchandise which contains "Ghostbusters, Virginia"
+          name or logo is forbidden. All merchandise bearing Ghostbusters, Virginia logos must be
+          approved by the Merchandising and Branding Officer.
+        </p>
+      </div>
+
+      <div class="conduct-item">
+        <h2>Non-Discrimination</h2>
+        <p>
+          Being discriminatory, verbally or physically abusive, or acting out in bad taste is not
+          tolerated. Members will not discriminate based on race, nationality, creed, color, gender,
+          disability, or sexual orientation. Members who engage in such conduct may be subject to
+          Oversight/Disciplinary committee inquiry and disciplinary action, including expulsion from
+          Ghostbusters, Virginia. This code is meant to give fair warning and not restrict freedom.
+          In or out of costume, members are required to observe reasonable behavioral standards
+          towards fellow members and the general public.
+        </p>
+      </div>
+
+      <div class="conduct-item">
+        <h2>Props &amp; Equipment Safety</h2>
+        <p>
+          Acting irresponsibly with prop equipment/weaponry is considered unacceptable behavior.
+          Equipment/Weapons are key components to Ghostbusters costuming; however, Ghostbusters,
+          Virginia places the utmost importance upon the safety of our members as well as the safety
+          of the general public while attending events. Ghostbusters, Virginia members are required
+          to abide by all relevant Federal, State, and local laws pertaining to weapons, as well as
+          the individual rules and policies of specific venues and events. When carrying or
+          displaying props, members are expected to behave responsibly and use common sense at all
+          times. Members should not point weapons at other persons, act aggressively, behave
+          erratically, or exhibit any similar behavior which could result in a public safety issue.
+          For more information on equipment, please refer to the Equipment Policies in the
+          Operations Protocols.
+        </p>
+      </div>
+
+      <div class="conduct-item">
+        <h2>Masks &amp; Facial Coverings</h2>
+        <p>
+          Mask and facial covering requirements at events shall be adhered to at all times in
+          accordance with Federal, State, and local laws pertaining to mask and facial coverings, as
+          well as the individual rules and policies of specific venues and events.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3rem;
+  }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+    text-align: center;
+  }
+  .page > p {
+    margin-bottom: 2rem;
+    color: var(--color-text-muted);
+    max-width: 55rem;
+    margin-inline: auto;
+  }
+
+  .conduct-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 55rem;
+    margin-inline: auto;
+  }
+
+  .conduct-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 0.5rem);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .conduct-item h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-accent-hover);
+  }
+
+  .conduct-item p {
+    color: var(--color-text-muted);
+    line-height: 1.65;
+  }
+</style>
