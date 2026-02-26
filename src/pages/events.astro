@@ -4,7 +4,6 @@
  * PRD 006: Events Page Redesign
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Panel from "../components/ui/Panel.astro";
 import StatusPill from "../components/ui/StatusPill.astro";
 import { getCollection } from "astro:content";
 
@@ -30,41 +29,97 @@ const past = allEvents
           <h2 class="section-heading">Upcoming Events</h2>
           <ul class="event-list" role="list">
             {upcoming.map((event) => (
-              <li>
-                <Panel class="event-card">
-                  <div class="event-card__inner">
+              <li class="event-item">
+                {event.data.url ? (
+                  <a href={event.data.url} target="_blank" rel="noopener noreferrer" class="event-link">
                     {event.data.image && (
-                      <div class="event-card__image-wrapper">
+                      <div class="event-link__image-wrapper">
                         <img
                           src={event.data.image}
                           alt={`Photo for ${event.data.title}`}
                           loading="lazy"
-                          class="event-card__image"
+                          class="event-link__image"
                         />
                       </div>
                     )}
-                    <div class="event-card__info">
-                      <div class="event-card__header">
-                        <h3 class="event-card__title">{event.data.title}</h3>
+                    <div class="event-link__body">
+                      <div class="event-link__header">
+                        <span class="event-link__title">{event.data.title}</span>
                         <StatusPill status="active">Upcoming</StatusPill>
                       </div>
-                      <time
-                        class="event-card__date"
-                        datetime={event.data.date.toISOString().split("T")[0]}
-                      >
-                        {event.data.date.toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </time>
-                      {event.data.location && (
-                        <p class="event-card__location">{event.data.location}</p>
-                      )}
-                      <p class="event-card__summary">{event.data.summary}</p>
+                      <span class="event-link__meta">
+                        <time
+                          class="event-link__date"
+                          datetime={event.data.date.toISOString().split("T")[0]}
+                        >
+                          {event.data.date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </time>
+                        {event.data.location && (
+                          <span class="event-link__location">{event.data.location}</span>
+                        )}
+                      </span>
+                      <p class="event-link__summary">{event.data.summary}</p>
+                    </div>
+                    <svg
+                      class="event-link__external"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <>
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </>
+                    </svg>
+                  </a>
+                ) : (
+                  <div class="event-link">
+                    {event.data.image && (
+                      <div class="event-link__image-wrapper">
+                        <img
+                          src={event.data.image}
+                          alt={`Photo for ${event.data.title}`}
+                          loading="lazy"
+                          class="event-link__image"
+                        />
+                      </div>
+                    )}
+                    <div class="event-link__body">
+                      <div class="event-link__header">
+                        <span class="event-link__title">{event.data.title}</span>
+                        <StatusPill status="active">Upcoming</StatusPill>
+                      </div>
+                      <span class="event-link__meta">
+                        <time
+                          class="event-link__date"
+                          datetime={event.data.date.toISOString().split("T")[0]}
+                        >
+                          {event.data.date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </time>
+                        {event.data.location && (
+                          <span class="event-link__location">{event.data.location}</span>
+                        )}
+                      </span>
+                      <p class="event-link__summary">{event.data.summary}</p>
                     </div>
                   </div>
-                </Panel>
+                )}
               </li>
             ))}
           </ul>
@@ -76,46 +131,112 @@ const past = allEvents
       past.length > 0 && (
         <div class="event-section">
           <h2 class="section-heading">Past Events</h2>
-          <ul class="event-list event-list--past" role="list">
-            {past.map((event) => (
-              <li>
-                <Panel class="event-card">
-                  <div class="event-card__inner">
+          <ul class="event-list event-list--past" id="past-events-list" role="list">
+            {past.map((event, index) => (
+              <li class:list={["event-item", { "past-hidden": index >= 4 }]}>
+                {event.data.url ? (
+                  <a href={event.data.url} target="_blank" rel="noopener noreferrer" class="event-link">
                     {event.data.image && (
-                      <div class="event-card__image-wrapper">
+                      <div class="event-link__image-wrapper">
                         <img
                           src={event.data.image}
                           alt={`Photo for ${event.data.title}`}
                           loading="lazy"
-                          class="event-card__image"
+                          class="event-link__image"
                         />
                       </div>
                     )}
-                    <div class="event-card__info">
-                      <div class="event-card__header">
-                        <h3 class="event-card__title">{event.data.title}</h3>
+                    <div class="event-link__body">
+                      <div class="event-link__header">
+                        <span class="event-link__title">{event.data.title}</span>
                         <StatusPill status="archived">Past</StatusPill>
                       </div>
-                      <time
-                        class="event-card__date"
-                        datetime={event.data.date.toISOString().split("T")[0]}
-                      >
-                        {event.data.date.toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </time>
-                      {event.data.location && (
-                        <p class="event-card__location">{event.data.location}</p>
-                      )}
-                      <p class="event-card__summary">{event.data.summary}</p>
+                      <span class="event-link__meta">
+                        <time
+                          class="event-link__date"
+                          datetime={event.data.date.toISOString().split("T")[0]}
+                        >
+                          {event.data.date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </time>
+                        {event.data.location && (
+                          <span class="event-link__location">{event.data.location}</span>
+                        )}
+                      </span>
+                      <p class="event-link__summary">{event.data.summary}</p>
+                    </div>
+                    <svg
+                      class="event-link__external"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <>
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </>
+                    </svg>
+                  </a>
+                ) : (
+                  <div class="event-link">
+                    {event.data.image && (
+                      <div class="event-link__image-wrapper">
+                        <img
+                          src={event.data.image}
+                          alt={`Photo for ${event.data.title}`}
+                          loading="lazy"
+                          class="event-link__image"
+                        />
+                      </div>
+                    )}
+                    <div class="event-link__body">
+                      <div class="event-link__header">
+                        <span class="event-link__title">{event.data.title}</span>
+                        <StatusPill status="archived">Past</StatusPill>
+                      </div>
+                      <span class="event-link__meta">
+                        <time
+                          class="event-link__date"
+                          datetime={event.data.date.toISOString().split("T")[0]}
+                        >
+                          {event.data.date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </time>
+                        {event.data.location && (
+                          <span class="event-link__location">{event.data.location}</span>
+                        )}
+                      </span>
+                      <p class="event-link__summary">{event.data.summary}</p>
                     </div>
                   </div>
-                </Panel>
+                )}
               </li>
             ))}
           </ul>
+          {past.length > 4 && (
+            <div class="past-toggle">
+              <button class="toggle-btn" type="button" id="past-show-more">
+                Show More ({past.length - 4} more)
+              </button>
+              <button class="toggle-btn" type="button" id="past-show-less" hidden>
+                Show Less
+              </button>
+            </div>
+          )}
         </div>
       )
     }
@@ -123,6 +244,25 @@ const past = allEvents
     {allEvents.length === 0 && <p class="empty-state">No events yet — check back soon!</p>}
   </section>
 </BaseLayout>
+
+<script>
+  const showMoreBtn = document.getElementById("past-show-more") as HTMLButtonElement | null;
+  const showLessBtn = document.getElementById("past-show-less") as HTMLButtonElement | null;
+  const hiddenItems = document.querySelectorAll<HTMLElement>("#past-events-list .past-hidden");
+
+  showMoreBtn?.addEventListener("click", () => {
+    hiddenItems.forEach((item) => item.classList.remove("past-hidden"));
+    showMoreBtn.hidden = true;
+    showLessBtn!.hidden = false;
+  });
+
+  showLessBtn?.addEventListener("click", () => {
+    hiddenItems.forEach((item) => item.classList.add("past-hidden"));
+    showLessBtn.hidden = true;
+    showMoreBtn!.hidden = false;
+    document.getElementById("past-events-list")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+</script>
 
 <style>
   /* ── Page layout ── */
@@ -145,7 +285,7 @@ const past = allEvents
 
   /* ── Section headings with accent underline ── */
   .event-section {
-    max-width: 55rem;
+    max-width: 64rem;
     margin-inline: auto;
     width: 100%;
   }
@@ -170,98 +310,157 @@ const past = allEvents
     gap: 1.25rem;
   }
 
-  /* ── Past events: visually de-emphasised ── */
-  .event-list--past :global(.panel) {
-    opacity: 0.7;
-    transition: opacity var(--transition-base);
+  /* ── Past events hidden items ── */
+  .past-hidden {
+    display: none;
   }
 
-  .event-list--past :global(.panel:hover) {
-    opacity: 0.9;
-  }
-
-  /* ── Event card inner layout ── */
-  .event-card__inner {
-    display: flex;
-    flex-direction: column;
-  }
-
-  @media (min-width: 600px) {
-    .event-card__inner {
-      flex-direction: row;
-    }
-  }
-
-  /* ── Event card image ── */
-  .event-card__image-wrapper {
-    flex-shrink: 0;
+  /* ── Event item (card container) ── */
+  .event-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     overflow: hidden;
+    position: relative;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
   }
 
-  .event-card__image {
+  .event-item:hover {
+    border-color: var(--color-border-accent);
+    box-shadow: var(--shadow-glow), var(--shadow-panel);
+  }
+
+  /* ── Event link (clickable card) ── */
+  .event-link {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ── Event image ── */
+  .event-link__image-wrapper {
+    flex-shrink: 0;
+    width: 200px;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+
+  .event-link__image {
     width: 100%;
-    max-height: 200px;
+    height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  @media (min-width: 600px) {
-    .event-card__image-wrapper {
-      width: 220px;
-    }
-
-    .event-card__image {
-      width: 220px;
-      height: 100%;
-      max-height: unset;
-    }
-  }
-
-  /* ── Event card info ── */
-  .event-card__info {
-    padding: 1.25rem;
+  /* ── Event body ── */
+  .event-link__body {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.5rem;
     flex: 1;
   }
 
-  .event-card__header {
+  .event-link__header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 0.75rem;
     flex-wrap: wrap;
   }
 
-  .event-card__title {
-    font-family: var(--font-heading);
+  .event-link__title {
     font-size: var(--text-lg);
     font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-wide);
-    color: var(--color-text);
+    color: var(--color-link);
     line-height: var(--leading-tight);
   }
 
-  .event-card__date {
+  a.event-link:hover .event-link__title {
+    color: var(--color-accent-hover);
+  }
+
+  .event-link__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .event-link__date {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     color: var(--color-accent-hover);
     letter-spacing: var(--tracking-wide);
   }
 
-  .event-card__location {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
+  .event-link__location {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     color: var(--color-text-muted);
+    letter-spacing: var(--tracking-wide);
   }
 
-  .event-card__summary {
-    font-family: var(--font-body);
-    font-size: var(--text-base);
+  .event-link__summary {
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
     line-height: var(--leading-normal);
-    margin-top: 0.25rem;
+  }
+
+  /* ── External link icon ── */
+  .event-link__external {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--color-text-muted);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    flex-shrink: 0;
+  }
+
+  .event-item:hover .event-link__external {
+    opacity: 1;
+  }
+
+  /* ── Past toggle buttons ── */
+  .past-toggle {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      background var(--transition-base);
+  }
+
+  .toggle-btn:hover,
+  .toggle-btn:focus-visible {
+    border-color: var(--color-border-accent);
+    box-shadow: var(--shadow-glow);
+    background: var(--color-surface-hover, var(--color-surface));
+  }
+
+  .toggle-btn[hidden] {
+    display: none;
   }
 
   /* ── Empty state ── */
@@ -277,6 +476,16 @@ const past = allEvents
   @media (max-width: 640px) {
     .page-title {
       font-size: var(--text-2xl);
+    }
+
+    .event-link {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .event-link__image-wrapper {
+      width: 100%;
+      max-height: 200px;
     }
   }
 </style>
