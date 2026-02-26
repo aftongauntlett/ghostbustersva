@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Donate">
+  <section class="container page">
+    <h1>Support Ghostbusters Virginia</h1>
+    <p>
+      Your donations help us maintain our equipment, attend community events, and support the
+      charitable causes we care about. Every contribution — big or small — makes a difference.
+    </p>
+
+    <div class="donate-cta">
+      <p>Donation integration coming soon. Thank you for your patience!</p>
+      <button disabled class="donate-button">Donate Now (Coming Soon)</button>
+    </div>
+
+    <p class="note">
+      In the meantime, you can support us by purchasing merch from our
+      <a
+        href="https://www.teepublic.com/user/ghostbustersva"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        TeePublic store<span class="sr-only"> (opens in new tab)</span></a
+      >.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3rem;
+  }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+  }
+  .page p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+    max-width: 55rem;
+  }
+  .donate-cta {
+    background: var(--color-surface);
+    border: 1px solid var(--color-accent);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-block: 2rem;
+    text-align: center;
+    max-width: 30rem;
+  }
+  .donate-button {
+    margin-top: 1rem;
+    padding: 0.75rem 2rem;
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .note {
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+</style>

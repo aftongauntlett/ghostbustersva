@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Contact">
+  <section class="container page">
+    <h1>Contact Us</h1>
+    <p>
+      Have a question, want to book us for an event, or just want to say hi? Drop us a line using
+      the form below (coming soon) or reach out via social media.
+    </p>
+
+    <div class="contact-placeholder">
+      <p><strong>Email:</strong> info@ghostbustersva.com (placeholder)</p>
+      <p><strong>Social:</strong> Links coming soon</p>
+    </div>
+
+    <p class="note">
+      A full contact form will be added in a future update. For now, please email us directly.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3rem;
+  }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+  }
+  .page p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+    max-width: 55rem;
+  }
+  .contact-placeholder {
+    background: var(--color-surface);
+    border: 1px solid var(--color-accent);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-block: 2rem;
+    max-width: 30rem;
+  }
+  .contact-placeholder p {
+    margin-bottom: 0.5rem;
+  }
+  .note {
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+</style>

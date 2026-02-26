@@ -1,0 +1,86 @@
+---
+/**
+ * Home page — hero section with a brief intro.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Home">
+  <section class="hero container">
+    <img
+      src="/images/ghostbusters-car.jpg"
+      alt="Ghostbusters Virginia Ecto vehicle at a community event"
+      class="hero-img"
+    />
+    <div class="hero-text">
+      <h1>Who Ya Gonna Call?</h1>
+      <p>
+        We're <strong>Ghostbusters Virginia</strong> — a community-driven franchise bringing the spirit
+        of Ghostbusters to events, charity drives, and good times across the Commonwealth.
+      </p>
+      <a href="/join" class="cta-button">Join the Team</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-block: 3rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-img {
+    border-radius: 0.75rem;
+    max-height: 400px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .hero-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+  }
+
+  .hero-text p {
+    font-size: 1.15rem;
+    max-width: 40rem;
+    margin-inline: auto;
+    color: var(--color-text-muted);
+  }
+
+  .cta-button {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 2rem;
+    background: var(--color-accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s;
+  }
+  .cta-button:hover,
+  .cta-button:focus-visible {
+    background: var(--color-accent-hover);
+    color: #fff;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      flex-direction: row;
+      text-align: left;
+    }
+    .hero-img {
+      max-width: 50%;
+    }
+    .hero-text p {
+      margin-inline: 0;
+    }
+  }
+</style>

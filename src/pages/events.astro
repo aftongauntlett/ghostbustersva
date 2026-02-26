@@ -1,0 +1,159 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const allEvents = await getCollection("events");
+
+// Sort events: upcoming first (by date ascending), then past (by date descending)
+const upcoming = allEvents
+  .filter((e) => !e.data.past)
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+
+const past = allEvents
+  .filter((e) => e.data.past)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Events">
+  <section class="container page">
+    <h1>Events</h1>
+
+    {
+      upcoming.length > 0 && (
+        <>
+          <h2>Upcoming Events</h2>
+          <ul class="event-list">
+            {upcoming.map((event) => (
+              <li class="event-card">
+                {event.data.image && (
+                  <img
+                    src={event.data.image}
+                    alt={`Photo for ${event.data.title}`}
+                    loading="lazy"
+                    class="event-img"
+                  />
+                )}
+                <div class="event-info">
+                  <h3>{event.data.title}</h3>
+                  <time datetime={event.data.date.toISOString().split("T")[0]}>
+                    {event.data.date.toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                  {event.data.location && <p class="location">{event.data.location}</p>}
+                  <p>{event.data.summary}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    {
+      past.length > 0 && (
+        <>
+          <h2>Past Events</h2>
+          <ul class="event-list past">
+            {past.map((event) => (
+              <li class="event-card">
+                <div class="event-info">
+                  <h3>{event.data.title}</h3>
+                  <time datetime={event.data.date.toISOString().split("T")[0]}>
+                    {event.data.date.toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                  {event.data.location && <p class="location">{event.data.location}</p>}
+                  <p>{event.data.summary}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    {allEvents.length === 0 && <p>No events yet — check back soon!</p>}
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3rem;
+  }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+  }
+  .page h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 0.5rem;
+  }
+
+  .event-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .event-card {
+    background: var(--color-surface);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 600px) {
+    .event-card {
+      flex-direction: row;
+    }
+  }
+
+  .event-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+  }
+  @media (min-width: 600px) {
+    .event-img {
+      max-width: 250px;
+      max-height: unset;
+    }
+  }
+
+  .event-info {
+    padding: 1.25rem;
+  }
+  .event-info h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.25rem;
+  }
+  .event-info time {
+    font-size: 0.85rem;
+    color: var(--color-accent-hover);
+  }
+  .location {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+  }
+  .event-info p {
+    margin-top: 0.5rem;
+    color: var(--color-text-muted);
+  }
+
+  .past .event-card {
+    opacity: 0.7;
+  }
+</style>

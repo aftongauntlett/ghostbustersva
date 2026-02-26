@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Join">
+  <section class="container page">
+    <h1>Join Ghostbusters Virginia</h1>
+    <p>
+      Interested in suiting up with us? We're always looking for new members who are passionate
+      about the Ghostbusters franchise and community service.
+    </p>
+    <h2>What We Look For</h2>
+    <ul>
+      <li>Enthusiasm for the Ghostbusters franchise</li>
+      <li>Willingness to participate in community events and charity work</li>
+      <li>A positive, team-oriented attitude</li>
+    </ul>
+    <h2>How to Apply</h2>
+    <p>
+      Reach out to us on our <a href="/contact">Contact page</a> and let us know a bit about yourself
+      — we'd love to hear from you!
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3rem;
+  }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+  }
+  .page h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.4rem;
+  }
+  .page p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+    max-width: 55rem;
+  }
+  .page ul {
+    padding-left: 1.5rem;
+    color: var(--color-text-muted);
+  }
+  .page li {
+    margin-bottom: 0.5rem;
+  }
+</style>

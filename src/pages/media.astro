@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Media">
+  <section class="container page">
+    <h1>Media</h1>
+    <p>Photos, videos, and press coverage from Ghostbusters Virginia events.</p>
+
+    <div class="gallery-placeholder">
+      <img
+        src="/images/ghostbusters-car.jpg"
+        alt="Ghostbusters Virginia Ecto vehicle"
+        loading="lazy"
+      />
+      <img src="/images/virginia-logo.jpg" alt="Ghostbusters Virginia logo" loading="lazy" />
+    </div>
+
+    <p class="note">More media coming soon — check back after our next event!</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3rem;
+  }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+  }
+  .page p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+    max-width: 55rem;
+  }
+  .gallery-placeholder {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-block: 2rem;
+  }
+  .gallery-placeholder img {
+    border-radius: 0.5rem;
+    object-fit: cover;
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+  .note {
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About">
+  <section class="container page">
+    <h1>About Ghostbusters Virginia</h1>
+    <p>
+      Ghostbusters Virginia is a community franchise dedicated to celebrating the Ghostbusters
+      universe through charity events, public appearances, fan gatherings, and community service
+      across the Commonwealth of Virginia.
+    </p>
+    <p>
+      We are a passionate group of fans who suit up, show up, and give back. Whether it's a local
+      parade, a children's hospital visit, or a comic convention — if there's a ghost problem, we're
+      there.
+    </p>
+    <h2>Our Mission</h2>
+    <ul>
+      <li>Celebrate and promote the Ghostbusters franchise and community.</li>
+      <li>Support charitable causes through costumed appearances and fundraising.</li>
+      <li>Provide a welcoming space for fans of all ages and backgrounds.</li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3rem;
+  }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent-hover);
+  }
+  .page h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.4rem;
+  }
+  .page p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+    max-width: 55rem;
+  }
+  .page ul {
+    padding-left: 1.5rem;
+    color: var(--color-text-muted);
+  }
+  .page li {
+    margin-bottom: 0.5rem;
+  }
+</style>
