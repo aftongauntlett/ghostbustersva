@@ -18,7 +18,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         We're <strong>Ghostbusters Virginia</strong> — a community-driven franchise bringing the spirit
         of Ghostbusters to events, charity drives, and good times across the Commonwealth.
       </p>
-      <a href="/join" class="cta-button">Join the Team</a>
+      <div class="hero-cta">
+        <a href="/join" class="cta-button">Join the Team</a>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -53,9 +55,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     color: var(--color-text-muted);
   }
 
+  .hero-cta {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+  }
+
   .cta-button {
     display: inline-block;
-    margin-top: 1.5rem;
     padding: 0.75rem 2rem;
     background: var(--color-accent);
     color: #fff;
@@ -81,6 +88,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     .hero-text p {
       margin-inline: 0;
+    }
+
+    .hero-cta {
+      justify-content: flex-end;
     }
   }
 </style>

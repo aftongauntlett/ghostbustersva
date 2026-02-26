@@ -3,40 +3,69 @@
  * Site footer with franchise logos, nav links, and copyright.
  */
 import { siteConfig } from "../config";
+
+const [leftLogo, rightLogo] = siteConfig.footerLogos;
 ---
 
 <footer class="site-footer">
   <div class="container footer-inner">
-    {/* Logos row */}
-    <div class="footer-logos" role="group" aria-label="Partner and franchise logos">
+    <div class="footer-grid">
       {
-        siteConfig.footerLogos.map((logo) => (
-          <img src={logo.src} alt={logo.alt} width="100" height="auto" loading="lazy" />
-        ))
+        leftLogo && (
+          <div
+            class="footer-logo footer-logo--left"
+            role="group"
+            aria-label="Partner and franchise logos"
+          >
+            <img src={leftLogo.src} alt={leftLogo.alt} width="100" height="auto" loading="lazy" />
+          </div>
+        )
+      }
+
+      <div class="footer-content">
+        {/* Footer nav — condensed repeat of main nav */}
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <ul>
+            {
+              siteConfig.nav.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    {...("external" in link
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                  >
+                    {link.label}
+                    {"external" in link && <span class="sr-only"> (opens in new tab)</span>}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        {/* Copyright */}
+        <p class="copyright">{siteConfig.copyright}</p>
+
+        {/* Legal disclaimer */}
+        <p class="disclaimer">
+          Ghostbusters Virginia is a nonprofit fan group and is not affiliated with or endorsed by
+          Sony Pictures. Ghostbusters and related marks are trademarks of Sony Pictures.
+        </p>
+      </div>
+
+      {
+        rightLogo && (
+          <div
+            class="footer-logo footer-logo--right"
+            role="group"
+            aria-label="Partner and franchise logos"
+          >
+            <img src={rightLogo.src} alt={rightLogo.alt} width="100" height="auto" loading="lazy" />
+          </div>
+        )
       }
     </div>
-
-    {/* Footer nav — condensed repeat of main nav */}
-    <nav class="footer-nav" aria-label="Footer navigation">
-      <ul>
-        {
-          siteConfig.nav.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                {...("external" in link ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              >
-                {link.label}
-                {"external" in link && <span class="sr-only"> (opens in new tab)</span>}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    {/* Copyright */}
-    <p class="copyright">{siteConfig.copyright}</p>
   </div>
 </footer>
 
@@ -49,22 +78,31 @@ import { siteConfig } from "../config";
   }
 
   .footer-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
     text-align: center;
   }
 
-  /* Logos */
-  .footer-logos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
     align-items: center;
   }
-  .footer-logos img {
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* Side logos */
+  .footer-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .footer-logo img {
     max-height: 60px;
     width: auto;
     object-fit: contain;
@@ -92,6 +130,30 @@ import { siteConfig } from "../config";
   .copyright {
     font-size: 0.8rem;
     color: var(--color-text-muted);
+  }
+
+  /* Legal disclaimer */
+  .disclaimer {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    opacity: 0.65;
+    max-width: 34rem;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 1.5rem;
+    }
+
+    .footer-logo--left {
+      justify-content: flex-start;
+    }
+
+    .footer-logo--right {
+      justify-content: flex-end;
+    }
   }
 
   /* Screen-reader only utility */

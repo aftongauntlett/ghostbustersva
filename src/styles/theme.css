@@ -1,0 +1,163 @@
+/**
+ * Theme & Design Tokens — Ghostbusters Virginia
+ * PRD 002: Theme and Design Foundation
+ *
+ * Design direction: "Atmospheric paranormal console"
+ * Industrial · Subtle glow · Professional · Accessible
+ */
+
+/* -------------------------------------------------- */
+/* Colour tokens                                      */
+/* -------------------------------------------------- */
+:root {
+  /* Backgrounds */
+  --color-bg: #0a0e13;
+  --color-surface: #111820;
+  --color-surface-alt: #19202b;
+
+  /* Text */
+  --color-text: #e2e6ec;
+  --color-text-muted: #8a94a3;
+  --color-text-inverse: #0a0e13;
+
+  /* Brand accent — Ghostbusters red */
+  --color-accent: #c62828;
+  --color-accent-hover: #e53935;
+
+  /* Glow */
+  --color-glow: rgba(198, 40, 40, 0.35);
+  --color-glow-green: rgba(0, 230, 118, 0.3);
+
+  /* Borders */
+  --color-border: #1e2a38;
+  --color-border-accent: var(--color-accent);
+
+  /* Focus */
+  --color-focus: #90caf9;
+
+  /* Links */
+  --color-link: #90caf9;
+  --color-link-hover: var(--color-accent-hover);
+
+  /* Status colours */
+  --color-status-default: #8a94a3;
+  --color-status-active: #00e676;
+  --color-status-archived: #616161;
+
+  /* -------------------------------------------------- */
+  /* Typography tokens                                  */
+  /* -------------------------------------------------- */
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-body);
+  --font-heading: "Orbitron", var(--font-sans);
+  --font-mono: "Share Tech Mono", "Fira Code", "Cascadia Code", monospace;
+
+  /* Type scale (modular — 1.25 ratio) */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+
+  /* Line-height */
+  --leading-tight: 1.25;
+  --leading-normal: 1.6;
+  --leading-loose: 1.8;
+
+  /* Font weights */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Letter spacing */
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+
+  /* -------------------------------------------------- */
+  /* Spacing / layout                                    */
+  /* -------------------------------------------------- */
+  --max-width: 72rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+
+  /* -------------------------------------------------- */
+  /* Shadows & glow                                      */
+  /* -------------------------------------------------- */
+  --shadow-glow: 0 0 8px var(--color-glow);
+  --shadow-glow-green: 0 0 8px var(--color-glow-green);
+  --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.4);
+
+  /* -------------------------------------------------- */
+  /* Transitions                                         */
+  /* -------------------------------------------------- */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+/* -------------------------------------------------- */
+/* Reduced motion                                      */
+/* -------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -------------------------------------------------- */
+/* Global focus styles                                  */
+/* -------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------- */
+/* High-contrast mode safety                            */
+/* -------------------------------------------------- */
+@media (forced-colors: active) {
+  :root {
+    --color-accent: LinkText;
+    --color-focus: Highlight;
+    --color-border: ButtonBorder;
+  }
+}
+
+/* -------------------------------------------------- */
+/* Navigation active-link utility                       */
+/* -------------------------------------------------- */
+.nav-active-link[aria-current="page"] {
+  position: relative;
+  color: var(--color-accent-hover);
+  font-weight: var(--weight-semibold);
+}
+
+.nav-active-link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+  border-radius: var(--radius-full);
+}
+
+.nav-active-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

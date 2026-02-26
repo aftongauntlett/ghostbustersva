@@ -6,6 +6,7 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { siteConfig } from "../config";
+import "../styles/theme.css";
 
 interface Props {
   /** Page <title> — will be appended with site name */
@@ -26,6 +27,12 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
     <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
+    />
   </head>
   <body>
     <!-- Skip to main content for keyboard / screen-reader users -->
@@ -51,17 +58,7 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         padding: 0;
       }
 
-      :root {
-        --color-bg: #101010;
-        --color-surface: #1a1a1a;
-        --color-text: #e8e8e8;
-        --color-text-muted: #a0a0a0;
-        --color-accent: #c62828; /* Ghostbusters red */
-        --color-accent-hover: #e53935;
-        --color-link: #90caf9;
-        --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        --max-width: 72rem;
-      }
+      /* Theme tokens are defined in /src/styles/theme.css */
 
       html,
       body {
@@ -69,11 +66,32 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
       }
 
       html {
-        font-family: var(--font-sans);
+        font-family: var(--font-body);
         background-color: var(--color-bg);
         color: var(--color-text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: var(--font-heading);
+      }
+
+      h1,
+      h2 {
+        letter-spacing: var(--tracking-wider);
+      }
+
+      h3,
+      h4,
+      h5,
+      h6 {
+        letter-spacing: var(--tracking-wide);
       }
 
       body {

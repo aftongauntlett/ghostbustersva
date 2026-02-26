@@ -1,0 +1,135 @@
+---
+/**
+ * Button — Primary and secondary button component.
+ * PRD 002: Theme and Design Foundation
+ *
+ * Renders as <a> when `href` is provided, <button> otherwise.
+ * Accessible focus styles, no page-specific hardcoding.
+ *
+ * @example
+ * <Button variant="primary" href="/join">Join the Team</Button>
+ * <Button variant="secondary">Cancel</Button>
+ */
+interface Props {
+  /** Visual variant */
+  variant?: "primary" | "secondary";
+  /** When provided, renders as an <a> tag */
+  href?: string;
+  /** Button type attribute (only for <button>) */
+  type?: "button" | "submit" | "reset";
+  /** Additional CSS class names */
+  class?: string;
+  /** Disabled state */
+  disabled?: boolean;
+  /** Open link in new tab */
+  external?: boolean;
+}
+
+const {
+  variant = "primary",
+  href,
+  type = "button",
+  class: className = "",
+  disabled = false,
+  external = false,
+} = Astro.props;
+
+const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={["btn", `btn--${variant}`, className]}
+      {...externalAttrs}
+      aria-disabled={disabled || undefined}
+    >
+      <slot />
+      {external && <span class="sr-only"> (opens in new tab)</span>}
+    </a>
+  ) : (
+    <button type={type} class:list={["btn", `btn--${variant}`, className]} disabled={disabled}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      color var(--transition-fast);
+    border: 2px solid transparent;
+    line-height: var(--leading-tight);
+    white-space: nowrap;
+  }
+
+  /* Primary — solid red fill */
+  .btn--primary {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+  }
+
+  .btn--primary:hover,
+  .btn--primary:focus-visible {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Secondary — outlined */
+  .btn--secondary {
+    background: transparent;
+    color: var(--color-text);
+    border-color: var(--color-border);
+  }
+
+  .btn--secondary:hover,
+  .btn--secondary:focus-visible {
+    border-color: var(--color-accent);
+    color: var(--color-accent-hover);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Focus */
+  .btn:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Disabled */
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Screen-reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+</style>
