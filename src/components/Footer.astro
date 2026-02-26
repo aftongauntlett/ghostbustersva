@@ -1,0 +1,108 @@
+---
+/**
+ * Site footer with franchise logos, nav links, and copyright.
+ */
+import { siteConfig } from "../config";
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    {/* Logos row */}
+    <div class="footer-logos" role="group" aria-label="Partner and franchise logos">
+      {
+        siteConfig.footerLogos.map((logo) => (
+          <img src={logo.src} alt={logo.alt} width="100" height="auto" loading="lazy" />
+        ))
+      }
+    </div>
+
+    {/* Footer nav — condensed repeat of main nav */}
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul>
+        {
+          siteConfig.nav.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                {...("external" in link ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {link.label}
+                {"external" in link && <span class="sr-only"> (opens in new tab)</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {/* Copyright */}
+    <p class="copyright">{siteConfig.copyright}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-surface);
+    border-top: 2px solid var(--color-accent);
+    margin-top: 4rem;
+    padding-block: 2rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  /* Logos */
+  .footer-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    align-items: center;
+  }
+  .footer-logos img {
+    max-height: 60px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  /* Footer nav */
+  .footer-nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .footer-nav a {
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--color-text-muted);
+  }
+  .footer-nav a:hover,
+  .footer-nav a:focus-visible {
+    color: var(--color-accent-hover);
+  }
+
+  /* Copyright */
+  .copyright {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Screen-reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+</style>

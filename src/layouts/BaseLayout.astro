@@ -1,0 +1,113 @@
+---
+/**
+ * Global site layout — wraps every page.
+ * Provides <head>, skip-link, Header, Footer.
+ */
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { siteConfig } from "../config";
+
+interface Props {
+  /** Page <title> — will be appended with site name */
+  title?: string;
+  /** Optional meta description override */
+  description?: string;
+}
+
+const { title, description = siteConfig.description } = Astro.props;
+const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+  </head>
+  <body>
+    <!-- Skip to main content for keyboard / screen-reader users -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <Header />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <style is:global>
+      /* -------------------------------------------------- */
+      /* Reset & base styles                                */
+      /* -------------------------------------------------- */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --color-bg: #101010;
+        --color-surface: #1a1a1a;
+        --color-text: #e8e8e8;
+        --color-text-muted: #a0a0a0;
+        --color-accent: #c62828; /* Ghostbusters red */
+        --color-accent-hover: #e53935;
+        --color-link: #90caf9;
+        --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --max-width: 72rem;
+      }
+
+      html {
+        font-family: var(--font-sans);
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--color-link);
+        text-decoration-skip-ink: auto;
+      }
+      a:hover,
+      a:focus-visible {
+        color: var(--color-accent-hover);
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* Skip-link — visible only on focus */
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        background: var(--color-accent);
+        color: #fff;
+        padding: 0.5rem 1rem;
+        z-index: 1000;
+        font-weight: 600;
+      }
+      .skip-link:focus {
+        left: 0;
+      }
+
+      /* Utility wrapper */
+      .container {
+        width: 100%;
+        max-width: var(--max-width);
+        margin-inline: auto;
+        padding-inline: 1rem;
+      }
+    </style>
+  </body>
+</html>

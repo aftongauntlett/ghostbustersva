@@ -1,0 +1,161 @@
+---
+/**
+ * Site header with responsive navigation.
+ * Uses a <details> element for mobile menu — no JS required, fully accessible.
+ */
+import { siteConfig } from "../config";
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-logo" aria-label={`${siteConfig.title} — home`}>
+      <img src="/images/logo.png" alt="" width="40" height="40" />
+      <span class="logo-text">{siteConfig.title}</span>
+    </a>
+
+    {/* Mobile menu toggle — progressively enhanced, works without JS */}
+    <details class="mobile-nav">
+      <summary aria-label="Open navigation menu">
+        <span class="hamburger" aria-hidden="true">&#9776;</span>
+      </summary>
+      <nav class="nav-links mobile" aria-label="Main navigation">
+        <ul>
+          {
+            siteConfig.nav.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  aria-current={currentPath === link.href ? "page" : undefined}
+                  {...("external" in link ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                >
+                  {link.label}
+                  {"external" in link && <span class="sr-only"> (opens in new tab)</span>}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </details>
+
+    {/* Desktop nav — hidden on small screens via CSS */}
+    <nav class="nav-links desktop" aria-label="Main navigation">
+      <ul>
+        {
+          siteConfig.nav.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={currentPath === link.href ? "page" : undefined}
+                {...("external" in link ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {link.label}
+                {"external" in link && <span class="sr-only"> (opens in new tab)</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-surface);
+    border-bottom: 2px solid var(--color-accent);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 0.75rem;
+  }
+
+  /* Logo */
+  .site-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .site-logo:hover {
+    color: var(--color-accent-hover);
+  }
+
+  /* Nav list (shared) */
+  .nav-links ul {
+    list-style: none;
+    display: flex;
+    gap: 1.25rem;
+  }
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+  .nav-links a[aria-current="page"] {
+    color: var(--color-accent-hover);
+    font-weight: 600;
+  }
+
+  /* Desktop nav */
+  .nav-links.desktop {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .nav-links.desktop {
+      display: block;
+    }
+    .mobile-nav {
+      display: none;
+    }
+  }
+
+  /* Mobile nav */
+  .mobile-nav {
+    position: relative;
+  }
+  .mobile-nav summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--color-text);
+  }
+  .mobile-nav summary::-webkit-details-marker {
+    display: none;
+  }
+  .mobile-nav .nav-links ul {
+    flex-direction: column;
+    gap: 0.75rem;
+    position: absolute;
+    right: 0;
+    top: 2.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-accent);
+    border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
+    min-width: 10rem;
+  }
+
+  /* Screen-reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+</style>
