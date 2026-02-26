@@ -1,5 +1,11 @@
 ---
+/**
+ * Events page — mission board of upcoming and past events.
+ * PRD 006: Events Page Redesign
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Panel from "../components/ui/Panel.astro";
+import StatusPill from "../components/ui/StatusPill.astro";
 import { getCollection } from "astro:content";
 
 const allEvents = await getCollection("events");
@@ -15,150 +21,262 @@ const past = allEvents
 ---
 
 <BaseLayout title="Events">
-  <section class="container page">
-    <h1>Events</h1>
+  <section class="container page" aria-labelledby="events-title">
+    <h1 id="events-title" class="page-title">Events</h1>
 
     {
       upcoming.length > 0 && (
-        <>
-          <h2>Upcoming Events</h2>
-          <ul class="event-list">
+        <div class="event-section">
+          <h2 class="section-heading">Upcoming Events</h2>
+          <ul class="event-list" role="list">
             {upcoming.map((event) => (
-              <li class="event-card">
-                {event.data.image && (
-                  <img
-                    src={event.data.image}
-                    alt={`Photo for ${event.data.title}`}
-                    loading="lazy"
-                    class="event-img"
-                  />
-                )}
-                <div class="event-info">
-                  <h3>{event.data.title}</h3>
-                  <time datetime={event.data.date.toISOString().split("T")[0]}>
-                    {event.data.date.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </time>
-                  {event.data.location && <p class="location">{event.data.location}</p>}
-                  <p>{event.data.summary}</p>
-                </div>
+              <li>
+                <Panel class="event-card">
+                  <div class="event-card__inner">
+                    {event.data.image && (
+                      <div class="event-card__image-wrapper">
+                        <img
+                          src={event.data.image}
+                          alt={`Photo for ${event.data.title}`}
+                          loading="lazy"
+                          class="event-card__image"
+                        />
+                      </div>
+                    )}
+                    <div class="event-card__info">
+                      <div class="event-card__header">
+                        <h3 class="event-card__title">{event.data.title}</h3>
+                        <StatusPill status="active">Upcoming</StatusPill>
+                      </div>
+                      <time
+                        class="event-card__date"
+                        datetime={event.data.date.toISOString().split("T")[0]}
+                      >
+                        {event.data.date.toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </time>
+                      {event.data.location && (
+                        <p class="event-card__location">{event.data.location}</p>
+                      )}
+                      <p class="event-card__summary">{event.data.summary}</p>
+                    </div>
+                  </div>
+                </Panel>
               </li>
             ))}
           </ul>
-        </>
+        </div>
       )
     }
 
     {
       past.length > 0 && (
-        <>
-          <h2>Past Events</h2>
-          <ul class="event-list past">
+        <div class="event-section">
+          <h2 class="section-heading">Past Events</h2>
+          <ul class="event-list event-list--past" role="list">
             {past.map((event) => (
-              <li class="event-card">
-                <div class="event-info">
-                  <h3>{event.data.title}</h3>
-                  <time datetime={event.data.date.toISOString().split("T")[0]}>
-                    {event.data.date.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </time>
-                  {event.data.location && <p class="location">{event.data.location}</p>}
-                  <p>{event.data.summary}</p>
-                </div>
+              <li>
+                <Panel class="event-card">
+                  <div class="event-card__inner">
+                    {event.data.image && (
+                      <div class="event-card__image-wrapper">
+                        <img
+                          src={event.data.image}
+                          alt={`Photo for ${event.data.title}`}
+                          loading="lazy"
+                          class="event-card__image"
+                        />
+                      </div>
+                    )}
+                    <div class="event-card__info">
+                      <div class="event-card__header">
+                        <h3 class="event-card__title">{event.data.title}</h3>
+                        <StatusPill status="archived">Past</StatusPill>
+                      </div>
+                      <time
+                        class="event-card__date"
+                        datetime={event.data.date.toISOString().split("T")[0]}
+                      >
+                        {event.data.date.toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </time>
+                      {event.data.location && (
+                        <p class="event-card__location">{event.data.location}</p>
+                      )}
+                      <p class="event-card__summary">{event.data.summary}</p>
+                    </div>
+                  </div>
+                </Panel>
               </li>
             ))}
           </ul>
-        </>
+        </div>
       )
     }
 
-    {allEvents.length === 0 && <p>No events yet — check back soon!</p>}
+    {allEvents.length === 0 && <p class="empty-state">No events yet — check back soon!</p>}
   </section>
 </BaseLayout>
 
 <style>
+  /* ── Page layout ── */
   .page {
-    padding-block: 3rem;
-  }
-  .page h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: var(--color-accent-hover);
-    text-align: center;
-  }
-  .page h2 {
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
-    border-bottom: 1px solid var(--color-accent);
-    padding-bottom: 0.5rem;
-    max-width: 55rem;
-    margin-inline: auto;
-  }
-
-  .event-list {
-    list-style: none;
+    padding-block: var(--text-3xl);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    max-width: 55rem;
-    margin-inline: auto;
   }
 
-  .event-card {
-    background: var(--color-surface);
-    border-radius: 0.5rem;
-    overflow: hidden;
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-accent-hover);
+    text-align: center;
+    line-height: var(--leading-tight);
+  }
+
+  /* ── Section headings with accent underline ── */
+  .event-section {
+    max-width: 55rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ── Event list ── */
+  .event-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* ── Past events: visually de-emphasised ── */
+  .event-list--past :global(.panel) {
+    opacity: 0.7;
+    transition: opacity var(--transition-base);
+  }
+
+  .event-list--past :global(.panel:hover) {
+    opacity: 0.9;
+  }
+
+  /* ── Event card inner layout ── */
+  .event-card__inner {
     display: flex;
     flex-direction: column;
   }
 
   @media (min-width: 600px) {
-    .event-card {
+    .event-card__inner {
       flex-direction: row;
     }
   }
 
-  .event-img {
+  /* ── Event card image ── */
+  .event-card__image-wrapper {
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .event-card__image {
     width: 100%;
     max-height: 200px;
     object-fit: cover;
+    display: block;
   }
+
   @media (min-width: 600px) {
-    .event-img {
-      max-width: 250px;
+    .event-card__image-wrapper {
+      width: 220px;
+    }
+
+    .event-card__image {
+      width: 220px;
+      height: 100%;
       max-height: unset;
     }
   }
 
-  .event-info {
+  /* ── Event card info ── */
+  .event-card__info {
     padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
   }
-  .event-info h3 {
-    font-size: 1.15rem;
-    margin-bottom: 0.25rem;
+
+  .event-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
-  .event-info time {
-    font-size: 0.85rem;
+
+  .event-card__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text);
+    line-height: var(--leading-tight);
+  }
+
+  .event-card__date {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
     color: var(--color-accent-hover);
+    letter-spacing: var(--tracking-wide);
   }
-  .location {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    margin-top: 0.25rem;
-  }
-  .event-info p {
-    margin-top: 0.5rem;
+
+  .event-card__location {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
 
-  .past .event-card {
-    opacity: 0.7;
+  .event-card__summary {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+    margin-top: 0.25rem;
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    padding-block: 3rem;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: var(--text-2xl);
+    }
   }
 </style>

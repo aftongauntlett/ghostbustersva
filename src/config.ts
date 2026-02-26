@@ -11,18 +11,12 @@ export const siteConfig = {
 
   /** Navigation links shown in the header (and optionally the footer). */
   nav: [
-    { label: "Home", href: "/" },
     { label: "About", href: "/about" },
+    { label: "Join", href: "/join" },
     { label: "Events", href: "/events" },
     { label: "Media", href: "/media" },
-    { label: "Join", href: "/join" },
     { label: "Contact", href: "/contact" },
     { label: "Donate", href: "/donate" },
-    {
-      label: "Store",
-      href: "https://www.teepublic.com/user/ghostbustersva",
-      external: true,
-    },
   ],
 
   /** Footer logo images — paths relative to /images */

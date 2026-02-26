@@ -1,11 +1,16 @@
 ---
+/**
+ * Join page — How to become a member.
+ * PRD 007: Join, Contact & Donate Pages Redesign
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
+import Panel from "../components/ui/Panel.astro";
 ---
 
 <BaseLayout title="Join">
-  <section class="container page">
-    <h1>Join Ghostbusters Virginia</h1>
+  <section class="container page" aria-labelledby="join-title">
+    <h1 id="join-title" class="page-title">Join Ghostbusters Virginia</h1>
 
     <blockquote class="join-quote">
       <p>
@@ -19,129 +24,163 @@ import Button from "../components/ui/Button.astro";
       </p>
     </blockquote>
 
-    <h2>How to Join</h2>
-    <p>
-      To apply for membership in Ghostbusters, Virginia we simply ask that you review our
-      <a href="/code-of-conduct">Code of Conduct</a>, and have at least one Ghostbusters canon
-      costume. To meet these requirements, a canon costume needs to include the following:
-    </p>
-    <ul class="gear-list">
-      <li>A flight suit</li>
-      <li>Black boots</li>
-      <li>White web belt</li>
-      <li>Elbow pads</li>
-      <li>
-        At least one belt gizmo. Examples:
-        <ul>
-          <li>MT500 Motorola Walkie Talkie</li>
-          <li>Belt Gizmo (circuit board + daughter board)</li>
-          <li>Leather belt fobs with clips</li>
-          <li>LifeGard 2</li>
-          <li>PKE Meter</li>
-        </ul>
-      </li>
-    </ul>
+    <Panel heading="What We Look For">
+      <p>
+        To apply for membership in Ghostbusters, Virginia we simply ask that you review our
+        <a href="/code-of-conduct">Code of Conduct</a>, and have at least one Ghostbusters canon
+        costume. To meet these requirements, a canon costume needs to include the following:
+      </p>
+      <ul class="gear-list" role="list">
+        <li>A flight suit</li>
+        <li>Black boots</li>
+        <li>White web belt</li>
+        <li>Elbow pads</li>
+        <li>
+          At least one belt gizmo. Examples:
+          <ul>
+            <li>MT500 Motorola Walkie Talkie</li>
+            <li>Belt Gizmo (circuit board + daughter board)</li>
+            <li>Leather belt fobs with clips</li>
+            <li>LifeGard 2</li>
+            <li>PKE Meter</li>
+          </ul>
+        </li>
+      </ul>
+    </Panel>
 
-    <h2>Ready to Apply?</h2>
-    <p>
-      Got all your gear and ready to show us you ain't afraid of no ghosts? Message our
-      <a href="https://www.facebook.com/GhostbustersVA" target="_blank" rel="noopener noreferrer">
-        Facebook page<span class="sr-only"> (opens in new tab)</span>
-      </a>
-      and let us know; you will be provided a link to the membership survey and once complete, you will
-      be notified of results following Membership Liaison Officer verification.
-    </p>
+    <Panel heading="How to Apply">
+      <p>
+        Got all your gear and ready to show us you ain't afraid of no ghosts? Message our
+        <a href="https://www.facebook.com/GhostbustersVA" target="_blank" rel="noopener noreferrer">
+          Facebook page<span class="sr-only"> (opens in new tab)</span>
+        </a>
+        and let us know; you will be provided a link to the membership survey and once complete, you will
+        be notified of results following Membership Liaison Officer verification.
+      </p>
 
-    <p class="note">
-      <strong>Please Note:</strong> We ask all applicants be able to pass a high-level background check
-      to verify no felonies are on their record; this includes a verification with no results found on
-      the national sex offender registry.
-    </p>
+      <div class="note">
+        <p>
+          <strong>Please Note:</strong> We ask all applicants be able to pass a high-level background
+          check to verify no felonies are on their record; this includes a verification with no results
+          found on the national sex offender registry.
+        </p>
+      </div>
 
-    <div class="join-cta">
-      <Button variant="primary" href="https://www.facebook.com/GhostbustersVA" external>
-        Message Us on Facebook
-      </Button>
-      <Button variant="secondary" href="/code-of-conduct"> Read Code of Conduct </Button>
-    </div>
+      <div class="cta-row">
+        <Button variant="primary" href="https://www.facebook.com/GhostbustersVA" external>
+          Message Us on Facebook
+        </Button>
+        <Button variant="secondary" href="/code-of-conduct">Read Code of Conduct</Button>
+      </div>
+    </Panel>
   </section>
 </BaseLayout>
 
 <style>
   .page {
-    padding-block: 3rem;
-  }
-  .page h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: var(--color-accent-hover);
-    text-align: center;
-  }
-  .page h2 {
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    font-size: 1.4rem;
-    max-width: 55rem;
-    margin-inline: auto;
-  }
-  .page p {
-    margin-bottom: 1rem;
-    color: var(--color-text-muted);
-    max-width: 55rem;
-    margin-inline: auto;
+    padding-block: var(--text-3xl);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-accent-hover);
+    text-align: center;
+    line-height: var(--leading-tight);
+  }
+
+  /* ── Quote block ── */
   .join-quote {
     border-left: 3px solid var(--color-accent);
     padding: 1.25rem 1.5rem;
-    margin-bottom: 2rem;
     background: var(--color-surface);
     border-radius: 0 var(--radius-md) var(--radius-md) 0;
     max-width: 55rem;
     margin-inline: auto;
+    width: 100%;
+    box-shadow: var(--shadow-panel);
   }
+
   .join-quote p {
+    font-family: var(--font-body);
     font-style: italic;
     font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+    color: var(--color-text-muted);
     margin-bottom: 0.75rem;
   }
+
   .join-quote p:last-child {
     margin-bottom: 0;
   }
 
+  /* ── Panel sizing ── */
+  .page :global(.panel) {
+    max-width: 55rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .page :global(.panel) p {
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    margin-bottom: 1rem;
+  }
+
+  .page :global(.panel) p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ── Gear list ── */
   .gear-list {
     padding-left: 1.5rem;
     color: var(--color-text-muted);
-    max-width: 55rem;
-    margin-inline: auto;
-    margin-bottom: 1.5rem;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    margin-top: 0.75rem;
   }
+
   .gear-list li {
     margin-bottom: 0.5rem;
   }
+
   .gear-list ul {
     padding-left: 1.5rem;
     margin-top: 0.5rem;
     list-style: disc;
   }
 
+  /* ── Note callout ── */
   .note {
-    font-size: 0.9rem;
-    background: var(--color-surface);
+    background: var(--color-surface-alt);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     padding: 1rem 1.25rem;
-    max-width: 55rem;
-    margin-inline: auto;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
-  .join-cta {
+  .note p {
+    font-size: var(--text-sm) !important;
+    color: var(--color-text-muted);
+    margin-bottom: 0 !important;
+  }
+
+  /* ── CTA row ── */
+  .cta-row {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 2rem;
-    max-width: 55rem;
-    margin-inline: auto;
+    margin-top: 1rem;
+    justify-content: flex-end;
   }
 
   .sr-only {
@@ -153,5 +192,11 @@ import Button from "../components/ui/Button.astro";
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
+  }
+
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: var(--text-2xl);
+    }
   }
 </style>
