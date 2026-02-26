@@ -28,12 +28,12 @@ export const siteConfig = {
   /** Footer logo images — paths relative to /images */
   footerLogos: [
     {
-      src: "/images/GCfranchise21.png",
+      src: "/images/sony-ghost-corps-franchise-letter.png",
       alt: "Ghost Corps Franchise Logo",
     },
     {
-      src: "/images/501certbasic.png",
-      alt: "501st Legion Basic Certification Logo",
+      src: "/images/irs-501c3-determination-letter.png",
+      alt: "IRS 501(c)(3) determination letter",
     },
   ],
 } as const;
