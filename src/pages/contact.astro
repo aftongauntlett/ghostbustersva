@@ -37,12 +37,34 @@ import Button from "../components/ui/Button.astro";
           </dd>
         </div>
       </dl>
-      <div class="cta-row">
-        <Button variant="primary" href="https://www.facebook.com/GhostbustersVA" external>
-          Message Us on Facebook
-        </Button>
-      </div>
     </Panel>
+
+    <Panel heading="Book Us for Your Event">
+      <p class="book-us-text">
+        Do you have a company function, parade, event opening, charity event, or just looking to
+        bring the supernatural fun to a party? Don't wait another minute and contact your Paranormal
+        Professionals — <strong>Ghostbusters, Virginia</strong>.
+      </p>
+      <p class="book-us-text">
+        Our friendly professional team is the only 501(c)(3) non-profit Ghostbusters charity group
+        serving you in:
+      </p>
+      <ul class="service-areas" role="list">
+        <li>Northern Virginia</li>
+        <li>Fredericksburg</li>
+        <li>Richmond</li>
+        <li>Charlottesville</li>
+        <li>Virginia Beach</li>
+      </ul>
+      <p class="book-us-text book-us-cta"><strong>You know who to call!</strong></p>
+    </Panel>
+
+    <div class="page-cta-row">
+      <Button variant="primary" href="https://www.facebook.com/GhostbustersVA" external>
+        Contact Us on Facebook
+      </Button>
+      <Button variant="secondary" href="mailto:info@ghostbustersva.com"> Email Us </Button>
+    </div>
 
     <p class="coming-soon">
       A full contact form will be added in a future update. For now, please email us directly or
@@ -81,7 +103,7 @@ import Button from "../components/ui/Button.astro";
 
   /* ── Panel sizing ── */
   .page :global(.panel) {
-    max-width: 40rem;
+    max-width: 55rem;
     margin-inline: auto;
     width: 100%;
   }
@@ -131,8 +153,62 @@ import Button from "../components/ui/Button.astro";
     text-shadow: 0 0 8px var(--color-glow);
   }
 
-  .cta-row {
-    margin-top: 1.25rem;
+  .page-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.25rem;
+    max-width: 55rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  /* ── Book Us panel ── */
+  .book-us-text {
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    margin-bottom: 0.75rem;
+  }
+
+  .book-us-text strong {
+    color: var(--color-text);
+  }
+
+  .book-us-cta {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .service-areas {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .service-areas li {
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    padding-left: 1.25rem;
+    position: relative;
+  }
+
+  .service-areas li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    box-shadow: var(--shadow-glow);
   }
 
   /* ── Coming soon note ── */

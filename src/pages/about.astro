@@ -46,6 +46,31 @@ import Panel from "../components/ui/Panel.astro";
       </p>
     </Panel>
 
+    <Panel heading="Community Initiatives">
+      <h3 class="initiative-title">Proton Pets</h3>
+      <p>
+        Every April, Ghostbusters Virginia calls on franchises across the globe to join
+        <strong class="glow">Proton Pets</strong> — a month-long, community-driven fundraiser supporting
+        local pet shelters and pet pantries. It's a chance for Ghostbusters everywhere to come together
+        and make a real difference for our furry friends.
+      </p>
+      <hr class="divider" />
+      <p>
+        We're proud to see fellow franchises like the
+        <strong class="glow">Louisiana Ghost Busters</strong> joining the effort and supporting pets in
+        their communities. Proton Pets is an open call to action for Ghostbusters groups around the world
+        to help local pets in need.
+      </p>
+      <hr class="divider" />
+      <p>
+        Remember… dogs and cats living together equals
+        <strong class="glow">MASS CARING!</strong> Learn more and find out how to get involved at
+        <a href="https://whoyagonnacall.org/proton-pets" target="_blank" rel="noopener noreferrer">
+          whoyagonnacall.org/proton-pets<span class="sr-only"> (opens in new tab)</span>
+        </a>.
+      </p>
+    </Panel>
+
     <Panel heading="Our Mission">
       <ul class="mission-list" role="list">
         <li>
@@ -161,6 +186,39 @@ import Panel from "../components/ui/Panel.astro";
         0 0 8px var(--color-glow),
         0 0 20px var(--color-glow);
     }
+  }
+
+  /* ── Initiative title ── */
+  .initiative-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-accent-hover);
+    letter-spacing: var(--tracking-wider);
+    margin-bottom: 0.75rem;
+  }
+
+  .page :global(.panel) a {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .page :global(.panel) a:hover,
+  .page :global(.panel) a:focus-visible {
+    color: var(--color-text);
+    text-shadow: 0 0 8px var(--color-glow);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
   }
 
   /* ── Mission list ── */
