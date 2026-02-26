@@ -18,6 +18,8 @@ const events = defineCollection({
     location: z.string().optional(),
     /** Optional image path relative to /images */
     image: z.string().optional(),
+    /** Optional external URL for the event */
+    url: z.string().url().optional(),
     /** Mark past events so they can be filtered */
     past: z.boolean().default(false),
   }),
