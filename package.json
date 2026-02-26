@@ -1,0 +1,32 @@
+{
+  "name": "ghostbustersva",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Ghostbusters Virginia — community franchise website",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{astro,ts,tsx,js,jsx,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,jsx,json,md,css}\"",
+    "typecheck": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test"
+  },
+  "dependencies": {
+    "astro": "^5.17.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-astro": "^1.0.0",
+    "prettier": "^3.3.0",
+    "prettier-plugin-astro": "^0.14.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
