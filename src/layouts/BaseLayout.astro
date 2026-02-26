@@ -63,12 +63,27 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         --max-width: 72rem;
       }
 
+      html,
+      body {
+        height: 100%;
+      }
+
       html {
         font-family: var(--font-sans);
         background-color: var(--color-bg);
         color: var(--color-text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        flex: 1;
       }
 
       a {
