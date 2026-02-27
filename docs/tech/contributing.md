@@ -2,8 +2,6 @@
 
 A practical guide for anyone working on the Ghostbusters Virginia demo website.
 
-> **⚠️ DEMO BUILD:** This site is a prototype seeking approval from the Ghostbusters franchise team. It is not an officially sanctioned project yet.
-
 > **Prerequisites:** Node.js (LTS), npm, Git. See the [README](../README.md) for setup instructions.
 
 ---

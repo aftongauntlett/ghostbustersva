@@ -2,8 +2,6 @@
 
 How we use AI tools in this project, and the guardrails that keep things consistent.
 
-> **⚠️ DEMO BUILD:** This site is a prototype seeking approval from the Ghostbusters franchise team. It is not an officially sanctioned project yet.
-
 ---
 
 ## How We Use AI Here

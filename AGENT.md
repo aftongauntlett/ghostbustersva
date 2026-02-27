@@ -1,8 +1,5 @@
 # AGENT.md — AI Project Guide
 
-> **⚠️ DEMO BUILD — NOT YET OFFICIAL**
-> This site is a **demo / prototype** being developed to seek approval from the Ghostbusters franchise team. It is **not an officially licensed or sanctioned project** at this time. All branding, imagery, and references to Ghostbusters are used for demonstration purposes only. If approval is granted, this disclaimer will be removed and the site will transition to an official capacity.
-
 **Last reviewed:** 2026-02-27 · **Owner:** GBVA project lead
 
 This file is the plain-language guide AI tools use when generating code or docs in this repo.

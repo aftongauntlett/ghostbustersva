@@ -1,11 +1,11 @@
 # Ghostbusters Virginia — Website
 
-> **⚠️ DEMO BUILD — NOT YET OFFICIAL**
-> This site is a **demo / prototype** built to seek approval from the Ghostbusters franchise team. It is **not an officially licensed or sanctioned project** at this time. All branding, imagery, and references to Ghostbusters are used for demonstration purposes only. If approval is granted, this disclaimer will be removed and the site will transition to an official capacity.
+> **⚠️ NOT YET OFFICIAL**
+> This site is a **demo / prototype** built to seek approval from **Ghostbusters Virginia (GBVA)** Virginia's community Ghostbusters franchise.
 
-A demo website for **Ghostbusters Virginia (GBVA)**, Virginia's community Ghostbusters franchise. Built with [Astro](https://astro.build), TypeScript, and markdown-based content.
+Built with [Astro](https://astro.build), TypeScript, and markdown-based content.
 
-> **New here?** Start with [How This Website Works](#how-this-website-works) if you're non-technical.
+**New here?** Start with [How This Website Works](#how-this-website-works) if you're non-technical.
 
 ## Docs by Audience
 

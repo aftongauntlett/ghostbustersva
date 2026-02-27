@@ -2,8 +2,6 @@
 
 These are the repo-level instructions for AI-assisted development.
 
-> **⚠️ DEMO BUILD:** This site is a prototype seeking approval from the Ghostbusters franchise team. It is not an officially sanctioned project yet. Keep this context in mind when generating content or copy.
-
 ## Core Principles
 
 1. **Small PRDs, small commits.** Every feature or change gets a short PRD in `/docs/prds/` before work begins. Each PRD is completed and committed before moving to the next.
