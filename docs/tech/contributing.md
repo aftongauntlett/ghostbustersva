@@ -1,6 +1,8 @@
 # Developer Onboarding & Conventions
 
-A practical guide for anyone contributing code to the Ghostbusters Virginia website.
+A practical guide for anyone working on the Ghostbusters Virginia demo website.
+
+> **⚠️ DEMO BUILD:** This site is a prototype seeking approval from the Ghostbusters franchise team. It is not an officially sanctioned project yet.
 
 > **Prerequisites:** Node.js (LTS), npm, Git. See the [README](../README.md) for setup instructions.
 
@@ -21,7 +23,7 @@ src/
 └── content.config.ts → Zod schemas that validate content frontmatter.
 images/             → Source images (processed by Astro's image pipeline at build).
 public/             → Static files served as-is (robots.txt).
-docs/               → Documentation, PRDs, runbooks.
+docs/               → Documentation, PRDs, and technical guides.
 tests/              → Vitest unit tests.
 ```
 
@@ -58,7 +60,7 @@ Keep markup inline in the page file when:
 
 - **Astro components** (`.astro`) are the default. Use them for everything that doesn't need client-side interactivity.
 - **React components** (`.tsx`) are used sparingly for interactive UI that requires client-side state (e.g., `GhostParticles.tsx`, `HeroSection.tsx`). Don't reach for React unless Astro components can't do the job.
-- Every component should have a JSDoc comment at the top explaining what it does with an `@example`.
+- **Preferred:** New or modified reusable components should have a JSDoc comment at the top explaining what they do, ideally with an `@example`. This isn't enforced across the entire codebase today, but is the convention to follow for new work.
 - Use `interface Props` to type all component props.
 
 ### Naming
@@ -182,54 +184,37 @@ Use `<hr class="divider">` between logical sections within a Panel. The `divider
 
 ---
 
-## Contribution Workflow
+## Development Workflow
 
-### Branching
+During the demo phase, keep things simple:
 
-- `main` is the production branch. Never push directly to `main`.
-- Create a feature branch: `feat/short-description` or `fix/short-description`.
-- Keep branches short-lived. One feature or fix per branch.
+1. Run `npm run check` before committing to catch issues early.
+2. Write clear commit messages using [Conventional Commits](https://www.conventionalcommits.org/) format:
 
-### Before Opening a PR
-
-```bash
-npm run check   # runs typecheck + lint + format:check + tests
+```
+feat: add event countdown component
+fix: correct gallery image alt fallback
+docs: update deployment guide
+chore: bump Astro to 5.18
+refactor: extract event date formatting
+test: add splitEventsByStatus edge cases
 ```
 
-All four must pass. Fix issues before opening the PR.
+3. Keep commits small and focused — one logical change per commit.
 
-### PR Expectations
+> **If the project moves forward:** We would adopt a more structured workflow — feature branches (`feat/short-description`), pull requests with code review, and a review checklist before merging. For now, we keep the process lightweight so it's not overwhelming.
 
-- **Title:** Use conventional commit format — `feat: add event countdown`, `fix: gallery alt text`.
-- **Description:** Explain what changed and why. Link the PRD if one exists.
-- **Size:** Keep PRs small and focused. If a feature is large, break it into smaller PRs.
-- **Screenshots:** Include before/after screenshots for visual changes.
+### Quality Checklist
 
-### Review Checklist
-
-Before approving a PR, reviewers should verify:
+Before committing, verify:
 
 - [ ] `npm run check` passes
 - [ ] No hardcoded colors, fonts, or spacing — tokens are used
 - [ ] Semantic HTML (correct heading levels, landmarks, labels)
 - [ ] Keyboard navigation works for any interactive elements
-- [ ] New components have a JSDoc comment and typed `Props`
 - [ ] Content schema changes are reflected in `content.config.ts`
 - [ ] No new dependencies added without justification
 - [ ] Responsive — works on mobile and desktop
-
-### Commit Messages
-
-Use [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat: add event countdown component
-fix: correct gallery image alt fallback
-docs: update deployment runbook
-chore: bump Astro to 5.18
-refactor: extract event date formatting
-test: add splitEventsByStatus edge cases
-```
 
 ---
 
@@ -252,7 +237,7 @@ test: add splitEventsByStatus edge cases
 
 - [README](../README.md) — project overview and setup
 - [AI Usage Guide](ai-usage.md) — how AI tools are used here
-- [Deployment Runbook](runbooks/deployment.md) — deploy process and rebuild schedule
+- [Deployment Guide](deployment.md) — deploy process and rebuild schedule
 - [PRD Workflow](prds/README.md) — how features are planned
-- [AGENT.md](../AGENT.md) — project vision and north star
+- [AGENT.md](../AGENT.md) — AI project guide
 - [copilot-instructions.md](../copilot-instructions.md) — AI coding rules

@@ -2,6 +2,8 @@
 
 These are the repo-level instructions for AI-assisted development.
 
+> **⚠️ DEMO BUILD:** This site is a prototype seeking approval from the Ghostbusters franchise team. It is not an officially sanctioned project yet. Keep this context in mind when generating content or copy.
+
 ## Core Principles
 
 1. **Small PRDs, small commits.** Every feature or change gets a short PRD in `/docs/prds/` before work begins. Each PRD is completed and committed before moving to the next.
@@ -9,11 +11,12 @@ These are the repo-level instructions for AI-assisted development.
 3. **No big refactors without a PRD.** If you want to restructure something, write a PRD explaining why, what changes, and what the migration path looks like.
 4. **Keep it static.** This is a static Astro site. Do not add a backend, database, or server-rendered pages unless a PRD explicitly calls for it.
 5. **Content lives in markdown.** Events, gallery items, and future content types use Astro Content Collections backed by `.md` files.
+6. **Astro-first, React only when needed.** Use `.astro` components for static UI. React islands (`.tsx` with `client:load`) are only for elements requiring client-side state (e.g., `HeroSection.tsx`, `GhostParticles.tsx`).
 
 ## Code Style
 
 - TypeScript strict mode. No `any` unless absolutely necessary (and commented why).
-- Use Astro components (`.astro`) for pages and layouts. Avoid frameworks (React, Vue) unless a PRD justifies it.
+- Use Astro components (`.astro`) for pages and layouts. React (`.tsx`) only for interactive islands that need client-side state.
 - Follow the Prettier config in `.prettierrc`. Run `npm run format` before committing.
 - Follow ESLint rules. Run `npm run lint` before committing.
 

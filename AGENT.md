@@ -1,8 +1,15 @@
-# AGENT.md — Project North Star
+# AGENT.md — AI Project Guide
+
+> **⚠️ DEMO BUILD — NOT YET OFFICIAL**
+> This site is a **demo / prototype** being developed to seek approval from the Ghostbusters franchise team. It is **not an officially licensed or sanctioned project** at this time. All branding, imagery, and references to Ghostbusters are used for demonstration purposes only. If approval is granted, this disclaimer will be removed and the site will transition to an official capacity.
+
+**Last reviewed:** 2026-02-27 · **Owner:** GBVA project lead
+
+This file is the plain-language guide AI tools use when generating code or docs in this repo.
 
 ## Vision
 
-Build a fast, accessible, content-driven website for **Ghostbusters Virginia** — a community Ghostbusters franchise. The site should feel atmospheric and on-brand (dark theme, Ghostbusters red accents) while being welcoming, easy to navigate, and performant on any device.
+Build a fast, accessible, content-driven **demo website** for **Ghostbusters Virginia** — a community Ghostbusters franchise. The site should feel atmospheric and on-brand (dark theme, Ghostbusters red accents) while being welcoming, easy to navigate, and performant on any device. This build serves as a proof-of-concept to demonstrate what the finished product would look like.
 
 ## Tone
 
@@ -12,30 +19,35 @@ Build a fast, accessible, content-driven website for **Ghostbusters Virginia** �
 
 ## Page Map
 
-| Route      | Purpose                                                    |
-| ---------- | ---------------------------------------------------------- |
-| `/`        | Hero, quick intro, CTA to join                             |
-| `/about`   | Who we are, mission, history                               |
-| `/events`  | Upcoming + past events from content collection             |
-| `/media`   | Photos and videos from events                              |
-| `/join`    | How to become a member                                     |
-| `/contact` | Contact form / info                                        |
-| `/donate`  | Donation info and CTA (integration TBD)                    |
-| Store      | External link to TeePublic (configured in `src/config.ts`) |
+| Route      | Purpose                                        |
+| ---------- | ---------------------------------------------- |
+| `/`        | Hero, quick intro, CTA to join                 |
+| `/about`   | Who we are, mission, history                   |
+| `/events`  | Upcoming + past events from content collection |
+| `/media`   | Photos and videos from events                  |
+| `/join`    | How to become a member                         |
+| `/contact` | Contact form / info                            |
+| `/donate`  | Donation info and CTA (integration TBD)        |
+
+## Already Implemented
+
+These features have been built and are present in the codebase:
+
+- **Motion & effects**: Ambient ghost-particle orbs (`GhostParticles.tsx`), animated hero with typewriter heading (`HeroSection.tsx`), and a user-accessible motion toggle (`MotionToggle.astro`). All animations respect `prefers-reduced-motion`.
+- **Gallery lightbox**: Click-to-expand image viewer on the media page (`Lightbox.astro`, `src/lib/lightbox.ts`).
 
 ## Future Enhancements
 
-These are ideas for later PRDs — do NOT implement until a PRD is written and approved:
+These are ideas for after the demo is approved — do NOT implement until a PRD is written and approved:
 
-- **Motion / hover effects**: Subtle Ghostbusters-themed animations (e.g., ghost particle effects, proton beam hover trails). Must include a user toggle to disable.
 - **Sound effects**: Optional ambient sounds with a clear mute control. Muted by default.
 - **Contact form integration**: Replace placeholder with a real form (Formspree, Netlify Forms, etc.).
 - **Donation integration**: Connect to a real payment flow (PayPal, Stripe, etc.).
 - **Event detail pages**: Individual pages for each event rendered from markdown.
-- **Gallery lightbox**: Click-to-expand image viewer for the media page.
 - **SEO enhancements**: Open Graph images, structured data, sitemap.
 - **Analytics**: Privacy-respecting analytics (Plausible, Fathom).
 - **Blog / news section**: Content collection for news posts.
+- **Store link**: External link to merchandise store (e.g., TeePublic) once approved.
 
 ## Development Workflow
 
@@ -43,13 +55,15 @@ These are ideas for later PRDs — do NOT implement until a PRD is written and a
 2. **Implement** the feature in small, focused commits.
 3. **Run checks** (`npm run check`) before committing.
 4. **Mark the PRD as complete** by adding a `status: complete` note at the top.
-5. **Move on** to the next feature.
+
+> **Future process:** If the project is approved and more contributors come on board, we would adopt a feature-branch → pull-request → merge-to-`main` workflow to keep work clean and reviewable. For now, the demo is developed simply and directly.
 
 ## Tech Stack & Constraints
 
 - Astro (static output, no SSR)
 - TypeScript (strict)
 - Markdown content collections
-- No heavy frameworks — Astro components only (for now)
+- **Astro components** (`.astro`) for all static UI; **React islands** (`.tsx` with `client:load`) used sparingly for interactive elements that need client-side state (e.g., `HeroSection.tsx`, `GhostParticles.tsx`)
+- **Framer Motion** for animation in React islands
 - No backend or database
 - Accessibility is a hard requirement, not a nice-to-have

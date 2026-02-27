@@ -2,6 +2,8 @@
 
 How we use AI tools in this project, and the guardrails that keep things consistent.
 
+> **⚠️ DEMO BUILD:** This site is a prototype seeking approval from the Ghostbusters franchise team. It is not an officially sanctioned project yet.
+
 ---
 
 ## How We Use AI Here
@@ -24,7 +26,7 @@ Both tools read the same instruction files, so they produce consistent output.
 
 | File                      | Purpose                                                                                                                |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `AGENT.md`                | Project vision, tone, page map, tech constraints, future roadmap. The "north star" for any AI working on this repo.    |
+| `AGENT.md`                | Project vision, tone, page map, tech constraints, and roadmap. The main AI project guide for this repo.                |
 | `copilot-instructions.md` | Coding standards, file organisation, commit conventions, and explicit "do not" rules. Loaded automatically by Copilot. |
 
 These files are checked into the repo so every contributor (human or AI) works from the same playbook.
@@ -101,12 +103,12 @@ AI should never emit API keys, tokens, passwords, or credentials into source fil
 
 ## Reviewing AI-Generated Code
 
-Quick checklist when reviewing a PR that used AI assistance:
+Quick checklist when reviewing AI-generated changes:
 
 - [ ] Does it match the PRD scope? (No scope creep)
 - [ ] Are design tokens used instead of hardcoded values?
 - [ ] Is the HTML semantic and accessible?
-- [ ] Are new components typed with `interface Props` and documented with JSDoc?
+- [ ] Are new reusable components typed with `interface Props`? (JSDoc is preferred but not strictly required for every component)
 - [ ] Were any dependencies added? If so, is there a reason?
 - [ ] Does `npm run check` pass?
 - [ ] Does it look right on mobile and desktop?
