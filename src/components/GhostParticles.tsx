@@ -24,9 +24,9 @@ interface OrbConfig {
   tier: "hero" | "medium" | "tiny";
 }
 
-const HERO_COUNT = 4; // big atmospheric orbs
-const MED_COUNT = 10; // classic bokeh
-const TINY_COUNT = 18; // small sparkle particles
+const HERO_COUNT = 2; // big atmospheric orbs
+const MED_COUNT = 6; // classic bokeh
+const TINY_COUNT = 10; // small sparkle particles
 const TOTAL = HERO_COUNT + MED_COUNT + TINY_COUNT;
 
 function seeded(index: number, seedA = 9301, seedB = 4973) {
@@ -70,7 +70,6 @@ function buildOrb(index: number): OrbConfig {
   }
 
   // Tiny sparkle particles
-  const ti = index - HERO_COUNT - MED_COUNT;
   return {
     size: 2 + r * 5,
     duration: 12 + r * 18,
@@ -87,6 +86,7 @@ function buildOrb(index: number): OrbConfig {
 export default function GhostParticles() {
   const prefersReduced = useReducedMotion();
   const [toggleOff, setToggleOff] = useState(false);
+  const [networkConstrained, setNetworkConstrained] = useState(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -100,7 +100,13 @@ export default function GhostParticles() {
     return () => observer.disconnect();
   }, []);
 
-  const reducedMotion = Boolean(prefersReduced) || toggleOff;
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } })
+      .connection;
+    setNetworkConstrained(Boolean(connection?.saveData));
+  }, []);
+
+  const reducedMotion = Boolean(prefersReduced) || toggleOff || networkConstrained;
 
   const orbs = useMemo(() => Array.from({ length: TOTAL }, (_, i) => buildOrb(i)), []);
 
