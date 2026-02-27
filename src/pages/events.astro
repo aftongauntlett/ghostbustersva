@@ -4,42 +4,23 @@
  * PRD 006: Events Page Redesign
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import StatusPill from "../components/ui/StatusPill.astro";
-import EventCountdown from "../components/EventCountdown.astro";
+import EventCard from "../components/EventCard.astro";
 import { getCollection } from "astro:content";
+import { splitEventsByStatus } from "../lib/events";
 
 const allEvents = await getCollection("events");
-
-// Sort events: upcoming first (by date ascending), then past (by date descending)
-const upcoming = allEvents
-  .filter((e) => !e.data.past)
-  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
-
-const past = allEvents
-  .filter((e) => e.data.past)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
-/** Format a single date or date range (UTC-safe to avoid off-by-one). */
-function formatEventDate(start: Date, end?: Date): string {
-  const opts: Intl.DateTimeFormatOptions = { timeZone: "UTC" };
-  if (!end) {
-    return start.toLocaleDateString("en-US", {
-      ...opts,
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-  const sMonth = start.toLocaleDateString("en-US", { ...opts, month: "long" });
-  const eMonth = end.toLocaleDateString("en-US", { ...opts, month: "long" });
-  if (sMonth === eMonth) {
-    return `${sMonth} ${start.getUTCDate()}–${end.getUTCDate()}, ${start.getUTCFullYear()}`;
-  }
-  return `${start.toLocaleDateString("en-US", { ...opts, month: "long", day: "numeric" })} – ${end.toLocaleDateString("en-US", { ...opts, year: "numeric", month: "long", day: "numeric" })}`;
-}
+// Date-derived partitions reflect the current build snapshot.
+const { upcoming, past } = splitEventsByStatus(allEvents);
 ---
 
-<BaseLayout title="Events">
+<BaseLayout
+  title="Events"
+  description="Upcoming and past Ghostbusters Virginia events across the Commonwealth, including conventions, parades, and charity appearances."
+  canonical="/events"
+  ogTitle="Events | Ghostbusters Virginia"
+  ogDescription="Find where Ghostbusters Virginia will be next and browse our past appearances."
+  ogImage="/images/gbv-gallery-12.jpg"
+>
   <section class="container page" aria-labelledby="events-title">
     <h1 id="events-title" class="page-title">Events</h1>
     <p class="page-intro">Meet the team, support local charities, and see the Ecto in person.</p>
@@ -50,152 +31,7 @@ function formatEventDate(start: Date, end?: Date): string {
           <h2 class="section-heading">Upcoming Events</h2>
           <ul class="event-list" role="list">
             {upcoming.map((event) => (
-              <li
-                class="event-item"
-                data-event-end={
-                  event.data.endDate
-                    ? new Date(event.data.endDate.getTime() + 86400000).toISOString()
-                    : undefined
-                }
-              >
-                {event.data.url ? (
-                  <a
-                    href={event.data.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="event-link"
-                  >
-                    {event.data.image && (
-                      <div class="event-link__image-wrapper">
-                        <img
-                          src={event.data.image}
-                          alt={`Photo for ${event.data.title}`}
-                          loading="lazy"
-                          class="event-link__image"
-                        />
-                      </div>
-                    )}
-                    <div class="event-link__body">
-                      <div class="event-link__header">
-                        <span class="event-link__title">{event.data.title}</span>
-                        <StatusPill status="active">Upcoming</StatusPill>
-                      </div>
-                      <span class="event-link__meta">
-                        <time
-                          class="event-link__date"
-                          datetime={event.data.date.toISOString().split("T")[0]}
-                        >
-                          {formatEventDate(event.data.date, event.data.endDate)}
-                        </time>
-                        {event.data.location && (
-                          <span class="event-link__location">{event.data.location}</span>
-                        )}
-                      </span>
-                      <p class="event-link__summary">{event.data.summary}</p>
-                      {event.data.endDate && (
-                        <EventCountdown startDate={event.data.date} endDate={event.data.endDate} />
-                      )}
-                      {event.data.address && (
-                        <address class="event-link__address">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
-                          >
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                          <span>
-                            {event.data.location} &middot; {event.data.address}
-                          </span>
-                        </address>
-                      )}
-                    </div>
-                    <svg
-                      class="event-link__external"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <>
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                        <polyline points="15 3 21 3 21 9" />
-                        <line x1="10" y1="14" x2="21" y2="3" />
-                      </>
-                    </svg>
-                  </a>
-                ) : (
-                  <div class="event-link">
-                    {event.data.image && (
-                      <div class="event-link__image-wrapper">
-                        <img
-                          src={event.data.image}
-                          alt={`Photo for ${event.data.title}`}
-                          loading="lazy"
-                          class="event-link__image"
-                        />
-                      </div>
-                    )}
-                    <div class="event-link__body">
-                      <div class="event-link__header">
-                        <span class="event-link__title">{event.data.title}</span>
-                        <StatusPill status="active">Upcoming</StatusPill>
-                      </div>
-                      <span class="event-link__meta">
-                        <time
-                          class="event-link__date"
-                          datetime={event.data.date.toISOString().split("T")[0]}
-                        >
-                          {formatEventDate(event.data.date, event.data.endDate)}
-                        </time>
-                        {event.data.location && (
-                          <span class="event-link__location">{event.data.location}</span>
-                        )}
-                      </span>
-                      <p class="event-link__summary">{event.data.summary}</p>
-                      {event.data.endDate && (
-                        <EventCountdown startDate={event.data.date} endDate={event.data.endDate} />
-                      )}
-                      {event.data.address && (
-                        <address class="event-link__address">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
-                          >
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                          <span>
-                            {event.data.location} &middot; {event.data.address}
-                          </span>
-                        </address>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </li>
+              <EventCard event={event} status="upcoming" showCountdown />
             ))}
           </ul>
         </div>
@@ -208,95 +44,7 @@ function formatEventDate(start: Date, end?: Date): string {
           <h2 class="section-heading">Past Events</h2>
           <ul class="event-list event-list--past" id="past-events-list" role="list">
             {past.map((event, index) => (
-              <li class:list={["event-item", { "past-hidden": index >= 4 }]}>
-                {event.data.url ? (
-                  <a
-                    href={event.data.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="event-link"
-                  >
-                    {event.data.image && (
-                      <div class="event-link__image-wrapper">
-                        <img
-                          src={event.data.image}
-                          alt={`Photo for ${event.data.title}`}
-                          loading="lazy"
-                          class="event-link__image"
-                        />
-                      </div>
-                    )}
-                    <div class="event-link__body">
-                      <div class="event-link__header">
-                        <span class="event-link__title">{event.data.title}</span>
-                        <StatusPill status="archived">Past</StatusPill>
-                      </div>
-                      <span class="event-link__meta">
-                        <time
-                          class="event-link__date"
-                          datetime={event.data.date.toISOString().split("T")[0]}
-                        >
-                          {formatEventDate(event.data.date, event.data.endDate)}
-                        </time>
-                        {event.data.location && (
-                          <span class="event-link__location">{event.data.location}</span>
-                        )}
-                      </span>
-                      <p class="event-link__summary">{event.data.summary}</p>
-                    </div>
-                    <svg
-                      class="event-link__external"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <>
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                        <polyline points="15 3 21 3 21 9" />
-                        <line x1="10" y1="14" x2="21" y2="3" />
-                      </>
-                    </svg>
-                  </a>
-                ) : (
-                  <div class="event-link">
-                    {event.data.image && (
-                      <div class="event-link__image-wrapper">
-                        <img
-                          src={event.data.image}
-                          alt={`Photo for ${event.data.title}`}
-                          loading="lazy"
-                          class="event-link__image"
-                        />
-                      </div>
-                    )}
-                    <div class="event-link__body">
-                      <div class="event-link__header">
-                        <span class="event-link__title">{event.data.title}</span>
-                        <StatusPill status="archived">Past</StatusPill>
-                      </div>
-                      <span class="event-link__meta">
-                        <time
-                          class="event-link__date"
-                          datetime={event.data.date.toISOString().split("T")[0]}
-                        >
-                          {formatEventDate(event.data.date, event.data.endDate)}
-                        </time>
-                        {event.data.location && (
-                          <span class="event-link__location">{event.data.location}</span>
-                        )}
-                      </span>
-                      <p class="event-link__summary">{event.data.summary}</p>
-                    </div>
-                  </div>
-                )}
-              </li>
+              <EventCard event={event} status="past" className={index >= 4 ? "past-hidden" : ""} />
             ))}
           </ul>
           {past.length > 4 && (

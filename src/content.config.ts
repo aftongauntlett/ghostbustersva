@@ -6,6 +6,18 @@
  */
 import { defineCollection, z } from "astro:content";
 
+const safeExternalUrl = z
+  .string()
+  .url()
+  .refine((value) => {
+    try {
+      const parsed = new URL(value);
+      return parsed.protocol === "https:" || parsed.protocol === "http:";
+    } catch {
+      return false;
+    }
+  }, "Event URLs must use http:// or https:// protocols.");
+
 const events = defineCollection({
   type: "content",
   schema: z.object({
@@ -22,10 +34,18 @@ const events = defineCollection({
     address: z.string().optional(),
     /** Optional image path relative to /images */
     image: z.string().optional(),
-    /** Optional external URL for the event */
-    url: z.string().url().optional(),
-    /** Mark past events so they can be filtered */
-    past: z.boolean().default(false),
+    /** Optional external URL for the event (http/https only) */
+    url: safeExternalUrl.optional(),
+    /**
+     * Optional explicit event status override.
+     * If omitted, status is derived from date/endDate at build time.
+     */
+    status: z.enum(["upcoming", "past"]).optional(),
+    /**
+     * Legacy status flag retained for backwards compatibility.
+     * Prefer `status` for explicit overrides.
+     */
+    past: z.boolean().optional(),
   }),
 });
 

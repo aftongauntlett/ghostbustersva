@@ -2,7 +2,7 @@
 /**
  * EventCountdown — live countdown timer for multi-day events.
  * Counts down to event start, shows "Event In Progress" during,
- * and hides the parent card once the event ends.
+ * and then switches to an informational completed state.
  */
 interface Props {
   startDate: Date;
@@ -44,15 +44,6 @@ const endTimestamp = new Date(endDate.getTime() + 86400000).toISOString();
 
 <script>
   function initEventCountdowns() {
-    // Hide cards whose events have already ended
-    document.querySelectorAll<HTMLElement>("[data-event-end]").forEach((card) => {
-      const endStr = card.getAttribute("data-event-end");
-      if (!endStr) return;
-      if (new Date() >= new Date(endStr)) {
-        card.style.display = "none";
-      }
-    });
-
     // Start live countdown timers
     document.querySelectorAll<HTMLElement>(".event-countdown").forEach((el) => {
       const startStr = el.getAttribute("data-countdown-start");
@@ -65,10 +56,13 @@ const endTimestamp = new Date(endDate.getTime() + 86400000).toISOString();
       function tick() {
         const now = new Date();
 
-        // Event has ended — hide the whole card
+        // Event has ended
         if (now >= end) {
-          const card = el.closest<HTMLElement>("[data-event-end]");
-          if (card) card.style.display = "none";
+          const timer = el.querySelector(".countdown-timer");
+          if (timer && !timer.classList.contains("is-complete")) {
+            timer.innerHTML = '<span class="countdown-complete">Event Completed</span>';
+            timer.classList.add("is-complete");
+          }
           return;
         }
 
@@ -166,5 +160,12 @@ const endTimestamp = new Date(endDate.getTime() + 86400000).toISOString();
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--color-accent, #c62828);
+  }
+
+  .countdown-complete {
+    font-family: var(--font-heading, sans-serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-muted, #aaa);
   }
 </style>
