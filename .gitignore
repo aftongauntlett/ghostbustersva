@@ -23,6 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# AI / internal docs — not shipped or shared via git
-copilot-instructions.md
-docs/prds/
+# AI / internal docs — previously ignored, now tracked for team reference.
+# copilot-instructions.md   ← tracked (AI coding rules for all contributors)
+# docs/prds/                ← tracked (PRD workflow and archive)

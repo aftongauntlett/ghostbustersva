@@ -1,0 +1,258 @@
+# Developer Onboarding & Conventions
+
+A practical guide for anyone contributing code to the Ghostbusters Virginia website.
+
+> **Prerequisites:** Node.js (LTS), npm, Git. See the [README](../README.md) for setup instructions.
+
+---
+
+## Repo Structure at a Glance
+
+```
+src/
+├── pages/          → File-based routing. Each .astro file = one URL.
+├── layouts/        → BaseLayout.astro wraps every page (<head>, header, footer).
+├── components/     → Shared components used across pages.
+│   └── ui/         → Design-system primitives (Button, Panel, StatusPill, etc.).
+├── content/        → Markdown content collections (events, gallery).
+├── lib/            → Shared TypeScript utilities (event logic, image helpers, etc.).
+├── styles/         → Global CSS. theme.css holds all design tokens.
+├── config.ts       → Site-wide settings: nav links, footer logos, metadata.
+└── content.config.ts → Zod schemas that validate content frontmatter.
+images/             → Source images (processed by Astro's image pipeline at build).
+public/             → Static files served as-is (robots.txt).
+docs/               → Documentation, PRDs, runbooks.
+tests/              → Vitest unit tests.
+```
+
+### How Pages & Routes Work
+
+Astro uses **file-based routing**. A file at `src/pages/about.astro` becomes the `/about` URL. There is no router config to maintain.
+
+Every page imports `BaseLayout` which provides the `<head>`, skip-link, header, footer, and global styles.
+
+### Content Collections
+
+Content (events, gallery) lives in `src/content/` as Markdown files. Schemas are defined in `src/content.config.ts` using Zod. If you add a new field or collection, update the schema first.
+
+---
+
+## Component Conventions
+
+### When to Create a Reusable Component
+
+Create a component in `src/components/` (or `src/components/ui/`) when:
+
+- The same UI pattern appears on **two or more pages**.
+- The piece has its own **props, slots, or logic** (not just markup).
+- It's a design-system primitive (buttons, panels, pills, cards).
+
+### When Page-Specific Code Is Fine
+
+Keep markup inline in the page file when:
+
+- It's unique to that page and unlikely to be reused.
+- Extracting it would just create a single-use wrapper with no benefit.
+
+### Component Patterns
+
+- **Astro components** (`.astro`) are the default. Use them for everything that doesn't need client-side interactivity.
+- **React components** (`.tsx`) are used sparingly for interactive UI that requires client-side state (e.g., `GhostParticles.tsx`, `HeroSection.tsx`). Don't reach for React unless Astro components can't do the job.
+- Every component should have a JSDoc comment at the top explaining what it does with an `@example`.
+- Use `interface Props` to type all component props.
+
+### Naming
+
+- Components: `PascalCase.astro` or `PascalCase.tsx`
+- Pages: `kebab-case.astro`
+- Content files: `kebab-case.md`
+- Lib utilities: `kebab-case.ts`
+
+---
+
+## Styling & Theme System
+
+### Where Tokens Live
+
+All design tokens are CSS custom properties defined in `src/styles/theme.css`. This file is imported once by `BaseLayout.astro` and available everywhere.
+
+Tokens cover: colors, typography, spacing, radii, shadows, transitions, and breakpoints.
+
+### How to Use Tokens
+
+Always reference tokens instead of hardcoding values:
+
+```css
+/* ✅ Good */
+color: var(--color-text);
+background: var(--color-surface);
+padding: var(--space-xl);
+font-family: var(--font-heading);
+border-radius: var(--radius-md);
+
+/* ❌ Bad */
+color: #e2e6ec;
+background: #111820;
+padding: 1.5rem;
+font-family: "Orbitron", sans-serif;
+border-radius: 0.5rem;
+```
+
+### Adding or Modifying Tokens
+
+1. Add/edit the custom property in `src/styles/theme.css` under the appropriate section (colours, typography, spacing, etc.).
+2. Use semantic naming: `--color-{purpose}` not `--color-{hex-description}`.
+3. If the token serves a specific UI role, add it to the semantic roles section (bottom of the `:root` block).
+4. Update this doc or the theme PRD if you're adding a new category.
+
+### Key Token Groups
+
+| Prefix                           | Purpose              | Example                                  |
+| -------------------------------- | -------------------- | ---------------------------------------- |
+| `--color-bg` / `--color-surface` | Backgrounds          | `--color-surface-alt`                    |
+| `--color-text`                   | Text colours         | `--color-text-muted`                     |
+| `--color-accent`                 | Brand red            | `--color-accent-hover`                   |
+| `--color-accent-atmospheric`     | Supernatural green   | `--color-glow-atmospheric`               |
+| `--color-action-*`               | Button / interactive | `--color-action-primary-hover`           |
+| `--color-hover-*`                | Hover states         | `--color-hover-border`                   |
+| `--font-*`                       | Font families        | `--font-heading`, `--font-mono`          |
+| `--text-*`                       | Font sizes (scale)   | `--text-sm`, `--text-2xl`                |
+| `--space-*`                      | Spacing              | `--space-md`, `--space-3xl`              |
+| `--radius-*`                     | Border radii         | `--radius-sm`, `--radius-full`           |
+| `--shadow-*`                     | Box shadows + glow   | `--shadow-glow`, `--shadow-panel`        |
+| `--transition-*`                 | Timing               | `--transition-fast`, `--transition-base` |
+
+### Breakpoints
+
+Breakpoints are documented as comments in `theme.css` (CSS can't use custom properties in `@media` queries). Use them directly:
+
+```css
+@media (min-width: 768px) {
+  /* tablet → desktop */
+}
+@media (min-width: 1024px) {
+  /* desktop → wide */
+}
+```
+
+### Reduced Motion
+
+`theme.css` includes a `prefers-reduced-motion` media query that disables animations globally. Any component that adds animation must also respect the `[data-reduce-motion="true"]` attribute set by the user's manual toggle (see `MotionToggle.astro`).
+
+---
+
+## Layout & Section Patterns
+
+Follow these patterns so the site stays visually consistent:
+
+### Page Structure
+
+```astro
+<BaseLayout title="Page Name" description="...">
+  <section class="container page" aria-labelledby="page-title">
+    <h1 id="page-title" class="page-title">Page Title</h1>
+    <p class="page-intro">One-line summary.</p>
+
+    <Panel heading="Section Name">
+      <!-- content -->
+    </Panel>
+  </section>
+</BaseLayout>
+```
+
+- Wrap page content in `<section class="container page">`.
+- Use `Panel` for distinct content sections.
+- Always provide `aria-labelledby` on sections and `id` on the heading.
+
+### Cards
+
+Event cards and similar repeating items use `EventCard.astro` (or create a new card component if the pattern differs). Cards should use `Panel` or follow its visual pattern (surface background, border, hover glow).
+
+### Buttons
+
+Use `Button.astro` with `variant="primary"` or `variant="secondary"`. It renders as `<a>` when you pass `href`, `<button>` otherwise. For external links, add `external` to get `target="_blank"` and a screen-reader hint.
+
+### Lists & Bullets
+
+Styled lists use `--color-bullet` for markers. Keep list markup semantic (`<ul>`, `<ol>`, `<dl>`).
+
+### Dividers
+
+Use `<hr class="divider">` between logical sections within a Panel. The `divider` class uses `--color-divider-structural`.
+
+---
+
+## Contribution Workflow
+
+### Branching
+
+- `main` is the production branch. Never push directly to `main`.
+- Create a feature branch: `feat/short-description` or `fix/short-description`.
+- Keep branches short-lived. One feature or fix per branch.
+
+### Before Opening a PR
+
+```bash
+npm run check   # runs typecheck + lint + format:check + tests
+```
+
+All four must pass. Fix issues before opening the PR.
+
+### PR Expectations
+
+- **Title:** Use conventional commit format — `feat: add event countdown`, `fix: gallery alt text`.
+- **Description:** Explain what changed and why. Link the PRD if one exists.
+- **Size:** Keep PRs small and focused. If a feature is large, break it into smaller PRs.
+- **Screenshots:** Include before/after screenshots for visual changes.
+
+### Review Checklist
+
+Before approving a PR, reviewers should verify:
+
+- [ ] `npm run check` passes
+- [ ] No hardcoded colors, fonts, or spacing — tokens are used
+- [ ] Semantic HTML (correct heading levels, landmarks, labels)
+- [ ] Keyboard navigation works for any interactive elements
+- [ ] New components have a JSDoc comment and typed `Props`
+- [ ] Content schema changes are reflected in `content.config.ts`
+- [ ] No new dependencies added without justification
+- [ ] Responsive — works on mobile and desktop
+
+### Commit Messages
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat: add event countdown component
+fix: correct gallery image alt fallback
+docs: update deployment runbook
+chore: bump Astro to 5.18
+refactor: extract event date formatting
+test: add splitEventsByStatus edge cases
+```
+
+---
+
+## Tech Stack Summary
+
+| Layer         | Tool                                 | Notes                             |
+| ------------- | ------------------------------------ | --------------------------------- |
+| Framework     | Astro (static output)                | No SSR, no server                 |
+| Language      | TypeScript (strict)                  | No `any` without a comment        |
+| Styling       | CSS custom properties                | All tokens in `theme.css`         |
+| Content       | Markdown + Astro Content Collections | Zod-validated schemas             |
+| Interactivity | React (minimal)                      | Only where client state is needed |
+| Testing       | Vitest                               | Unit tests in `tests/`            |
+| Linting       | ESLint + Prettier                    | Run `npm run check`               |
+| Hosting       | Vercel (static deploy)               | Auto-deploy on push to `main`     |
+
+---
+
+## Further Reading
+
+- [README](../README.md) — project overview and setup
+- [AI Usage Guide](ai-usage.md) — how AI tools are used here
+- [Deployment Runbook](runbooks/deployment.md) — deploy process and rebuild schedule
+- [PRD Workflow](prds/README.md) — how features are planned
+- [AGENT.md](../AGENT.md) — project vision and north star
+- [copilot-instructions.md](../copilot-instructions.md) — AI coding rules

@@ -1,24 +1,82 @@
 # Ghostbusters Virginia — Website
 
-A fast, accessible, content-driven website for the Ghostbusters Virginia community franchise. Built with [Astro](https://astro.build), TypeScript, and markdown-based content collections.
+The official website for **Ghostbusters Virginia (GBVA)**, Virginia's community Ghostbusters franchise. Built with [Astro](https://astro.build), TypeScript, and markdown-based content.
 
-## Quick Start
+> **New here?** Start with [How This Website Works](#how-this-website-works) if you're non-technical, or jump to [Developer Setup](#developer-setup) if you're ready to code.
+
+---
+
+## How This Website Works
+
+This is a **static website** — think of it like a brochure that gets regenerated whenever we make changes, rather than a live app with a database behind it.
+
+- **Pages** (Home, About, Events, Media, Join, Contact, Donate) are built from template files and deployed as plain HTML.
+- **Content** (events, gallery photos) is written in simple Markdown files — no CMS login required, but you do need to edit files in the repo.
+- When a developer pushes changes to the `main` branch, the site automatically rebuilds and deploys within minutes.
+- The site rebuilds on a daily schedule so time-sensitive content (like event status) stays current.
+
+There is no admin dashboard or database. All content lives in this repository as files.
+
+---
+
+## Ownership & Accounts
+
+This project is **owned by the Ghostbusters Virginia organization**, not any single person. If a maintainer steps away, the team retains full control.
+
+| Resource                      | Where                      | Who Has Access               |
+| ----------------------------- | -------------------------- | ---------------------------- |
+| Domain (`ghostbustersva.com`) | Registrar (org account)    | GBVA leadership              |
+| GitHub repo                   | `github.com` (org account) | All GBVA developers          |
+| Hosting (Vercel)              | Vercel project             | GBVA developers + leadership |
+
+**Why org-owned accounts matter:** If credentials are tied to one person's email, the team loses access when that person leaves. Always use shared org accounts or ensure multiple admins are configured.
+
+---
+
+## How Updates Happen
+
+| What                                      | How                                                                      |
+| ----------------------------------------- | ------------------------------------------------------------------------ |
+| Add/edit an event                         | Edit or create a Markdown file in `src/content/events/`, open a PR       |
+| Add gallery photos                        | Add an image to `images/`, create a `.md` file in `src/content/gallery/` |
+| Change page text or layout                | Edit the `.astro` file in `src/pages/`, open a PR                        |
+| Change site-wide settings (nav, metadata) | Edit `src/config.ts`                                                     |
+| Deploy to production                      | Merge a PR to `main` — deploy is automatic                               |
+
+All changes go through a **pull request** so someone else can review before they go live.
+
+> **Future path:** A headless CMS or admin UI could be added later so non-developers can edit content directly. For now, a developer handles all changes.
+
+---
+
+## Who to Contact / How to Request Changes
+
+- **Want something changed on the site?** Open a GitHub Issue describing what you need, or message the team on our internal channel.
+- **Found a bug?** Open a GitHub Issue with what you saw, what you expected, and what page it was on.
+- **Want to contribute code?** See [docs/contributing.md](docs/contributing.md) for the developer onboarding guide.
+
+Current maintainers are listed in the GitHub repo's team/contributors list.
+
+---
+
+## Developer Setup
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- npm (comes with Node)
+- Git
+
+### Quick Start
 
 ```bash
-# Install dependencies
+git clone <repo-url>
+cd ghostbustersva
 npm install
-
-# Start development server (localhost:4321)
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build locally
-npm run preview
+npm run dev          # starts dev server at localhost:4321
 ```
 
-## Available Scripts
+### Available Scripts
 
 | Script              | Description                                    |
 | ------------------- | ---------------------------------------------- |
@@ -32,30 +90,63 @@ npm run preview
 | `npm run test`      | Run unit tests with Vitest                     |
 | `npm run check`     | Run typecheck + lint + format check + tests    |
 
+**Always run `npm run check` before pushing.** It runs the type checker, linter, formatter check, and tests in one shot.
+
+### Build & Deploy Overview
+
+1. Developer pushes to `main` (or merges a PR).
+2. Vercel detects the change and runs `npm run build`.
+3. The static output (`dist/`) is deployed to the CDN.
+4. A daily scheduled rebuild keeps date-derived content (event status) current.
+
+See [docs/runbooks/deployment.md](docs/runbooks/deployment.md) for the full deployment runbook and rebuild cadence.
+
+### Environment Variables
+
+No secrets are required for local development. The site is fully static.
+
+- `.env` / `.env.production` — used for any future integrations (analytics, form backends). These files are git-ignored.
+- `astro.config.mjs` sets `site: "https://ghostbustersva.com"` for canonical URLs and sitemap generation.
+
+### Basic Troubleshooting
+
+| Problem                   | Fix                                                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `npm run dev` fails       | Delete `node_modules` and run `npm install` again                                                              |
+| Type errors after pulling | Run `npm run typecheck` — you may need to restart the Astro dev server                                         |
+| Events show wrong status  | Event status is date-based at build time. Rebuild locally with `npm run build` to see current classification   |
+| Styles look wrong         | Make sure `src/styles/theme.css` is imported (it's loaded via `BaseLayout.astro`)                              |
+| Tests fail                | Run `npm run test` for details. Check that content schemas in `src/content.config.ts` match your content files |
+
+---
+
 ## Project Structure
 
 ```
 src/
-├── components/       # Reusable Astro components (Header, Footer)
-├── content/          # Markdown content collections
-│   ├── events/       # Event entries (upcoming + past)
-│   └── gallery/      # Gallery/photo entries (stub)
-├── layouts/          # Page layouts (BaseLayout)
-├── pages/            # File-based routes
-│   ├── index.astro   # Home
-│   ├── about.astro
-│   ├── events.astro
-│   ├── media.astro
-│   ├── join.astro
-│   ├── contact.astro
-│   └── donate.astro
-├── config.ts         # Centralised site config (nav, footer logos, etc.)
-└── content.config.ts # Content collection schemas
-images/               # Source images (logos, photos)
-public/               # Static assets served as-is
+├── components/         # Reusable Astro/React components
+│   └── ui/             # Design-system primitives (Button, Panel, StatusPill)
+├── content/            # Markdown content collections
+│   ├── events/         # Event entries (upcoming + past)
+│   └── gallery/        # Gallery/photo entries
+├── layouts/            # Page layouts (BaseLayout wraps every page)
+├── lib/                # Shared utilities (events, images, motion)
+├── pages/              # File-based routes (each file = one URL)
+├── styles/             # Global CSS and design tokens (theme.css)
+├── config.ts           # Site-wide config (nav links, metadata, footer)
+└── content.config.ts   # Content collection schemas (Zod validation)
+images/                 # Source images (processed at build time)
+public/                 # Static assets served as-is (robots.txt, etc.)
 docs/
-└── prds/             # PRD documents per feature
+├── contributing.md     # Developer onboarding and conventions
+├── ai-usage.md         # How AI tools are used in this project
+├── prds/               # Product Requirement Documents
+│   └── archive/        # Completed PRDs
+└── runbooks/
+    └── deployment.md   # Deploy process and rebuild cadence
 ```
+
+---
 
 ## Adding Content
 
@@ -67,20 +158,18 @@ Create a new `.md` file in `src/content/events/`:
 ---
 title: "Event Name"
 date: 2026-06-01
-endDate: 2026-06-02 # optional for multi-day events
+endDate: 2026-06-02 # optional, for multi-day events
 summary: "A short description of the event."
 location: "Venue, City, VA"
 image: "/images/photo.jpg" # optional
-url: "https://example.com/event-page" # optional, must use http:// or https://
-status: "upcoming" # optional manual override: upcoming | past
+url: "https://example.com" # optional, must be http/https
+status: "upcoming" # optional override: upcoming | past
 ---
 
 Full markdown description here.
 ```
 
-Event status defaults to date-based behavior (upcoming until the event end date passes). Use `status` only for explicit overrides. The legacy `past` flag is still accepted for older entries but should not be used for new content.
-
-Because this is a static Astro site, date-derived event sections are evaluated at build time. Production should run a scheduled rebuild at least once every 24 hours, plus an on-demand rebuild before major event days. See [docs/runbooks/deployment.md](docs/runbooks/deployment.md) for the required cadence and checklist.
+Event status is automatically derived from dates at build time. Use `status` only for explicit overrides. See [docs/runbooks/deployment.md](docs/runbooks/deployment.md) for rebuild cadence.
 
 ### Gallery
 
@@ -97,7 +186,17 @@ date: 2026-06-01
 
 ### Images
 
-Place images in the `/images` directory. Reference them with paths like `/images/filename.jpg` in content frontmatter and components. Images in `images/` at the repo root are served as static assets.
+Place images in the `/images` directory. Reference them as `/images/filename.jpg` in content frontmatter and components. They are processed by Astro's image pipeline at build time.
+
+---
+
+## Further Reading
+
+- [Developer Onboarding & Conventions](docs/contributing.md)
+- [AI Usage Guide](docs/ai-usage.md)
+- [Deployment Runbook](docs/runbooks/deployment.md)
+- [PRD Workflow](docs/prds/README.md)
+- [AGENT.md](AGENT.md) — project vision and north star
 
 ## Accessibility Notes
 
