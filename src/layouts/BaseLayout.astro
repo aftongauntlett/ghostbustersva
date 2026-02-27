@@ -7,6 +7,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import GhostParticles from "../components/GhostParticles";
 import { siteConfig } from "../config";
+import type { ResponsiveImageAttrs } from "../lib/images";
 import "../styles/theme.css";
 
 interface Props {
@@ -14,10 +15,37 @@ interface Props {
   title?: string;
   /** Optional meta description override */
   description?: string;
+  canonical?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterCard?: "summary" | "summary_large_image";
+  robots?: string;
+  showGhostParticles?: boolean;
+  /** Pass hero image attrs to preload it in <head> for instant LCP */
+  heroImagePreload?: ResponsiveImageAttrs;
 }
 
-const { title, description = siteConfig.description } = Astro.props;
+const {
+  title,
+  description = siteConfig.description,
+  canonical,
+  ogTitle,
+  ogDescription,
+  ogImage = "/images/logo.png",
+  twitterCard = "summary_large_image",
+  robots = "index,follow",
+  showGhostParticles = false,
+  heroImagePreload,
+} = Astro.props;
 const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
+const resolvedCanonical = new URL(
+  canonical ?? Astro.url.pathname,
+  Astro.site ?? "https://ghostbustersva.com",
+).toString();
+const resolvedOgTitle = ogTitle ?? pageTitle;
+const resolvedOgDescription = ogDescription ?? description;
+const resolvedOgImage = new URL(ogImage, Astro.site ?? "https://ghostbustersva.com").toString();
 ---
 
 <!doctype html>
@@ -26,8 +54,22 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
     <title>{pageTitle}</title>
+    <link rel="canonical" href={resolvedCanonical} />
     <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:url" content={resolvedCanonical} />
+    <meta property="og:title" content={resolvedOgTitle} />
+    <meta property="og:description" content={resolvedOgDescription} />
+    <meta property="og:image" content={resolvedOgImage} />
+
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:title" content={resolvedOgTitle} />
+    <meta name="twitter:description" content={resolvedOgDescription} />
+    <meta name="twitter:image" content={resolvedOgImage} />
 
     <!-- Motion toggle infrastructure — runs before paint to avoid FOUC (PRD 009) -->
     <script is:inline>
@@ -43,6 +85,20 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         }
       })();
     </script>
+
+    {
+      heroImagePreload && (
+        <link
+          rel="preload"
+          as="image"
+          type="image/webp"
+          href={heroImagePreload.src}
+          imagesrcset={heroImagePreload.srcset}
+          imagesizes={heroImagePreload.sizes}
+          fetchpriority="high"
+        />
+      )
+    }
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -63,8 +119,8 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
 
     <Header />
 
-    <!-- Site-wide floating ghost particles (React island — PRD 009) -->
-    <GhostParticles client:load />
+    <!-- Optional floating ghost particles (homepage only) -->
+    {showGhostParticles && <GhostParticles client:idle />}
 
     <main id="main-content">
       <slot />
@@ -320,6 +376,8 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
 
     <!-- Motion toggle click handler + scroll fade-in observer (PRD 009) -->
     <script>
+      import { resolveMotionOff } from "../lib/motion";
+
       // ── Motion toggle handler ──
       function syncToggleButtons(motionOff: boolean) {
         document.querySelectorAll<HTMLButtonElement>("[data-motion-toggle]").forEach((btn) => {
@@ -331,7 +389,7 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         const html = document.documentElement;
         const osReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const stored = localStorage.getItem("motion-preference");
-        let motionOff = stored !== null ? stored === "off" : osReduce;
+        let motionOff = resolveMotionOff(stored, osReduce);
 
         // Ensure attribute is in sync (the inline script in <head> handles initial)
         if (motionOff) {
