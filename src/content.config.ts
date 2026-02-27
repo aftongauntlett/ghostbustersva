@@ -12,10 +12,14 @@ const events = defineCollection({
     title: z.string(),
     /** ISO date string, e.g. "2026-04-15" */
     date: z.coerce.date(),
+    /** Optional end date for multi-day events */
+    endDate: z.coerce.date().optional(),
     /** Short summary shown in list views */
     summary: z.string(),
     /** Optional location / venue */
     location: z.string().optional(),
+    /** Optional street address */
+    address: z.string().optional(),
     /** Optional image path relative to /images */
     image: z.string().optional(),
     /** Optional external URL for the event */

@@ -35,8 +35,8 @@
   /* Focus */
   --color-focus: #90caf9;
 
-  /* Links */
-  --color-link: #90caf9;
+  /* Links — warm neutral instead of blue to match the red theme */
+  --color-link: #d4a574;
   --color-link-hover: var(--color-accent-hover);
 
   /* Status colours */
