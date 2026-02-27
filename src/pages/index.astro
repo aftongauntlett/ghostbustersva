@@ -4,14 +4,34 @@
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
-import Panel from "../components/ui/Panel.astro";
-import RadarAccent from "../components/ui/RadarAccent.astro";
+import StatusPill from "../components/ui/StatusPill.astro";
+import EventCountdown from "../components/EventCountdown.astro";
+import HeroSection from "../components/HeroSection";
 import { getCollection } from "astro:content";
 
 const allEvents = await getCollection("events");
 const upcoming = allEvents
   .filter((e) => !e.data.past)
   .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+
+/** Format a single date or date range (UTC-safe to avoid off-by-one). */
+function formatEventDate(start: Date, end?: Date): string {
+  const opts: Intl.DateTimeFormatOptions = { timeZone: "UTC" };
+  if (!end) {
+    return start.toLocaleDateString("en-US", {
+      ...opts,
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+  const sMonth = start.toLocaleDateString("en-US", { ...opts, month: "long" });
+  const eMonth = end.toLocaleDateString("en-US", { ...opts, month: "long" });
+  if (sMonth === eMonth) {
+    return `${sMonth} ${start.getUTCDate()}–${end.getUTCDate()}, ${start.getUTCFullYear()}`;
+  }
+  return `${start.toLocaleDateString("en-US", { ...opts, month: "long", day: "numeric" })} – ${end.toLocaleDateString("en-US", { ...opts, year: "numeric", month: "long", day: "numeric" })}`;
+}
 
 const galleryItems = await getCollection("gallery");
 
@@ -70,42 +90,8 @@ const swagItems = [
 ---
 
 <BaseLayout title="Home">
-  <!-- ───── HERO ───── -->
-  <section class="hero container" aria-labelledby="home-hero-title">
-    <Panel class="hero-panel hero-panel--image">
-      <div class="hero-image-shell">
-        <img
-          src="/images/ghostbusters-car.jpg"
-          alt="Ghostbusters Virginia Ecto vehicle at a community event"
-          class="hero-img"
-        />
-      </div>
-    </Panel>
-
-    <Panel class="hero-panel hero-panel--content">
-      <div class="hero-text">
-        <h1 id="home-hero-title">Who Ya Gonna Call?</h1>
-        <p>
-          <strong>Ghostbusters, Virginia</strong> is the only
-          <span class="nonprofit-number"
-            >501(<span class="nonprofit-mark nonprofit-mark--c">c</span>)(<sup
-              class="nonprofit-mark nonprofit-mark--3">3</sup
-            >)</span
-          >
-          non-profit charity organization recognized by Sony's Ghost Corps in Virginia that gives back
-          to its community through a love of Ghostbusters.
-        </p>
-        <div class="hero-cta">
-          <Button variant="primary" href="/join">Join the Team</Button>
-          <Button variant="secondary" href="/events">View Events</Button>
-        </div>
-
-        <!-- RadarAccent kept for future use
-        <RadarAccent size="86px" color="green" class="hero-radar" />
-        -->
-      </div>
-    </Panel>
-  </section>
+  <!-- ───── HERO (React island — PRD 009 Tier 2) ───── -->
+  <HeroSection client:load />
 
   <!-- ───── GALLERY CAROUSEL ───── -->
   {
@@ -114,16 +100,42 @@ const swagItems = [
         <h2 id="gallery-heading" class="section-heading">
           Gallery
         </h2>
-        <div class="gallery-scroll">
-          {galleryItems.map((item) => (
-            <img src={item.data.image} alt={item.data.alt} loading="lazy" class="gallery-thumb" />
-          ))}
+        <div id="gallery-splide" class="splide" aria-label="Photo gallery carousel">
+          <div class="splide__track">
+            <ul class="splide__list">
+              {galleryItems.map((item) => (
+                <li class="splide__slide">
+                  <button
+                    class="gallery-slide"
+                    type="button"
+                    aria-label={`View full image: ${item.data.title}`}
+                    data-image={item.data.image}
+                    data-alt={item.data.alt}
+                    data-title={item.data.title}
+                  >
+                    <img
+                      src={item.data.image}
+                      alt={item.data.alt}
+                      loading="lazy"
+                      class="gallery-slide__img"
+                    />
+                    <span class="gallery-slide__title">{item.data.title}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
         <p class="gallery-blurb">
           We participate in community events all over Virginia to help raise money and awareness for
           other charities, and spread the love of Ghostbusters all over the Commonwealth in a safe,
           fun, and family friendly manner.
         </p>
+        <div class="section-cta section-cta--center">
+          <Button variant="secondary" href="/media">
+            See All Media
+          </Button>
+        </div>
       </section>
     )
   }
@@ -137,27 +149,133 @@ const swagItems = [
         </h2>
         <ul class="event-list">
           {upcoming.map((event) => (
-            <li class="event-card">
-              {event.data.image && (
-                <img
-                  src={event.data.image}
-                  alt={`Photo for ${event.data.title}`}
-                  loading="lazy"
-                  class="event-img"
-                />
+            <li
+              class="event-card"
+              data-event-end={
+                event.data.endDate
+                  ? new Date(event.data.endDate.getTime() + 86400000).toISOString()
+                  : undefined
+              }
+            >
+              {event.data.url ? (
+                <a
+                  href={event.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="event-card__link"
+                >
+                  {event.data.image && (
+                    <img
+                      src={event.data.image}
+                      alt={`Photo for ${event.data.title}`}
+                      loading="lazy"
+                      class="event-img"
+                    />
+                  )}
+                  <div class="event-info">
+                    <div class="event-info__header">
+                      <h3>{event.data.title}</h3>
+                      <StatusPill status="active">Upcoming</StatusPill>
+                    </div>
+                    <time datetime={event.data.date.toISOString().split("T")[0]}>
+                      {formatEventDate(event.data.date, event.data.endDate)}
+                    </time>
+                    {event.data.location && <p class="location">{event.data.location}</p>}
+                    <p>{event.data.summary}</p>
+                    {event.data.endDate && (
+                      <EventCountdown startDate={event.data.date} endDate={event.data.endDate} />
+                    )}
+                    {event.data.address && (
+                      <address class="event-address">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span>
+                          {event.data.location} &middot; {event.data.address}
+                        </span>
+                      </address>
+                    )}
+                  </div>
+                  <svg
+                    class="event-card__external"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <>
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </>
+                  </svg>
+                </a>
+              ) : (
+                <div class="event-card__link">
+                  {event.data.image && (
+                    <img
+                      src={event.data.image}
+                      alt={`Photo for ${event.data.title}`}
+                      loading="lazy"
+                      class="event-img"
+                    />
+                  )}
+                  <div class="event-info">
+                    <div class="event-info__header">
+                      <h3>{event.data.title}</h3>
+                      <StatusPill status="active">Upcoming</StatusPill>
+                    </div>
+                    <time datetime={event.data.date.toISOString().split("T")[0]}>
+                      {formatEventDate(event.data.date, event.data.endDate)}
+                    </time>
+                    {event.data.location && <p class="location">{event.data.location}</p>}
+                    <p>{event.data.summary}</p>
+                    {event.data.endDate && (
+                      <EventCountdown startDate={event.data.date} endDate={event.data.endDate} />
+                    )}
+                    {event.data.address && (
+                      <address class="event-address">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span>
+                          {event.data.location} &middot; {event.data.address}
+                        </span>
+                      </address>
+                    )}
+                  </div>
+                </div>
               )}
-              <div class="event-info">
-                <h3>{event.data.title}</h3>
-                <time datetime={event.data.date.toISOString().split("T")[0]}>
-                  {event.data.date.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-                {event.data.location && <p class="location">{event.data.location}</p>}
-                <p>{event.data.summary}</p>
-              </div>
             </li>
           ))}
         </ul>
@@ -219,127 +337,49 @@ const swagItems = [
       </Button>
     </div>
   </section>
+
+  <!-- ── Lightbox overlay ── -->
+  <div
+    class="lightbox"
+    id="home-lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image viewer"
+    hidden
+  >
+    <button class="lightbox__close" type="button" aria-label="Close viewer">&times;</button>
+    <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous image">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg
+      >
+    </button>
+    <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next image">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg
+      >
+    </button>
+    <div class="lightbox__content">
+      <img class="lightbox__image" id="home-lightbox-image" src="" alt="" />
+      <p class="lightbox__caption" id="home-lightbox-caption"></p>
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
-    padding-block: 3rem;
-    align-items: stretch;
-  }
-
-  .hero-panel {
-    min-width: 0;
-  }
-
-  :global(.hero-panel--image .panel__body),
-  :global(.hero-panel--content .panel__body) {
-    height: 100%;
-  }
-
-  :global(.hero-panel--image .panel__body) {
-    padding: 1rem;
-  }
-
-  .hero-image-shell {
-    overflow: hidden;
-    border-radius: var(--radius-md);
-  }
-
-  .hero-image-shell:hover {
-    box-shadow: var(--shadow-glow);
-  }
-
-  .hero-img {
-    width: 100%;
-    max-height: 25rem;
-    object-fit: cover;
-    border-radius: var(--radius-md);
-  }
-
-  .hero-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1rem;
-  }
-
-  .hero-text h1 {
-    font-family: var(--font-heading);
-    font-size: var(--text-4xl);
-    line-height: var(--leading-tight);
-    margin-bottom: 1rem;
-    color: var(--color-accent-hover);
-  }
-
-  .hero-text p {
-    font-size: var(--text-lg);
-    line-height: var(--leading-normal);
-    max-width: 40rem;
-    margin-inline: auto;
-    color: var(--color-text-muted);
-  }
-
-  .nonprofit-number {
-    color: var(--color-text);
-    font-family: var(--font-mono);
-    font-size: 0.96em;
-    letter-spacing: var(--tracking-wide);
-    white-space: nowrap;
-  }
-
-  .nonprofit-mark {
-    color: var(--color-accent-hover);
-    font-weight: var(--weight-semibold);
-  }
-
-  .nonprofit-mark--c {
-    text-transform: lowercase;
-  }
-
-  .nonprofit-mark--3 {
-    font-size: 0.75em;
-    line-height: 0;
-  }
-
-  .hero-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 0.5rem;
-    width: 100%;
-  }
-
-  .hero-radar {
-    margin-top: 0.5rem;
-    opacity: 0.7;
-  }
-
-  @media (min-width: 768px) {
-    .hero {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      align-items: center;
-    }
-
-    .hero-text {
-      align-items: flex-start;
-      text-align: left;
-    }
-
-    .hero-text p {
-      margin-inline: 0;
-    }
-
-    .hero-radar {
-      align-self: flex-end;
-    }
-  }
-
   /* ── Shared section styles ── */
   .section {
     padding-block: 3rem;
@@ -349,8 +389,29 @@ const swagItems = [
     font-size: 1.6rem;
     margin-bottom: 1.25rem;
     color: var(--color-accent-hover);
-    border-bottom: 1px solid var(--color-accent);
-    padding-bottom: 0.5rem;
+    border-bottom: none;
+    padding-bottom: 0.75rem;
+    position: relative;
+  }
+
+  .section-heading::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--color-accent-hover) 0%,
+      var(--color-accent) 30%,
+      rgba(198, 40, 40, 0.3) 70%,
+      transparent 100%
+    );
+    box-shadow:
+      0 0 6px rgba(198, 40, 40, 0.4),
+      0 0 16px rgba(198, 40, 40, 0.15);
+    border-radius: var(--radius-full);
   }
 
   .section-cta {
@@ -361,29 +422,15 @@ const swagItems = [
     justify-content: flex-end;
   }
 
-  /* ── Gallery carousel ── */
-  .gallery-scroll {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 0.5rem;
+  .section-cta--center {
+    justify-content: center;
   }
 
-  .gallery-thumb {
-    flex: 0 0 auto;
-    width: 300px;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    border-radius: var(--radius-md, 0.5rem);
-    scroll-snap-align: start;
-  }
-
+  /* ── Gallery section ── */
   .gallery-blurb {
-    margin-top: 1rem;
+    margin-top: 2.5rem;
     color: var(--color-text-muted);
-    max-width: 55rem;
+    text-align: center;
   }
 
   /* ── Upcoming events ── */
@@ -396,22 +443,51 @@ const swagItems = [
 
   .event-card {
     background: var(--color-surface);
-    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     overflow: hidden;
+    position: relative;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .event-card:hover {
+    border-color: var(--color-border-accent);
+    box-shadow: var(--shadow-glow), var(--shadow-panel);
+  }
+
+  .event-card__link {
     display: flex;
     flex-direction: column;
+    text-decoration: none;
+    color: inherit;
   }
 
   @media (min-width: 600px) {
-    .event-card {
+    .event-card__link {
       flex-direction: row;
     }
+  }
+
+  .event-card__external {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--color-text-muted);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  .event-card:hover .event-card__external {
+    opacity: 1;
   }
 
   .event-img {
     width: 100%;
     max-height: 200px;
-    object-fit: cover;
+    object-fit: contain;
+    background: var(--color-surface);
   }
   @media (min-width: 600px) {
     .event-img {
@@ -423,9 +499,15 @@ const swagItems = [
   .event-info {
     padding: 1.25rem;
   }
+  .event-info__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.25rem;
+  }
   .event-info h3 {
     font-size: 1.15rem;
-    margin-bottom: 0.25rem;
   }
   .event-info time {
     font-size: 0.85rem;
@@ -441,13 +523,30 @@ const swagItems = [
     color: var(--color-text-muted);
   }
 
+  .event-address {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    font-style: normal;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .event-address svg {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
   /* ── Join section ── */
   .join-quote {
     border-left: 3px solid var(--color-accent);
     padding: 1.25rem 1.5rem;
     background: var(--color-surface);
     border-radius: 0 var(--radius-md, 0.5rem) var(--radius-md, 0.5rem) 0;
-    max-width: 55rem;
   }
   .join-quote p {
     font-style: italic;
@@ -462,7 +561,6 @@ const swagItems = [
   /* ── Swag section ── */
   .swag-text {
     color: var(--color-text-muted);
-    max-width: 55rem;
   }
 
   .swag-grid {
@@ -507,5 +605,307 @@ const swagItems = [
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
+  }
+</style>
+
+<!-- Splide carousel + lightbox -->
+<script>
+  import Splide from "@splidejs/splide";
+  import "@splidejs/splide/css";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const el = document.getElementById("gallery-splide");
+    if (!el) return;
+
+    const splide = new Splide(el, {
+      type: "loop",
+      perPage: 3,
+      gap: "1rem",
+      autoplay: true,
+      interval: 7000,
+      pauseOnHover: true,
+      pauseOnFocus: true,
+      pagination: true,
+      arrows: true,
+      breakpoints: {
+        1024: { perPage: 2 },
+        640: { perPage: 1 },
+      },
+    }).mount();
+
+    // ── Lightbox ──
+    const lightbox = document.getElementById("home-lightbox") as HTMLElement;
+    const lightboxImage = document.getElementById("home-lightbox-image") as HTMLImageElement;
+    const lightboxCaption = document.getElementById(
+      "home-lightbox-caption",
+    ) as HTMLParagraphElement;
+    const closeBtn = lightbox?.querySelector(".lightbox__close") as HTMLButtonElement;
+    const prevBtn = lightbox?.querySelector(".lightbox__nav--prev") as HTMLButtonElement;
+    const nextBtn = lightbox?.querySelector(".lightbox__nav--next") as HTMLButtonElement;
+    let previousFocus: HTMLElement | null = null;
+
+    // Build ordered list of gallery images from the slides
+    const slides = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("#gallery-splide .gallery-slide"),
+    );
+    const images = slides.map((s) => ({
+      image: s.dataset.image ?? "",
+      alt: s.dataset.alt ?? "",
+      title: s.dataset.title ?? "",
+    }));
+    let currentIndex = 0;
+
+    function showImage(index: number) {
+      currentIndex = ((index % images.length) + images.length) % images.length;
+      const item = images[currentIndex];
+      lightboxImage.src = item.image;
+      lightboxImage.alt = item.alt;
+      lightboxCaption.textContent = item.title;
+    }
+
+    function openLightbox(index: number) {
+      if (!lightbox || !lightboxImage || !lightboxCaption) return;
+      previousFocus = document.activeElement as HTMLElement;
+      showImage(index);
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+      splide.Components.Autoplay?.pause();
+      closeBtn?.focus();
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.hidden = true;
+      document.body.style.overflow = "";
+      lightboxImage!.src = "";
+      splide.Components.Autoplay?.play();
+      previousFocus?.focus();
+    }
+
+    // Gallery slide clicks
+    slides.forEach((slide, i) => {
+      slide.addEventListener("click", () => openLightbox(i));
+    });
+
+    prevBtn?.addEventListener("click", () => showImage(currentIndex - 1));
+    nextBtn?.addEventListener("click", () => showImage(currentIndex + 1));
+    closeBtn?.addEventListener("click", closeLightbox);
+
+    lightbox?.addEventListener("click", (e) => {
+      if (e.target === lightbox || (e.target as Element).classList.contains("lightbox__content")) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (!lightbox || lightbox.hidden) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") showImage(currentIndex - 1);
+      if (e.key === "ArrowRight") showImage(currentIndex + 1);
+    });
+  });
+</script>
+
+<style is:global>
+  /* ── Splide theme overrides for Ghostbusters dark theme ── */
+
+  /* Arrow buttons */
+  #gallery-splide .splide__arrow {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    opacity: 0.85;
+    width: 2.5rem;
+    height: 2.5rem;
+    transition:
+      background var(--transition-base),
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+  #gallery-splide .splide__arrow:hover {
+    background: var(--color-surface-alt);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-glow);
+    opacity: 1;
+  }
+  #gallery-splide .splide__arrow svg {
+    fill: var(--color-text);
+    width: 1rem;
+    height: 1rem;
+  }
+  #gallery-splide .splide__arrow:hover svg {
+    fill: var(--color-accent-hover);
+  }
+
+  /* Pagination dots */
+  #gallery-splide .splide__pagination {
+    bottom: -1.75rem;
+  }
+  #gallery-splide .splide__pagination__page {
+    background: var(--color-border);
+    opacity: 0.6;
+    width: 8px;
+    height: 8px;
+    transition:
+      background var(--transition-base),
+      transform var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+  #gallery-splide .splide__pagination__page.is-active {
+    background: var(--color-accent);
+    transform: scale(1.3);
+    box-shadow: var(--shadow-glow);
+    opacity: 1;
+  }
+  #gallery-splide .splide__pagination__page:hover {
+    background: var(--color-accent-hover);
+    opacity: 1;
+  }
+
+  /* Slide content */
+  .gallery-slide {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    padding: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    width: 100%;
+    display: block;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+  .gallery-slide:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-glow);
+  }
+  .gallery-slide__img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.82) saturate(0.9);
+  }
+  .gallery-slide__title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem 0.75rem 0.6rem;
+    font-size: var(--text-sm);
+    color: #fff;
+    background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.45) 40%, rgba(0, 0, 0, 0.9) 100%);
+    pointer-events: none;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Spacing for pagination below */
+  #gallery-splide {
+    padding-bottom: 2rem;
+  }
+
+  /* ── Home lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .lightbox[hidden] {
+    display: none;
+  }
+  .lightbox__close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.25rem;
+    z-index: 10;
+    transition: color var(--transition-fast);
+  }
+  .lightbox__close:hover,
+  .lightbox__close:focus-visible {
+    color: var(--color-accent-hover);
+  }
+  .lightbox__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+  .lightbox__image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+  .lightbox__caption {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  /* Lightbox nav arrows */
+  .lightbox__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition:
+      background var(--transition-base),
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      color var(--transition-base);
+  }
+  .lightbox__nav:hover,
+  .lightbox__nav:focus-visible {
+    background: var(--color-surface-alt);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-glow);
+    color: var(--color-accent-hover);
+  }
+  .lightbox__nav--prev {
+    left: 1rem;
+  }
+  .lightbox__nav--next {
+    right: 1rem;
+  }
+  @media (max-width: 640px) {
+    .lightbox__nav {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    .lightbox__nav--prev {
+      left: 0.5rem;
+    }
+    .lightbox__nav--next {
+      right: 0.5rem;
+    }
   }
 </style>
