@@ -67,14 +67,20 @@ Create a new `.md` file in `src/content/events/`:
 ---
 title: "Event Name"
 date: 2026-06-01
+endDate: 2026-06-02 # optional for multi-day events
 summary: "A short description of the event."
 location: "Venue, City, VA"
 image: "/images/photo.jpg" # optional
-past: false # set to true for past events
+url: "https://example.com/event-page" # optional, must use http:// or https://
+status: "upcoming" # optional manual override: upcoming | past
 ---
 
 Full markdown description here.
 ```
+
+Event status defaults to date-based behavior (upcoming until the event end date passes). Use `status` only for explicit overrides. The legacy `past` flag is still accepted for older entries but should not be used for new content.
+
+Because this is a static Astro site, date-derived event sections are evaluated at build time. Production should run a scheduled rebuild at least once every 24 hours, plus an on-demand rebuild before major event days. See [docs/runbooks/deployment.md](docs/runbooks/deployment.md) for the required cadence and checklist.
 
 ### Gallery
 
