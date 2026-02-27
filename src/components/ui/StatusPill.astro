@@ -60,12 +60,12 @@ const { status = "default", class: className = "" } = Astro.props;
 
   /* Active — green */
   .status-pill--active {
-    background: rgba(0, 230, 118, 0.12);
+    background: var(--color-chip-bg);
     color: var(--color-status-active);
   }
   .status-pill--active::before {
     background: var(--color-status-active);
-    box-shadow: var(--shadow-glow-green);
+    box-shadow: var(--shadow-glow-atmospheric);
   }
 
   /* Archived — subdued */

@@ -4,6 +4,7 @@
  * PRD 008: Media & Gallery Page Redesign
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Lightbox from "../components/ui/Lightbox.astro";
 import { getCollection } from "astro:content";
 
 const galleryItems = await getCollection("gallery");
@@ -73,7 +74,7 @@ const newsLinks = [
     </p>
 
     <!-- ── Videos ── -->
-    <div class="media-section">
+    <div class="media-section fade-in-section">
       <h2 class="section-heading">Videos</h2>
       <div class="video-grid">
         {
@@ -107,7 +108,7 @@ const newsLinks = [
     </div>
 
     <!-- ── Gallery ── -->
-    <div class="media-section">
+    <div class="media-section fade-in-section">
       <h2 class="section-heading">Gallery</h2>
       {
         sorted.length > 0 ? (
@@ -152,19 +153,10 @@ const newsLinks = [
             </ul>
             {sorted.length > 6 && (
               <div class="gallery-toggle">
-                <button
-                  class="btn btn--secondary gallery-toggle__btn"
-                  type="button"
-                  id="gallery-show-more"
-                >
+                <button class="toggle-btn" type="button" id="gallery-show-more">
                   Show More ({sorted.length - 6} more)
                 </button>
-                <button
-                  class="btn btn--secondary gallery-toggle__btn"
-                  type="button"
-                  id="gallery-show-less"
-                  hidden
-                >
+                <button class="toggle-btn" type="button" id="gallery-show-less" hidden>
                   Show Less
                 </button>
               </div>
@@ -177,7 +169,7 @@ const newsLinks = [
     </div>
 
     <!-- ── In the News ── -->
-    <div class="media-section">
+    <div class="media-section fade-in-section">
       <h2 class="section-heading">In the News</h2>
       <ul class="news-list" role="list">
         {
@@ -230,45 +222,19 @@ const newsLinks = [
   </section>
 
   <!-- ── Lightbox overlay ── -->
-  <div
-    class="lightbox"
-    id="lightbox"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Media viewer"
-    hidden
-  >
-    <button class="lightbox__close" type="button" aria-label="Close viewer">&times;</button>
-    <div class="lightbox__content">
-      <img class="lightbox__image" id="lightbox-image" src="" alt="" />
-      <div class="lightbox__video" id="lightbox-video" hidden>
-        <iframe
-          id="lightbox-iframe"
-          src=""
-          title=""
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
-      </div>
-      <p class="lightbox__caption" id="lightbox-caption"></p>
-    </div>
-  </div>
+  <Lightbox id="lightbox" hasVideo label="Media viewer" />
 </BaseLayout>
 
 <script>
-  // Lightbox functionality — supports images and videos
+  // Lightbox functionality — shared component handles close/escape/focus-trap
   const lightbox = document.getElementById("lightbox") as HTMLElement;
   const lightboxImage = document.getElementById("lightbox-image") as HTMLImageElement;
   const lightboxVideo = document.getElementById("lightbox-video") as HTMLElement;
   const lightboxIframe = document.getElementById("lightbox-iframe") as HTMLIFrameElement;
   const lightboxCaption = document.getElementById("lightbox-caption") as HTMLParagraphElement;
-  const closeBtn = lightbox?.querySelector(".lightbox__close") as HTMLButtonElement;
-  let previousFocus: HTMLElement | null = null;
 
   function openImageLightbox(image: string, alt: string, title: string) {
     if (!lightbox || !lightboxImage || !lightboxCaption) return;
-    previousFocus = document.activeElement as HTMLElement;
     lightboxImage.src = image;
     lightboxImage.alt = alt;
     lightboxImage.hidden = false;
@@ -276,12 +242,11 @@ const newsLinks = [
     lightboxCaption.textContent = title;
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
-    closeBtn?.focus();
+    (lightbox.querySelector(".lightbox__close") as HTMLElement)?.focus();
   }
 
   function openVideoLightbox(videoId: string, title: string) {
     if (!lightbox || !lightboxIframe || !lightboxCaption) return;
-    previousFocus = document.activeElement as HTMLElement;
     lightboxIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     lightboxIframe.title = title;
     lightboxImage!.hidden = true;
@@ -289,18 +254,7 @@ const newsLinks = [
     lightboxCaption.textContent = title;
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
-    closeBtn?.focus();
-  }
-
-  function closeLightbox() {
-    if (!lightbox) return;
-    lightbox.hidden = true;
-    document.body.style.overflow = "";
-    lightboxImage!.src = "";
-    lightboxImage!.hidden = false;
-    lightboxIframe!.src = "";
-    lightboxVideo!.hidden = true;
-    previousFocus?.focus();
+    (lightbox.querySelector(".lightbox__close") as HTMLElement)?.focus();
   }
 
   // Gallery card clicks
@@ -320,23 +274,6 @@ const newsLinks = [
       const title = card.dataset.videoTitle ?? "";
       openVideoLightbox(videoId, title);
     });
-  });
-
-  // Close button
-  closeBtn?.addEventListener("click", closeLightbox);
-
-  // Click outside content
-  lightbox?.addEventListener("click", (e) => {
-    if (e.target === lightbox || (e.target as Element).classList.contains("lightbox__content")) {
-      closeLightbox();
-    }
-  });
-
-  // Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && lightbox && !lightbox.hidden) {
-      closeLightbox();
-    }
   });
 
   // Gallery show more / show less
@@ -359,51 +296,22 @@ const newsLinks = [
 </script>
 
 <style>
-  /* ── Page layout ── */
-  .page {
-    padding-block: var(--text-3xl);
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .page-title {
-    font-family: var(--font-heading);
-    font-size: var(--text-4xl);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wider);
-    color: var(--color-accent-hover);
-    text-align: center;
-    line-height: var(--leading-tight);
-  }
-
-  .page-intro {
-    font-size: var(--text-lg);
-    color: var(--color-text-muted);
-    text-align: center;
-  }
-
-  /* ── Section headings ── */
+  /* ── Section layout ── */
   .media-section {
     width: 100%;
-  }
-
-  .section-heading {
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wider);
-    color: var(--color-text);
-    border-bottom: 1px solid var(--color-accent);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.25rem;
   }
 
   /* ── Video grid ── */
   .video-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
+    gap: var(--space-xl);
+  }
+
+  @media (max-width: 1024px) {
+    .video-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (max-width: 768px) {
@@ -433,8 +341,8 @@ const newsLinks = [
 
   .video-card:hover,
   .video-card:focus-visible {
-    border-color: var(--color-border-accent);
-    box-shadow: var(--shadow-glow), var(--shadow-panel);
+    border-color: var(--color-hover-border);
+    box-shadow: var(--shadow-hover), var(--shadow-panel);
     transform: translateY(-2px);
   }
 
@@ -464,18 +372,18 @@ const newsLinks = [
   }
 
   .video-card__title {
-    padding: 0.75rem 1rem;
+    padding: var(--space-md) var(--space-lg);
     font-size: var(--text-sm);
     font-weight: var(--weight-semibold);
     color: var(--color-text);
     letter-spacing: var(--tracking-wide);
   }
 
-  /* ── Gallery grid — fixed 3 columns ── */
+  /* ── Gallery grid ── */
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
+    gap: var(--space-xl);
     width: 100%;
     list-style: none;
     padding: 0;
@@ -493,7 +401,7 @@ const newsLinks = [
     }
   }
 
-  /* ── Gallery card (now a button) ── */
+  /* ── Gallery card (button) ── */
   .gallery-card {
     display: block;
     width: 100%;
@@ -515,8 +423,8 @@ const newsLinks = [
 
   .gallery-card:hover,
   .gallery-card:focus-visible {
-    border-color: var(--color-border-accent);
-    box-shadow: var(--shadow-glow), var(--shadow-panel);
+    border-color: var(--color-hover-border);
+    box-shadow: var(--shadow-hover), var(--shadow-panel);
     transform: translateY(-2px);
   }
 
@@ -532,7 +440,7 @@ const newsLinks = [
   }
 
   .gallery-card__info {
-    padding: 0.75rem 1rem;
+    padding: var(--space-md) var(--space-lg);
   }
 
   .gallery-card__title {
@@ -545,7 +453,7 @@ const newsLinks = [
 
   .gallery-card__date {
     display: block;
-    margin-top: 0.25rem;
+    margin-top: var(--space-xs);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-muted);
@@ -557,7 +465,7 @@ const newsLinks = [
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: var(--space-xl);
   }
 
   .news-item {
@@ -572,14 +480,14 @@ const newsLinks = [
   }
 
   .news-item:hover {
-    border-color: var(--color-border-accent);
-    box-shadow: var(--shadow-glow), var(--shadow-panel);
+    border-color: var(--color-hover-border);
+    box-shadow: var(--shadow-hover);
   }
 
   .news-link {
     display: flex;
-    gap: 1.5rem;
-    padding: 1.25rem;
+    gap: var(--space-xl);
+    padding: var(--space-xl);
     text-decoration: none;
     color: inherit;
   }
@@ -601,46 +509,59 @@ const newsLinks = [
   .news-link__body {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-sm);
     flex: 1;
   }
 
   .news-link__title {
     font-size: var(--text-lg);
     font-weight: var(--weight-semibold);
-    color: var(--color-link);
+    color: var(--color-text);
     line-height: var(--leading-tight);
+    transition: color var(--transition-fast);
   }
 
   .news-link:hover .news-link__title {
-    color: var(--color-accent-hover);
+    color: var(--color-accent-atmospheric);
   }
 
   .news-link__date {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--text-sm);
-    color: var(--color-accent-hover);
+    color: var(--color-text);
     letter-spacing: var(--tracking-wide);
   }
 
   .news-link__meta {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-md);
     flex-wrap: wrap;
   }
 
   .news-link__location {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
     letter-spacing: var(--tracking-wide);
+  }
+
+  .news-link__location::before {
+    content: "\00B7";
+    color: var(--color-accent);
+    font-weight: var(--weight-bold);
+    margin-right: var(--space-md);
   }
 
   .news-link__excerpt {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     line-height: var(--leading-normal);
+    transition: color var(--transition-fast);
+  }
+
+  .news-link:hover .news-link__excerpt {
+    color: var(--color-text);
   }
 
   .news-link__source {
@@ -651,8 +572,8 @@ const newsLinks = [
 
   .news-link__external {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: var(--space-lg);
+    right: var(--space-lg);
     color: var(--color-text-muted);
     opacity: 0;
     transition: opacity var(--transition-fast);
@@ -663,93 +584,16 @@ const newsLinks = [
     opacity: 1;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     .news-link {
       flex-direction: column;
-      gap: 1rem;
+      gap: var(--space-lg);
     }
 
     .news-link__image-wrapper {
       width: 100%;
       max-height: 200px;
     }
-  }
-
-  /* ── Lightbox ── */
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-
-  .lightbox[hidden] {
-    display: none;
-  }
-
-  .lightbox__close {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    background: none;
-    border: none;
-    color: var(--color-text);
-    font-size: 2.5rem;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0.25rem;
-    z-index: 10;
-    transition: color var(--transition-fast);
-  }
-
-  .lightbox__close:hover,
-  .lightbox__close:focus-visible {
-    color: var(--color-accent-hover);
-  }
-
-  .lightbox__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    max-width: 90vw;
-    max-height: 90vh;
-  }
-
-  .lightbox__image {
-    max-width: 100%;
-    max-height: 80vh;
-    object-fit: contain;
-    border-radius: var(--radius-md);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-  }
-
-  .lightbox__video {
-    width: 80vw;
-    max-width: 960px;
-    aspect-ratio: 16 / 9;
-  }
-
-  .lightbox__video[hidden] {
-    display: none;
-  }
-
-  .lightbox__video iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    border-radius: var(--radius-md);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-  }
-
-  .lightbox__caption {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    text-align: center;
   }
 
   /* ── Gallery toggle buttons ── */
@@ -760,53 +604,6 @@ const newsLinks = [
   .gallery-toggle {
     display: flex;
     justify-content: center;
-    margin-top: 1.5rem;
-  }
-
-  .gallery-toggle__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.5rem;
-    font-family: var(--font-heading);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-wider);
-    text-transform: uppercase;
-    color: var(--color-text);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition:
-      border-color var(--transition-base),
-      box-shadow var(--transition-base),
-      background var(--transition-base);
-  }
-
-  .gallery-toggle__btn:hover,
-  .gallery-toggle__btn:focus-visible {
-    border-color: var(--color-border-accent);
-    box-shadow: var(--shadow-glow);
-    background: var(--color-surface-hover, var(--color-surface));
-  }
-
-  .gallery-toggle__btn[hidden] {
-    display: none;
-  }
-
-  /* ── Empty state ── */
-  .empty-state {
-    text-align: center;
-    color: var(--color-text-muted);
-    font-style: italic;
-    padding-block: 3rem;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 640px) {
-    .page-title {
-      font-size: var(--text-2xl);
-    }
+    margin-top: var(--space-xl);
   }
 </style>

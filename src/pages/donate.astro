@@ -65,7 +65,7 @@ const swagItems = [
   <section class="container page" aria-labelledby="donate-title">
     <h1 id="donate-title" class="page-title">Support Ghostbusters Virginia</h1>
 
-    <p class="intro">
+    <p class="page-intro">
       Your donations help us maintain our equipment, attend community events, and support the
       charitable causes we care about. Every contribution — big or small — makes a difference.
     </p>
@@ -74,9 +74,6 @@ const swagItems = [
       <p>Donation integration coming soon. Thank you for your patience!</p>
       <div class="cta-row">
         <Button variant="primary" disabled>Donate Now (Coming Soon)</Button>
-        <Button variant="secondary" href="https://www.teepublic.com/user/ghostbustersva" external>
-          Visit Our Store
-        </Button>
       </div>
     </Panel>
 
@@ -108,58 +105,26 @@ const swagItems = [
           ))
         }
       </div>
+      <p class="swag-note">
+        You can also browse the full collection on our TeePublic store for t-shirts, hoodies,
+        stickers, magnets, pins, and more.
+      </p>
+      <div class="cta-row">
+        <Button variant="secondary" href="https://www.teepublic.com/user/ghostbustersva" external>
+          Visit Our Store
+        </Button>
+      </div>
     </Panel>
-
-    <p class="note">
-      You can also browse the full collection on our
-      <a
-        href="https://www.teepublic.com/user/ghostbustersva"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        TeePublic store<span class="sr-only"> (opens in new tab)</span></a
-      > for t-shirts, hoodies, stickers, magnets, pins, and more.
-    </p>
   </section>
 </BaseLayout>
 
 <style>
-  .page {
-    padding-block: var(--text-3xl);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .page-title {
-    font-family: var(--font-heading);
-    font-size: var(--text-4xl);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wider);
-    color: var(--color-accent-hover);
-    text-align: center;
-    line-height: var(--leading-tight);
-  }
-
-  .intro {
-    color: var(--color-text-muted);
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    line-height: var(--leading-normal);
-    text-align: center;
-  }
-
   /* ── Panel sizing ── */
   .page :global(.panel) {
     width: 100%;
   }
 
   .page :global(.panel) p {
-    color: var(--color-text-muted);
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    line-height: var(--leading-normal);
-    margin-bottom: 1rem;
     text-align: center;
   }
 
@@ -167,78 +132,17 @@ const swagItems = [
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.75rem;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
   }
 
-  /* ── Swag grid ── */
-  .swag-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  .swag-item {
-    display: block;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    background: #fff;
-    transition:
-      border-color var(--transition-base),
-      box-shadow var(--transition-base),
-      transform var(--transition-base);
-  }
-
-  .swag-item:hover,
-  .swag-item:focus-visible {
-    border-color: var(--color-border-accent);
-    box-shadow: var(--shadow-glow), var(--shadow-panel);
-    transform: translateY(-2px);
-  }
-
-  .swag-thumb {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    display: block;
-  }
-
-  @media (max-width: 768px) {
-    .swag-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .swag-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  /* ── Note ── */
-  .note {
+  /* ── Swag note ── */
+  .swag-note {
     font-family: var(--font-body);
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     font-style: italic;
     text-align: center;
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-  }
-
-  @media (max-width: 640px) {
-    .page-title {
-      font-size: var(--text-2xl);
-    }
+    margin-top: var(--space-lg);
   }
 </style>

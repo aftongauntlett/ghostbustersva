@@ -22,7 +22,7 @@ interface Props {
 
 const { size = "100px", color = "green", class: className = "" } = Astro.props;
 
-const glowColor = color === "green" ? "rgba(0, 230, 118, 0.30)" : "rgba(198, 40, 40, 0.35)";
+const glowColor = color === "green" ? "var(--color-glow-atmospheric)" : "var(--color-glow)";
 
 const sweepColor = color === "green" ? "rgba(0, 230, 118, 0.6)" : "rgba(198, 40, 40, 0.6)";
 ---

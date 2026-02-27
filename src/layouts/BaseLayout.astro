@@ -28,8 +28,30 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
     <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <!-- Motion toggle infrastructure — runs before paint to avoid FOUC (PRD 009) -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem("motion-preference");
+        var osReduce =
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        // If user has explicitly stored a preference, use it.
+        // Otherwise fall back to OS setting.
+        var motionOff = stored !== null ? stored === "off" : osReduce;
+        if (motionOff) {
+          document.documentElement.setAttribute("data-reduce-motion", "true");
+        }
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload the heading font to prevent FOUT jump on page titles -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
+    />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap"
@@ -75,6 +97,8 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         color: var(--color-text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
 
       h1,
@@ -114,7 +138,7 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
       }
       a:hover,
       a:focus-visible {
-        color: var(--color-accent-hover);
+        color: var(--color-link-hover);
       }
 
       img {
@@ -128,8 +152,8 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         position: absolute;
         left: -9999px;
         top: 0;
-        background: var(--color-accent);
-        color: #fff;
+        background: var(--color-action-primary);
+        color: var(--color-text-inverse);
         padding: 0.5rem 1rem;
         z-index: 1000;
         font-weight: 600;
@@ -166,9 +190,9 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
       .ghost-particle-global.gp-hero {
         background: radial-gradient(
           circle,
-          rgba(0, 230, 118, 0.35) 0%,
-          rgba(0, 200, 100, 0.12) 40%,
-          rgba(0, 230, 118, 0) 70%
+          var(--color-hover-border) 0%,
+          var(--color-hover-bg) 40%,
+          transparent 70%
         );
       }
 
@@ -176,9 +200,9 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
       .ghost-particle-global.gp-medium {
         background: radial-gradient(
           circle,
-          rgba(0, 230, 118, 0.6) 0%,
-          rgba(0, 230, 118, 0.2) 40%,
-          rgba(0, 230, 118, 0) 70%
+          var(--color-glow-atmospheric-strong) 0%,
+          var(--color-glow-atmospheric) 40%,
+          transparent 70%
         );
       }
 
@@ -186,9 +210,9 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
       .ghost-particle-global.gp-tiny {
         background: radial-gradient(
           circle,
-          rgba(0, 255, 130, 0.9) 0%,
-          rgba(0, 230, 118, 0.4) 50%,
-          rgba(0, 230, 118, 0) 100%
+          var(--color-accent-atmospheric) 0%,
+          var(--color-hover-border) 50%,
+          transparent 100%
         );
       }
 
@@ -204,7 +228,7 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         border-radius: 50%;
         background: radial-gradient(
           ellipse at center,
-          rgba(0, 230, 118, 0.28) 0%,
+          var(--color-glow-atmospheric) 0%,
           rgba(0, 200, 100, 0.1) 50%,
           transparent 80%
         );
@@ -257,6 +281,150 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
           display: none !important;
         }
       }
+
+      /* ── Global motion-off state (toggle or OS) ── */
+      html[data-reduce-motion="true"] *,
+      html[data-reduce-motion="true"] *::before,
+      html[data-reduce-motion="true"] *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      html[data-reduce-motion="true"] .ghost-particles-global,
+      html[data-reduce-motion="true"] .corner-fog {
+        display: none !important;
+      }
+
+      /* ── Scroll fade-in (PRD 009 — Tier 1) ── */
+      .fade-in-section {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 400ms ease-out,
+          transform 400ms ease-out;
+      }
+
+      .fade-in-section.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* If motion is off, show everything immediately */
+      html[data-reduce-motion="true"] .fade-in-section {
+        opacity: 1;
+        transform: none;
+      }
     </style>
+
+    <!-- Motion toggle click handler + scroll fade-in observer (PRD 009) -->
+    <script>
+      // ── Motion toggle handler ──
+      function syncToggleButtons(motionOff: boolean) {
+        document.querySelectorAll<HTMLButtonElement>("[data-motion-toggle]").forEach((btn) => {
+          btn.setAttribute("aria-pressed", motionOff ? "false" : "true");
+        });
+      }
+
+      function initMotionToggle() {
+        const html = document.documentElement;
+        const osReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const stored = localStorage.getItem("motion-preference");
+        let motionOff = stored !== null ? stored === "off" : osReduce;
+
+        // Ensure attribute is in sync (the inline script in <head> handles initial)
+        if (motionOff) {
+          html.setAttribute("data-reduce-motion", "true");
+        } else {
+          html.removeAttribute("data-reduce-motion");
+        }
+        syncToggleButtons(motionOff);
+
+        // Listen for clicks on any toggle button
+        document.addEventListener("click", (e) => {
+          const btn = (e.target as Element)?.closest?.(
+            "[data-motion-toggle]",
+          ) as HTMLButtonElement | null;
+          if (!btn) return;
+          motionOff = !motionOff;
+          localStorage.setItem("motion-preference", motionOff ? "off" : "on");
+          if (motionOff) {
+            html.setAttribute("data-reduce-motion", "true");
+          } else {
+            html.removeAttribute("data-reduce-motion");
+          }
+          syncToggleButtons(motionOff);
+        });
+
+        // Listen for OS preference changes
+        window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener("change", (e) => {
+          // Only auto-sync if user hasn't stored a manual preference
+          if (localStorage.getItem("motion-preference") !== null) return;
+          motionOff = e.matches;
+          if (motionOff) {
+            html.setAttribute("data-reduce-motion", "true");
+          } else {
+            html.removeAttribute("data-reduce-motion");
+          }
+          syncToggleButtons(motionOff);
+        });
+      }
+
+      // ── Scroll fade-in observer ──
+      function initScrollFadeIn() {
+        const html = document.documentElement;
+        // If motion is off, make everything visible immediately
+        if (html.getAttribute("data-reduce-motion") === "true") {
+          document
+            .querySelectorAll(".fade-in-section")
+            .forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+
+        const sections = document.querySelectorAll(".fade-in-section");
+
+        // Elements already in the viewport on page load get revealed
+        // immediately (no rAF delay) so the page feels instant and
+        // avoids a visible "flash" of invisible content near the title.
+        sections.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            el.classList.add("is-visible");
+          }
+        });
+
+        // Elements below the fold get the scroll-triggered reveal
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                requestAnimationFrame(() => {
+                  entry.target.classList.add("is-visible");
+                });
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        sections.forEach((el) => {
+          if (!el.classList.contains("is-visible")) {
+            observer.observe(el);
+          }
+        });
+      }
+
+      // Run on initial load
+      initMotionToggle();
+      initScrollFadeIn();
+
+      // Re-run on Astro page transitions (View Transitions)
+      document.addEventListener("astro:page-load", () => {
+        initMotionToggle();
+        initScrollFadeIn();
+      });
+    </script>
   </body>
 </html>

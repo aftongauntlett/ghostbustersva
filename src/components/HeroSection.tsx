@@ -135,15 +135,25 @@ export default function HeroSection() {
             <TypewriterHeading reducedMotion={reducedMotion} />
 
             <motion.p className="hero-tagline" variants={reducedMotion ? {} : fadeUp}>
-              Virginia&rsquo;s official Ghostbusters nonprofit&thinsp;&mdash;&thinsp;busting ghosts
-              for charity.
+              Virginia&rsquo;s official Ghostbusters nonprofit&thinsp;&mdash;&thinsp;real fans
+              making a real difference through charity, community events, and a whole lot of heart.
             </motion.p>
 
+            <motion.ul
+              className="hero-purpose"
+              variants={reducedMotion ? {} : fadeUp}
+              aria-label="Key facts"
+            >
+              <li>Registered 501c3 Nonprofit</li>
+              <li>Hospital Visits</li>
+              <li>Community Events</li>
+            </motion.ul>
+
             <motion.div className="hero-cta" variants={reducedMotion ? {} : fadeUp}>
-              <a href="/about" className="btn btn--ghost">
-                Learn More
+              <a href="/events" className="btn btn--lg btn--ghost">
+                See Our Events
               </a>
-              <a href="/join" className="btn btn--primary">
+              <a href="/join" className="btn btn--lg btn--primary">
                 Join the Team
               </a>
             </motion.div>

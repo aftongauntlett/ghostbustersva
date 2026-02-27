@@ -9,23 +9,43 @@
 .hero-container {
   max-width: var(--max-width, 72rem);
   margin-inline: auto;
-  padding-inline: clamp(1rem, 5vw, 3rem);
-  padding-top: 1rem;
+  padding-inline: clamp(var(--space-lg), 5vw, var(--space-3xl));
+  padding-top: var(--space-2xl);
 }
 
 /* ── Hero layout (contained + rounded) ── */
 .hero {
   position: relative;
-  min-height: 420px;
+  min-height: 440px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   overflow: hidden;
   border-radius: var(--radius-lg, 0.75rem);
+  /* Ambient breathing glow — makes the hero feel "alive" */
+  box-shadow:
+    0 0 12px var(--color-chip-bg),
+    0 0 30px var(--color-glow-atmospheric-faint);
+  animation: hero-breathe 4s ease-in-out infinite;
+}
+
+@keyframes hero-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 12px var(--color-chip-bg),
+      0 0 30px var(--color-glow-atmospheric-faint);
+  }
+  50% {
+    box-shadow:
+      0 0 20px var(--color-glow-atmospheric),
+      0 0 50px var(--color-chip-bg),
+      0 0 80px var(--color-glow-atmospheric-trace);
+  }
 }
 
 @media (min-width: 768px) {
   .hero {
-    min-height: 480px;
+    min-height: 520px;
   }
 }
 
@@ -46,25 +66,32 @@
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
-  /* Mobile: strong overlay so text is legible */
+  /*
+   * Cinematic gradient overlay — fades from dark to transparent so
+   * text is readable while the image bleeds through naturally.
+   * No hard edge, no box, no visible container.
+   */
   background: linear-gradient(
-    to top,
-    rgba(10, 14, 19, 0.95) 0%,
-    rgba(10, 14, 19, 0.78) 35%,
-    rgba(10, 14, 19, 0.5) 100%
+    to bottom,
+    rgba(10, 14, 19, 0.78) 0%,
+    rgba(10, 14, 19, 0.52) 35%,
+    rgba(10, 14, 19, 0.18) 65%,
+    transparent 100%
   );
 }
 
 @media (min-width: 768px) {
   .hero-bg-overlay {
-    /* Desktop: left shows image clearly, right much darker for text */
-    background: linear-gradient(
-      to right,
-      rgba(10, 14, 19, 0.05) 0%,
-      rgba(10, 14, 19, 0.25) 25%,
-      rgba(10, 14, 19, 0.75) 50%,
-      rgba(10, 14, 19, 0.93) 100%
-    );
+    /* Desktop: directional fade anchored toward the text side */
+    background:
+      linear-gradient(
+        135deg,
+        rgba(10, 14, 19, 0.06) 0%,
+        rgba(10, 14, 19, 0.15) 30%,
+        rgba(10, 14, 19, 0.55) 60%,
+        rgba(10, 14, 19, 0.82) 100%
+      ),
+      linear-gradient(to top, rgba(10, 14, 19, 0.3) 0%, transparent 40%);
   }
 }
 
@@ -74,23 +101,32 @@
   z-index: 1;
   width: 100%;
   padding: 2.5rem clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  align-items: flex-start;
 }
 
-/* ── Hero text (directly on overlay) ── */
+@media (min-width: 768px) {
+  .hero-content {
+    padding-top: 3.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+/* ── Hero text (directly on overlay — no card / box) ── */
 .hero-text {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1rem;
-  max-width: 520px;
+  gap: var(--space-md);
+  max-width: 440px;
   margin-inline: auto;
 }
 
 @media (min-width: 768px) {
   .hero-text {
-    align-items: flex-end;
-    text-align: right;
+    align-items: flex-start;
+    text-align: left;
     margin-inline: 0 0;
     margin-left: auto;
   }
@@ -101,13 +137,13 @@
   font-family: var(--font-heading);
   font-size: clamp(2rem, 5vw, var(--text-4xl));
   line-height: var(--leading-tight);
-  color: #fff;
+  color: var(--color-text);
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   position: relative;
   text-shadow:
-    0 2px 12px rgba(0, 0, 0, 0.7),
-    0 0 40px rgba(0, 0, 0, 0.4);
+    0 2px 16px rgba(0, 0, 0, 0.85),
+    0 0 48px rgba(0, 0, 0, 0.4);
 }
 
 .hero-title-char {
@@ -118,27 +154,62 @@
 .hero-tagline {
   font-size: var(--text-lg);
   line-height: var(--leading-normal);
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
   text-shadow:
-    0 1px 8px rgba(0, 0, 0, 0.8),
-    0 0 20px rgba(0, 0, 0, 0.5);
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Purpose row (compact chips — supportive, not dominant) ── */
+.hero-purpose {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: var(--space-xs);
+}
+
+.hero-purpose li {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(10, 14, 19, 0.65);
+  border: 1px solid var(--color-chip-border);
+  border-radius: var(--radius-full);
+  padding: 0.15rem 0.55rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
 }
 
 /* ── CTA buttons ── */
 .hero-cta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: var(--space-md);
   align-items: center;
-  margin-top: 0.25rem;
+  justify-content: center;
+  margin-top: 1.75rem;
+  padding-top: var(--space-sm);
+  width: 100%;
 }
 
-/* Button base (matching Button.astro) */
-.btn {
+@media (min-width: 768px) {
+  .hero-cta {
+    justify-content: flex-end;
+  }
+}
+
+/* Base button styles (duplicated from Button.astro which uses scoped styles) */
+.hero-cta .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   padding: 0.625rem 1.5rem;
   font-family: var(--font-body);
   font-size: var(--text-sm);
@@ -151,36 +222,43 @@
     background-color var(--transition-fast),
     border-color var(--transition-fast),
     box-shadow var(--transition-fast),
-    color var(--transition-fast);
+    color var(--transition-fast),
+    transform var(--transition-fast);
   border: 2px solid transparent;
   line-height: var(--leading-tight);
   white-space: nowrap;
 }
 
-.btn--primary {
-  background: var(--color-accent);
-  color: #fff;
-  border-color: var(--color-accent);
+.hero-cta .btn--lg {
+  padding: 0.75rem 1.75rem;
+  font-size: var(--text-base);
 }
 
-.btn--primary:hover {
-  background: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
+.hero-cta .btn--primary {
+  background: var(--color-action-primary);
+  color: #fff;
+  border-color: var(--color-action-primary);
+}
+
+.hero-cta .btn--primary:hover,
+.hero-cta .btn--primary:focus-visible {
+  background: var(--color-action-primary-hover);
+  border-color: var(--color-action-primary-hover);
   box-shadow: var(--shadow-glow);
-  color: #fff;
+  transform: scale(1.03);
 }
 
-/* Ghost button — transparent with subtle border */
+/* Ghost button — transparent with subtle border + backdrop for readability */
 .btn--ghost {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(10, 14, 19, 0.45);
+  color: rgba(255, 255, 255, 0.78);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .btn--ghost:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(10, 14, 19, 0.6);
 }
 
 /* ── Animated energy divider (hidden — kept for future use) ── */
@@ -203,16 +281,16 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(0, 230, 118, 0.3) 10%,
-    rgba(0, 230, 118, 0.7) 30%,
-    rgba(0, 230, 118, 0.9) 50%,
-    rgba(0, 230, 118, 0.7) 70%,
-    rgba(0, 230, 118, 0.3) 90%,
+    var(--color-glow-atmospheric) 10%,
+    var(--color-accent-atmospheric-muted) 30%,
+    var(--color-accent-atmospheric) 50%,
+    var(--color-accent-atmospheric-muted) 70%,
+    var(--color-glow-atmospheric) 90%,
     transparent 100%
   );
   box-shadow:
-    0 0 8px rgba(0, 230, 118, 0.4),
-    0 0 20px rgba(0, 230, 118, 0.15);
+    0 0 8px var(--color-hover-border),
+    0 0 20px var(--color-glow-atmospheric-dim);
   border-radius: 999px;
   transform-origin: center;
 }
@@ -224,16 +302,109 @@
   border-radius: 999px;
   background: radial-gradient(
     ellipse,
-    rgba(0, 230, 118, 0.8) 0%,
-    rgba(0, 230, 118, 0.3) 50%,
+    var(--color-accent-atmospheric) 0%,
+    var(--color-glow-atmospheric) 50%,
     transparent 80%
   );
   filter: blur(2px);
+}
+
+/* ── Mobile-first hero layout (≤ 640px) ──
+ * Simplifies hierarchy: identity → mission → primary CTA.
+ * Hides decorative chips, left-aligns text, stacks CTAs,
+ * strengthens overlay, and reduces glow for small screens.
+ */
+@media (max-width: 640px) {
+  /* Constrain hero height and anchor content to the bottom
+     so text sits in the darkest overlay zone, not over the image's busy centre */
+  .hero {
+    min-height: auto;
+    height: 68vh;
+    max-height: 75vh;
+    align-items: flex-end;
+    /* Disable breathing glow — it blooms on small screens */
+    animation: none;
+    box-shadow: 0 0 8px var(--color-chip-bg);
+  }
+
+  /* Shift image focal point for portrait crop */
+  .hero-bg-img {
+    object-position: center 30%;
+  }
+
+  /* Heavier gradient anchored to the bottom where text lives */
+  .hero-bg-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 14, 19, 0.2) 0%,
+      rgba(10, 14, 19, 0.45) 35%,
+      rgba(10, 14, 19, 0.82) 60%,
+      rgba(10, 14, 19, 0.95) 100%
+    );
+  }
+
+  .hero-content {
+    padding: 1.25rem 1.25rem 1.5rem;
+    align-items: flex-end;
+  }
+
+  .hero-text {
+    align-items: flex-start;
+    text-align: left;
+    margin-inline: 0;
+    max-width: 100%;
+    gap: 0.5rem;
+  }
+
+  /* Tighten heading & reduce text-shadow bloom */
+  .hero-title {
+    font-size: clamp(1.5rem, 6.5vw, 2.125rem);
+    flex-wrap: wrap;
+    text-shadow:
+      0 2px 10px rgba(0, 0, 0, 0.9),
+      0 0 20px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero-tagline {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    text-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.95),
+      0 0 14px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Hide decorative chips on mobile — they add noise, not value */
+  .hero-purpose {
+    display: none;
+  }
+
+  /* Stack CTAs vertically, full-width */
+  .hero-cta {
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    padding-top: 0;
+    width: 100%;
+  }
+
+  .hero-cta .btn {
+    width: 100%;
+    justify-content: center;
+    padding-block: 0.875rem;
+  }
+
+  /* Primary CTA first on mobile (markup has ghost first) */
+  .hero-cta .btn--primary {
+    order: -1;
+  }
 }
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .hero-divider-flare {
     display: none;
+  }
+  .hero {
+    animation: none;
   }
 }

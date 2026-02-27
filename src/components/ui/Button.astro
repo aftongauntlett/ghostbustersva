@@ -60,7 +60,7 @@ const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--space-sm);
     padding: 0.625rem 1.5rem;
     font-family: var(--font-body);
     font-size: var(--text-sm);
@@ -73,7 +73,8 @@ const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" 
       background-color var(--transition-fast),
       border-color var(--transition-fast),
       box-shadow var(--transition-fast),
-      color var(--transition-fast);
+      color var(--transition-fast),
+      transform var(--transition-fast);
     border: 2px solid transparent;
     line-height: var(--leading-tight);
     white-space: nowrap;
@@ -81,16 +82,21 @@ const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" 
 
   /* Primary — solid red fill */
   .btn--primary {
-    background: var(--color-accent);
+    background: var(--color-action-primary);
     color: #fff;
-    border-color: var(--color-accent);
+    border-color: var(--color-action-primary);
   }
 
   .btn--primary:hover,
   .btn--primary:focus-visible {
-    background: var(--color-accent-hover);
-    border-color: var(--color-accent-hover);
+    background: var(--color-action-primary-hover);
+    border-color: var(--color-action-primary-hover);
     box-shadow: var(--shadow-glow);
+    transform: scale(1.03);
+  }
+
+  .btn--primary:active {
+    transform: scale(0.97);
   }
 
   /* Secondary — outlined */
@@ -102,9 +108,14 @@ const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" 
 
   .btn--secondary:hover,
   .btn--secondary:focus-visible {
-    border-color: rgba(255, 255, 255, 0.5);
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--color-action-secondary-hover);
+    color: var(--color-text);
+    background: var(--color-action-secondary-hover);
+    transform: scale(1.03);
+  }
+
+  .btn--secondary:active {
+    transform: scale(0.97);
   }
 
   /* Focus */
@@ -121,15 +132,9 @@ const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" 
     pointer-events: none;
   }
 
-  /* Screen-reader only utility */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
+  /* Large variant — used on hero, full-bleed CTAs */
+  .btn--lg {
+    padding: 0.75rem 1.75rem;
+    font-size: var(--text-base);
   }
 </style>

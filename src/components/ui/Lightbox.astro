@@ -1,0 +1,172 @@
+---
+/**
+ * Lightbox — Shared full-screen media viewer dialog.
+ * PRD 011: Layout, Hierarchy & Visual Polish — Phase 4
+ *
+ * Supports images, optional video (YouTube embeds), and prev/next navigation.
+ * Includes keyboard handling (Escape, Arrow keys) and focus trap.
+ *
+ * Styles are global in theme.css. This component provides markup + behaviour.
+ *
+ * @example
+ * <Lightbox id="gallery-lightbox" hasNav />
+ * <Lightbox id="media-lightbox" hasVideo />
+ */
+interface Props {
+  /** Unique element ID (also used to derive child IDs) */
+  id?: string;
+  /** Show prev/next navigation arrows */
+  hasNav?: boolean;
+  /** Include video (YouTube iframe) support */
+  hasVideo?: boolean;
+  /** Accessible label for the dialog */
+  label?: string;
+}
+
+const { id = "lightbox", hasNav = false, hasVideo = false, label = "Media viewer" } = Astro.props;
+---
+
+<div class="lightbox" id={id} role="dialog" aria-modal="true" aria-label={label} hidden>
+  <button class="lightbox__close" type="button" aria-label="Close viewer">&times;</button>
+  {
+    hasNav && (
+      <>
+        <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous image">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next image">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 6 15 12 9 18" />
+          </svg>
+        </button>
+      </>
+    )
+  }
+  <div class="lightbox__content">
+    <img class="lightbox__image" id={`${id}-image`} src="" alt="" />
+    {
+      hasVideo && (
+        <div class="lightbox__video" id={`${id}-video`} hidden>
+          <iframe
+            id={`${id}-iframe`}
+            src=""
+            title=""
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          />
+        </div>
+      )
+    }
+    <p class="lightbox__caption" id={`${id}-caption`}></p>
+  </div>
+</div>
+
+<script>
+  /**
+   * Shared lightbox behaviour — auto-initialises all .lightbox elements.
+   * Handles: close button, backdrop click, Escape key, focus trap.
+   * Prev/next and open actions are page-specific (dispatched via custom events).
+   */
+  const FOCUSABLE =
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function initLightboxBehaviour() {
+    // Close on Escape (global, handles whichever lightbox is open)
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const open = document.querySelector<HTMLElement>(".lightbox:not([hidden])");
+      if (open) closeLightbox(open);
+    });
+
+    // Per-lightbox event binding
+    document.querySelectorAll<HTMLElement>(".lightbox").forEach((lb) => {
+      const closeBtn = lb.querySelector<HTMLButtonElement>(".lightbox__close");
+
+      // Close button
+      closeBtn?.addEventListener("click", () => closeLightbox(lb));
+
+      // Backdrop click
+      lb.addEventListener("click", (e) => {
+        const target = e.target as Element;
+        if (target === lb || target.classList.contains("lightbox__content")) {
+          closeLightbox(lb);
+        }
+      });
+
+      // Focus trap
+      lb.addEventListener("keydown", (e) => {
+        if (e.key !== "Tab") return;
+        const focusable = Array.from(lb.querySelectorAll<HTMLElement>(FOCUSABLE));
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+    });
+  }
+
+  function closeLightbox(lb: HTMLElement) {
+    lb.hidden = true;
+    document.body.style.overflow = "";
+    // Clean up image/video src
+    const img = lb.querySelector<HTMLImageElement>(".lightbox__image");
+    if (img) img.src = "";
+    const iframe = lb.querySelector<HTMLIFrameElement>("iframe");
+    if (iframe) iframe.src = "";
+    const video = lb.querySelector<HTMLElement>(".lightbox__video");
+    if (video) video.hidden = true;
+    if (img) img.hidden = false;
+    // Restore previous focus (stored as data attribute)
+    const prevId = lb.dataset.previousFocus;
+    if (prevId) {
+      const prev = document.getElementById(prevId);
+      prev?.focus();
+      delete lb.dataset.previousFocus;
+    } else {
+      // Fallback: blur to body
+      (document.activeElement as HTMLElement)?.blur();
+    }
+    // Dispatch close event for page-specific cleanup
+    lb.dispatchEvent(new CustomEvent("lightbox:close"));
+  }
+
+  // Run on DOMContentLoaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initLightboxBehaviour);
+  } else {
+    initLightboxBehaviour();
+  }
+</script>

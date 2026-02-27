@@ -42,10 +42,11 @@ function formatEventDate(start: Date, end?: Date): string {
 <BaseLayout title="Events">
   <section class="container page" aria-labelledby="events-title">
     <h1 id="events-title" class="page-title">Events</h1>
+    <p class="page-intro">Meet the team, support local charities, and see the Ecto in person.</p>
 
     {
       upcoming.length > 0 && (
-        <div class="event-section">
+        <div class="event-section fade-in-section">
           <h2 class="section-heading">Upcoming Events</h2>
           <ul class="event-list" role="list">
             {upcoming.map((event) => (
@@ -203,7 +204,7 @@ function formatEventDate(start: Date, end?: Date): string {
 
     {
       past.length > 0 && (
-        <div class="event-section">
+        <div class="event-section fade-in-section">
           <h2 class="section-heading">Past Events</h2>
           <ul class="event-list event-list--past" id="past-events-list" role="list">
             {past.map((event, index) => (
@@ -338,38 +339,9 @@ function formatEventDate(start: Date, end?: Date): string {
 </script>
 
 <style>
-  /* ── Page layout ── */
-  .page {
-    padding-block: var(--text-3xl);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .page-title {
-    font-family: var(--font-heading);
-    font-size: var(--text-4xl);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wider);
-    color: var(--color-accent-hover);
-    text-align: center;
-    line-height: var(--leading-tight);
-  }
-
-  /* ── Section headings with accent underline ── */
+  /* ── Event section layout ── */
   .event-section {
     width: 100%;
-  }
-
-  .section-heading {
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wider);
-    color: var(--color-text);
-    border-bottom: 1px solid var(--color-accent);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.25rem;
   }
 
   /* ── Event list ── */
@@ -378,7 +350,7 @@ function formatEventDate(start: Date, end?: Date): string {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: var(--space-xl);
   }
 
   /* ── Past events hidden items ── */
@@ -386,196 +358,10 @@ function formatEventDate(start: Date, end?: Date): string {
     display: none;
   }
 
-  /* ── Event item (card container) ── */
-  .event-item {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    position: relative;
-    transition:
-      border-color var(--transition-base),
-      box-shadow var(--transition-base);
-  }
-
-  .event-item:hover {
-    border-color: var(--color-border-accent);
-    box-shadow: var(--shadow-glow), var(--shadow-panel);
-  }
-
-  /* ── Event link (clickable card) ── */
-  .event-link {
-    display: flex;
-    gap: 1.5rem;
-    padding: 1.25rem;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  /* ── Event image ── */
-  .event-link__image-wrapper {
-    flex-shrink: 0;
-    width: 200px;
-    overflow: hidden;
-    border-radius: var(--radius-sm);
-  }
-
-  .event-link__image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: var(--color-surface);
-    display: block;
-  }
-
-  /* ── Event body ── */
-  .event-link__body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex: 1;
-  }
-
-  .event-link__header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .event-link__title {
-    font-size: var(--text-lg);
-    font-weight: var(--weight-semibold);
-    color: var(--color-link);
-    line-height: var(--leading-tight);
-  }
-
-  a.event-link:hover .event-link__title {
-    color: var(--color-accent-hover);
-  }
-
-  .event-link__meta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .event-link__date {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-accent-hover);
-    letter-spacing: var(--tracking-wide);
-  }
-
-  .event-link__location {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    letter-spacing: var(--tracking-wide);
-  }
-
-  .event-link__summary {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    line-height: var(--leading-normal);
-  }
-
-  .event-link__address {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.4rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
-    font-style: normal;
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    line-height: 1.4;
-  }
-
-  .event-link__address svg {
-    flex-shrink: 0;
-    margin-top: 0.1rem;
-  }
-
-  /* ── External link icon ── */
-  .event-link__external {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    color: var(--color-text-muted);
-    opacity: 0;
-    transition: opacity var(--transition-fast);
-    flex-shrink: 0;
-  }
-
-  .event-item:hover .event-link__external {
-    opacity: 1;
-  }
-
   /* ── Past toggle buttons ── */
   .past-toggle {
     display: flex;
     justify-content: center;
-    margin-top: 1.5rem;
-  }
-
-  .toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.5rem;
-    font-family: var(--font-heading);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-wider);
-    text-transform: uppercase;
-    color: var(--color-text);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition:
-      border-color var(--transition-base),
-      box-shadow var(--transition-base),
-      background var(--transition-base);
-  }
-
-  .toggle-btn:hover,
-  .toggle-btn:focus-visible {
-    border-color: var(--color-border-accent);
-    box-shadow: var(--shadow-glow);
-    background: var(--color-surface-hover, var(--color-surface));
-  }
-
-  .toggle-btn[hidden] {
-    display: none;
-  }
-
-  /* ── Empty state ── */
-  .empty-state {
-    text-align: center;
-    color: var(--color-text-muted);
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    padding-block: 3rem;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 640px) {
-    .page-title {
-      font-size: var(--text-2xl);
-    }
-
-    .event-link {
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .event-link__image-wrapper {
-      width: 100%;
-      max-height: 200px;
-    }
+    margin-top: var(--space-xl);
   }
 </style>
