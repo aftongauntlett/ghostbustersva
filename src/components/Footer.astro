@@ -8,6 +8,10 @@ const [leftLogo, rightLogo] = siteConfig.footerLogos;
 ---
 
 <footer class="site-footer">
+  {/* Matching proton-stream divider from the header */}
+  <div class="container">
+    <div class="footer-divider" aria-hidden="true"></div>
+  </div>
   <div class="container footer-inner">
     <div class="footer-grid">
       {
@@ -65,10 +69,30 @@ const [leftLogo, rightLogo] = siteConfig.footerLogos;
 
 <style>
   .site-footer {
-    background: var(--color-surface);
-    border-top: 2px solid var(--color-accent);
+    background: transparent;
+    border-top: none;
     margin-top: auto;
     padding-block: 2rem;
+  }
+
+  /* Proton-stream divider — matches header */
+  .footer-divider {
+    height: 2px;
+    margin-bottom: 2rem;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(198, 40, 40, 0.3) 20%,
+      var(--color-accent) 40%,
+      var(--color-accent-hover) 50%,
+      var(--color-accent) 60%,
+      rgba(198, 40, 40, 0.3) 80%,
+      transparent 100%
+    );
+    box-shadow:
+      0 0 6px rgba(198, 40, 40, 0.4),
+      0 0 15px rgba(198, 40, 40, 0.15);
+    border-radius: 1px;
   }
 
   .footer-inner {
