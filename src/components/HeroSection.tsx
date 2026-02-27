@@ -10,54 +10,44 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import "./HeroSection.css";
 
+interface HeroImage {
+  src: string;
+  srcset?: string;
+  sizes: string;
+  width: number;
+  height: number;
+}
+
+interface Props {
+  heroImage: HeroImage;
+}
+
 /* ─── Constants ─── */
 const HEADING_TEXT = "Who Ya Gonna Call?";
 
 /* ─── Motion variants ─── */
 const containerVariants: Variants = {
-  hidden: {},
+  initial: {},
   visible: {
-    transition: { staggerChildren: 0.18, delayChildren: 1.4 },
+    transition: { staggerChildren: 0.12, delayChildren: 0.08 },
   },
 };
 
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  initial: { opacity: 1, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 100, damping: 20 },
+    transition: { duration: 0.45, ease: "easeOut" },
   },
 };
 
 /* ─── Typewriter heading ─── */
-function TypewriterHeading({ reducedMotion }: { reducedMotion: boolean }) {
-  const [displayedCount, setDisplayedCount] = useState(reducedMotion ? HEADING_TEXT.length : 0);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setDisplayedCount(HEADING_TEXT.length);
-      return;
-    }
-    let i = 0;
-    const interval = setInterval(() => {
-      i++;
-      setDisplayedCount(i);
-      if (i >= HEADING_TEXT.length) {
-        clearInterval(interval);
-      }
-    }, 60);
-    return () => clearInterval(interval);
-  }, [reducedMotion]);
-
+function TypewriterHeading() {
   return (
     <h1 id="home-hero-title" className="hero-title">
       {HEADING_TEXT.split("").map((char, i) => (
-        <span
-          key={i}
-          className="hero-title-char"
-          style={{ visibility: i < displayedCount ? "visible" : "hidden" }}
-        >
+        <span key={i} className="hero-title-char">
           {char === " " ? "\u00A0" : char}
         </span>
       ))}
@@ -65,41 +55,12 @@ function TypewriterHeading({ reducedMotion }: { reducedMotion: boolean }) {
   );
 }
 
-/* ─── Animated energy divider (kept for future use) ─── */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function EnergyDivider({ reducedMotion }: { reducedMotion: boolean }) {
-  return (
-    <div className="hero-divider-wrap" aria-hidden="true">
-      <motion.div
-        className="hero-divider-beam"
-        initial={reducedMotion ? { opacity: 1 } : { opacity: 0, scaleX: 0 }}
-        animate={{ opacity: 1, scaleX: 1 }}
-        transition={{ duration: 1.2, delay: 2, ease: "easeOut" }}
-      />
-      <motion.div
-        className="hero-divider-flare"
-        initial={reducedMotion ? {} : { x: "-10%", opacity: 0 }}
-        animate={reducedMotion ? {} : { x: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
-        transition={
-          reducedMotion
-            ? {}
-            : {
-                duration: 3,
-                delay: 3,
-                repeat: Infinity,
-                repeatDelay: 4,
-                ease: "easeInOut",
-              }
-        }
-      />
-    </div>
-  );
-}
-
 /* ─── Main hero section ─── */
-export default function HeroSection() {
+export default function HeroSection({ heroImage }: Props) {
   const prefersReduced = useReducedMotion();
   const [toggleOff, setToggleOff] = useState(false);
+  const [enhanceMotion, setEnhanceMotion] = useState(false);
+  const [imgZoomed, setImgZoomed] = useState(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -113,14 +74,34 @@ export default function HeroSection() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    setEnhanceMotion(true);
+  }, []);
+
+  /** One-shot: first hover zooms the image in and locks it there */
+  const handleHeroHover = () => {
+    if (!imgZoomed && !reducedMotion) setImgZoomed(true);
+  };
+
   const reducedMotion = Boolean(prefersReduced) || toggleOff;
+  const shouldAnimate = enhanceMotion && !reducedMotion;
 
   return (
     <div className="hero-container">
-      <section className="hero" aria-labelledby="home-hero-title">
+      <section className="hero" aria-labelledby="home-hero-title" onMouseEnter={handleHeroHover}>
         {/* Full-bleed background image */}
         <div className="hero-bg">
-          <img src="/images/gbv-gallery-09.jpg" alt="" className="hero-bg-img" />
+          <img
+            src={heroImage.src}
+            srcSet={heroImage.srcset}
+            sizes={heroImage.sizes}
+            alt=""
+            width={heroImage.width}
+            height={heroImage.height}
+            className={`hero-bg-img${imgZoomed ? " hero-img-zoomed" : ""}`}
+            fetchPriority="high"
+            decoding="async"
+          />
           <div className="hero-bg-overlay" />
         </div>
 
@@ -128,20 +109,25 @@ export default function HeroSection() {
         <div className="hero-content">
           <motion.div
             className="hero-text"
-            initial={reducedMotion ? "visible" : "hidden"}
-            animate="visible"
-            variants={reducedMotion ? {} : containerVariants}
+            initial={shouldAnimate ? "initial" : "visible"}
+            animate={shouldAnimate ? "visible" : undefined}
+            variants={shouldAnimate ? containerVariants : undefined}
           >
-            <TypewriterHeading reducedMotion={reducedMotion} />
+            <TypewriterHeading />
 
-            <motion.p className="hero-tagline" variants={reducedMotion ? {} : fadeUp}>
+            <motion.p
+              className="hero-tagline"
+              initial={shouldAnimate ? "initial" : "visible"}
+              variants={shouldAnimate ? fadeUp : undefined}
+            >
               Virginia&rsquo;s official Ghostbusters nonprofit&thinsp;&mdash;&thinsp;real fans
               making a real difference through charity, community events, and a whole lot of heart.
             </motion.p>
 
             <motion.ul
               className="hero-purpose"
-              variants={reducedMotion ? {} : fadeUp}
+              initial={shouldAnimate ? "initial" : "visible"}
+              variants={shouldAnimate ? fadeUp : undefined}
               aria-label="Key facts"
             >
               <li>Registered 501c3 Nonprofit</li>
@@ -149,7 +135,11 @@ export default function HeroSection() {
               <li>Community Events</li>
             </motion.ul>
 
-            <motion.div className="hero-cta" variants={reducedMotion ? {} : fadeUp}>
+            <motion.div
+              className="hero-cta"
+              initial={shouldAnimate ? "initial" : "visible"}
+              variants={shouldAnimate ? fadeUp : undefined}
+            >
               <a href="/events" className="btn btn--lg btn--ghost">
                 See Our Events
               </a>

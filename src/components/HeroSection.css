@@ -11,6 +11,17 @@
   margin-inline: auto;
   padding-inline: clamp(var(--space-lg), 5vw, var(--space-3xl));
   padding-top: var(--space-2xl);
+  /* Hidden until image is loaded — revealed by inline <script> */
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+}
+
+.hero-container.hero-ready {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ── Hero layout (contained + rounded) ── */
@@ -61,6 +72,15 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  /* One-shot hover zoom — starts slightly scaled to hide edges */
+  transform: scale(1.02);
+  transition: transform 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+/* First hover: zoom in. Class is added by JS and never removed. */
+.hero-bg-img.hero-img-zoomed {
+  transform: scale(1.06);
 }
 
 .hero-bg-overlay {
@@ -330,6 +350,12 @@
   /* Shift image focal point for portrait crop */
   .hero-bg-img {
     object-position: center 30%;
+    transition: none;
+    transform: scale(1);
+  }
+
+  .hero-bg-img.hero-img-zoomed {
+    transform: scale(1);
   }
 
   /* Heavier gradient anchored to the bottom where text lives */
@@ -406,5 +432,12 @@
   }
   .hero {
     animation: none;
+  }
+  .hero-bg-img {
+    transition: none;
+    transform: scale(1.02);
+  }
+  .hero-bg-img.hero-img-zoomed {
+    transform: scale(1.02);
   }
 }
