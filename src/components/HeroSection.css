@@ -1,0 +1,239 @@
+/**
+ * HeroSection styles — full-bleed hero, text on image (no card).
+ * PRD 009: Motion & Effects (Tier 2 — Hero showcase)
+ *
+ * Uses CSS custom properties from theme.css.
+ */
+
+/* ── Hero container (matches site max-width) ── */
+.hero-container {
+  max-width: var(--max-width, 72rem);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 5vw, 3rem);
+  padding-top: 1rem;
+}
+
+/* ── Hero layout (contained + rounded) ── */
+.hero {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 0.75rem);
+}
+
+@media (min-width: 768px) {
+  .hero {
+    min-height: 480px;
+  }
+}
+
+/* ── Background image ── */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  /* Mobile: strong overlay so text is legible */
+  background: linear-gradient(
+    to top,
+    rgba(10, 14, 19, 0.95) 0%,
+    rgba(10, 14, 19, 0.78) 35%,
+    rgba(10, 14, 19, 0.5) 100%
+  );
+}
+
+@media (min-width: 768px) {
+  .hero-bg-overlay {
+    /* Desktop: left shows image clearly, right much darker for text */
+    background: linear-gradient(
+      to right,
+      rgba(10, 14, 19, 0.05) 0%,
+      rgba(10, 14, 19, 0.25) 25%,
+      rgba(10, 14, 19, 0.75) 50%,
+      rgba(10, 14, 19, 0.93) 100%
+    );
+  }
+}
+
+/* ── Content positioning ── */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 2.5rem clamp(1.5rem, 4vw, 3rem);
+}
+
+/* ── Hero text (directly on overlay) ── */
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .hero-text {
+    align-items: flex-end;
+    text-align: right;
+    margin-inline: 0 0;
+    margin-left: auto;
+  }
+}
+
+/* ── Typewriter heading ── */
+.hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, var(--text-4xl));
+  line-height: var(--leading-tight);
+  color: #fff;
+  display: inline-flex;
+  flex-wrap: wrap;
+  position: relative;
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+.hero-title-char {
+  display: inline-block;
+}
+
+/* ── Tagline ── */
+.hero-tagline {
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow:
+    0 1px 8px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ── CTA buttons ── */
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+/* Button base (matching Button.astro) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast);
+  border: 2px solid transparent;
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+
+.btn--primary:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  box-shadow: var(--shadow-glow);
+  color: #fff;
+}
+
+/* Ghost button — transparent with subtle border */
+.btn--ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn--ghost:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Animated energy divider (hidden — kept for future use) ── */
+.hero-divider-wrap {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  display: none; /* hidden for now */
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  margin-top: 0.5rem;
+}
+
+.hero-divider-beam {
+  position: absolute;
+  width: 80%;
+  max-width: var(--max-width, 72rem);
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 230, 118, 0.3) 10%,
+    rgba(0, 230, 118, 0.7) 30%,
+    rgba(0, 230, 118, 0.9) 50%,
+    rgba(0, 230, 118, 0.7) 70%,
+    rgba(0, 230, 118, 0.3) 90%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 8px rgba(0, 230, 118, 0.4),
+    0 0 20px rgba(0, 230, 118, 0.15);
+  border-radius: 999px;
+  transform-origin: center;
+}
+
+.hero-divider-flare {
+  position: absolute;
+  width: 60px;
+  height: 6px;
+  border-radius: 999px;
+  background: radial-gradient(
+    ellipse,
+    rgba(0, 230, 118, 0.8) 0%,
+    rgba(0, 230, 118, 0.3) 50%,
+    transparent 80%
+  );
+  filter: blur(2px);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-divider-flare {
+    display: none;
+  }
+}

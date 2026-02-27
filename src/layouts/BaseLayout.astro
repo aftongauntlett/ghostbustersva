@@ -5,6 +5,7 @@
  */
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import GhostParticles from "../components/GhostParticles";
 import { siteConfig } from "../config";
 import "../styles/theme.css";
 
@@ -39,6 +40,9 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <Header />
+
+    <!-- Site-wide floating ghost particles (React island — PRD 009) -->
+    <GhostParticles client:load />
 
     <main id="main-content">
       <slot />
@@ -140,6 +144,118 @@ const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
         max-width: var(--max-width);
         margin-inline: auto;
         padding-inline: clamp(1rem, 5vw, 3rem);
+      }
+
+      /* ── Site-wide ambient bokeh orbs ── */
+      .ghost-particles-global {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      /* Base particle style (shared) */
+      .ghost-particle-global {
+        position: absolute;
+        border-radius: 50%;
+        will-change: transform, opacity;
+      }
+
+      /* Hero — large atmospheric blobs */
+      .ghost-particle-global.gp-hero {
+        background: radial-gradient(
+          circle,
+          rgba(0, 230, 118, 0.35) 0%,
+          rgba(0, 200, 100, 0.12) 40%,
+          rgba(0, 230, 118, 0) 70%
+        );
+      }
+
+      /* Medium — classic bokeh */
+      .ghost-particle-global.gp-medium {
+        background: radial-gradient(
+          circle,
+          rgba(0, 230, 118, 0.6) 0%,
+          rgba(0, 230, 118, 0.2) 40%,
+          rgba(0, 230, 118, 0) 70%
+        );
+      }
+
+      /* Tiny — bright sparkle dots */
+      .ghost-particle-global.gp-tiny {
+        background: radial-gradient(
+          circle,
+          rgba(0, 255, 130, 0.9) 0%,
+          rgba(0, 230, 118, 0.4) 50%,
+          rgba(0, 230, 118, 0) 100%
+        );
+      }
+
+      /* ── Corner fog / smoke ── */
+      .corner-fog {
+        position: fixed;
+        bottom: -40px;
+        width: 420px;
+        height: 260px;
+        pointer-events: none;
+        opacity: 0.45;
+        filter: blur(40px);
+        border-radius: 50%;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(0, 230, 118, 0.28) 0%,
+          rgba(0, 200, 100, 0.1) 50%,
+          transparent 80%
+        );
+        animation: fog-drift 14s ease-in-out infinite alternate;
+      }
+
+      .corner-fog--left {
+        left: -100px;
+      }
+
+      .corner-fog--right {
+        right: -100px;
+        animation-delay: -7s;
+        animation-direction: alternate-reverse;
+      }
+
+      @keyframes fog-drift {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.35;
+        }
+        50% {
+          transform: translateY(-18px) scale(1.12);
+          opacity: 0.5;
+        }
+        100% {
+          transform: translateY(6px) scale(0.95);
+          opacity: 0.3;
+        }
+      }
+
+      /* Ensure page content sits above particles */
+      .skip-link,
+      header,
+      footer {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* main must NOT create a stacking context so that
+         position:fixed lightboxes inside pages can layer
+         above the sticky header (z-index: 100). */
+      main {
+        position: relative;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ghost-particles-global,
+        .corner-fog {
+          display: none !important;
+        }
       }
     </style>
   </body>
