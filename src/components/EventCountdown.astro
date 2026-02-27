@@ -1,0 +1,169 @@
+---
+/**
+ * EventCountdown — live countdown timer for multi-day events.
+ * Counts down to event start, shows "Event In Progress" during,
+ * and hides the parent card once the event ends.
+ */
+interface Props {
+  startDate: Date;
+  endDate: Date;
+}
+
+const { startDate, endDate } = Astro.props;
+// "End" means the end of the last day → midnight of the next day
+const endTimestamp = new Date(endDate.getTime() + 86400000).toISOString();
+---
+
+<div
+  class="event-countdown"
+  data-countdown-start={startDate.toISOString()}
+  data-countdown-end={endTimestamp}
+>
+  <div class="countdown-timer">
+    <div class="countdown-segment">
+      <span class="countdown-value" data-unit="days">--</span>
+      <span class="countdown-label">Days</span>
+    </div>
+    <span class="countdown-separator">:</span>
+    <div class="countdown-segment">
+      <span class="countdown-value" data-unit="hours">--</span>
+      <span class="countdown-label">Hours</span>
+    </div>
+    <span class="countdown-separator">:</span>
+    <div class="countdown-segment">
+      <span class="countdown-value" data-unit="mins">--</span>
+      <span class="countdown-label">Mins</span>
+    </div>
+    <span class="countdown-separator">:</span>
+    <div class="countdown-segment">
+      <span class="countdown-value" data-unit="secs">--</span>
+      <span class="countdown-label">Secs</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initEventCountdowns() {
+    // Hide cards whose events have already ended
+    document.querySelectorAll<HTMLElement>("[data-event-end]").forEach((card) => {
+      const endStr = card.getAttribute("data-event-end");
+      if (!endStr) return;
+      if (new Date() >= new Date(endStr)) {
+        card.style.display = "none";
+      }
+    });
+
+    // Start live countdown timers
+    document.querySelectorAll<HTMLElement>(".event-countdown").forEach((el) => {
+      const startStr = el.getAttribute("data-countdown-start");
+      const endStr = el.getAttribute("data-countdown-end");
+      if (!startStr || !endStr) return;
+
+      const start = new Date(startStr);
+      const end = new Date(endStr);
+
+      function tick() {
+        const now = new Date();
+
+        // Event has ended — hide the whole card
+        if (now >= end) {
+          const card = el.closest<HTMLElement>("[data-event-end]");
+          if (card) card.style.display = "none";
+          return;
+        }
+
+        // Event is in progress
+        if (now >= start) {
+          const timer = el.querySelector(".countdown-timer");
+          if (timer && !timer.classList.contains("is-live")) {
+            timer.innerHTML =
+              '<span class="countdown-status">\u{1F534} Event In Progress!</span>';
+            timer.classList.add("is-live");
+          }
+          setTimeout(tick, 60_000);
+          return;
+        }
+
+        // Countdown to start
+        const diff = start.getTime() - now.getTime();
+        const days = Math.floor(diff / 86_400_000);
+        const hours = Math.floor((diff % 86_400_000) / 3_600_000);
+        const mins = Math.floor((diff % 3_600_000) / 60_000);
+        const secs = Math.floor((diff % 60_000) / 1_000);
+
+        const d = el.querySelector('[data-unit="days"]');
+        const h = el.querySelector('[data-unit="hours"]');
+        const m = el.querySelector('[data-unit="mins"]');
+        const s = el.querySelector('[data-unit="secs"]');
+
+        if (d) d.textContent = String(days).padStart(2, "0");
+        if (h) h.textContent = String(hours).padStart(2, "0");
+        if (m) m.textContent = String(mins).padStart(2, "0");
+        if (s) s.textContent = String(secs).padStart(2, "0");
+
+        setTimeout(tick, 1_000);
+      }
+
+      tick();
+    });
+  }
+
+  // Astro scripts are deferred modules — DOM is ready
+  initEventCountdowns();
+</script>
+
+<style>
+  .event-countdown {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(198, 40, 40, 0.25);
+    border-radius: var(--radius-sm, 0.375rem);
+    text-align: center;
+  }
+
+  .countdown-timer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .countdown-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 2.5rem;
+  }
+
+  .countdown-value {
+    font-family: var(--font-heading, sans-serif);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text, #fff);
+    line-height: 1;
+  }
+
+  .countdown-separator {
+    font-family: var(--font-heading, sans-serif);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted, #aaa);
+    line-height: 1;
+  }
+
+  .countdown-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--color-text-muted, #aaa);
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+  }
+
+  .countdown-status {
+    font-family: var(--font-heading, sans-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent, #c62828);
+  }
+</style>

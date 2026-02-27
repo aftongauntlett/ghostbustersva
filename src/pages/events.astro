@@ -5,6 +5,7 @@
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import StatusPill from "../components/ui/StatusPill.astro";
+import EventCountdown from "../components/EventCountdown.astro";
 import { getCollection } from "astro:content";
 
 const allEvents = await getCollection("events");
@@ -17,6 +18,25 @@ const upcoming = allEvents
 const past = allEvents
   .filter((e) => e.data.past)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+/** Format a single date or date range (UTC-safe to avoid off-by-one). */
+function formatEventDate(start: Date, end?: Date): string {
+  const opts: Intl.DateTimeFormatOptions = { timeZone: "UTC" };
+  if (!end) {
+    return start.toLocaleDateString("en-US", {
+      ...opts,
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+  const sMonth = start.toLocaleDateString("en-US", { ...opts, month: "long" });
+  const eMonth = end.toLocaleDateString("en-US", { ...opts, month: "long" });
+  if (sMonth === eMonth) {
+    return `${sMonth} ${start.getUTCDate()}–${end.getUTCDate()}, ${start.getUTCFullYear()}`;
+  }
+  return `${start.toLocaleDateString("en-US", { ...opts, month: "long", day: "numeric" })} – ${end.toLocaleDateString("en-US", { ...opts, year: "numeric", month: "long", day: "numeric" })}`;
+}
 ---
 
 <BaseLayout title="Events">
@@ -29,9 +49,21 @@ const past = allEvents
           <h2 class="section-heading">Upcoming Events</h2>
           <ul class="event-list" role="list">
             {upcoming.map((event) => (
-              <li class="event-item">
+              <li
+                class="event-item"
+                data-event-end={
+                  event.data.endDate
+                    ? new Date(event.data.endDate.getTime() + 86400000).toISOString()
+                    : undefined
+                }
+              >
                 {event.data.url ? (
-                  <a href={event.data.url} target="_blank" rel="noopener noreferrer" class="event-link">
+                  <a
+                    href={event.data.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="event-link"
+                  >
                     {event.data.image && (
                       <div class="event-link__image-wrapper">
                         <img
@@ -52,17 +84,38 @@ const past = allEvents
                           class="event-link__date"
                           datetime={event.data.date.toISOString().split("T")[0]}
                         >
-                          {event.data.date.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {formatEventDate(event.data.date, event.data.endDate)}
                         </time>
                         {event.data.location && (
                           <span class="event-link__location">{event.data.location}</span>
                         )}
                       </span>
                       <p class="event-link__summary">{event.data.summary}</p>
+                      {event.data.endDate && (
+                        <EventCountdown startDate={event.data.date} endDate={event.data.endDate} />
+                      )}
+                      {event.data.address && (
+                        <address class="event-link__address">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                          </svg>
+                          <span>
+                            {event.data.location} &middot; {event.data.address}
+                          </span>
+                        </address>
+                      )}
                     </div>
                     <svg
                       class="event-link__external"
@@ -106,17 +159,38 @@ const past = allEvents
                           class="event-link__date"
                           datetime={event.data.date.toISOString().split("T")[0]}
                         >
-                          {event.data.date.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {formatEventDate(event.data.date, event.data.endDate)}
                         </time>
                         {event.data.location && (
                           <span class="event-link__location">{event.data.location}</span>
                         )}
                       </span>
                       <p class="event-link__summary">{event.data.summary}</p>
+                      {event.data.endDate && (
+                        <EventCountdown startDate={event.data.date} endDate={event.data.endDate} />
+                      )}
+                      {event.data.address && (
+                        <address class="event-link__address">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                          </svg>
+                          <span>
+                            {event.data.location} &middot; {event.data.address}
+                          </span>
+                        </address>
+                      )}
                     </div>
                   </div>
                 )}
@@ -135,7 +209,12 @@ const past = allEvents
             {past.map((event, index) => (
               <li class:list={["event-item", { "past-hidden": index >= 4 }]}>
                 {event.data.url ? (
-                  <a href={event.data.url} target="_blank" rel="noopener noreferrer" class="event-link">
+                  <a
+                    href={event.data.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="event-link"
+                  >
                     {event.data.image && (
                       <div class="event-link__image-wrapper">
                         <img
@@ -156,11 +235,7 @@ const past = allEvents
                           class="event-link__date"
                           datetime={event.data.date.toISOString().split("T")[0]}
                         >
-                          {event.data.date.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {formatEventDate(event.data.date, event.data.endDate)}
                         </time>
                         {event.data.location && (
                           <span class="event-link__location">{event.data.location}</span>
@@ -210,11 +285,7 @@ const past = allEvents
                           class="event-link__date"
                           datetime={event.data.date.toISOString().split("T")[0]}
                         >
-                          {event.data.date.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {formatEventDate(event.data.date, event.data.endDate)}
                         </time>
                         {event.data.location && (
                           <span class="event-link__location">{event.data.location}</span>
@@ -260,7 +331,9 @@ const past = allEvents
     hiddenItems.forEach((item) => item.classList.add("past-hidden"));
     showLessBtn.hidden = true;
     showMoreBtn!.hidden = false;
-    document.getElementById("past-events-list")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document
+      .getElementById("past-events-list")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 </script>
 
@@ -285,8 +358,6 @@ const past = allEvents
 
   /* ── Section headings with accent underline ── */
   .event-section {
-    max-width: 64rem;
-    margin-inline: auto;
     width: 100%;
   }
 
@@ -352,7 +423,8 @@ const past = allEvents
   .event-link__image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: var(--color-surface);
     display: block;
   }
 
@@ -407,6 +479,24 @@ const past = allEvents
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     line-height: var(--leading-normal);
+  }
+
+  .event-link__address {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    font-style: normal;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .event-link__address svg {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
   }
 
   /* ── External link icon ── */
