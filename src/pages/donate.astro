@@ -6,62 +6,31 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Panel from "../components/ui/Panel.astro";
 import Button from "../components/ui/Button.astro";
+import { swagItems } from "../lib/swag";
+import { getResponsiveImageAttrs } from "../lib/images";
 
-const swagItems = [
-  {
-    image: "/images/swag-thumbnails/gbva-logo.png",
-    alt: "GBVA Logo t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12021815-gbva-logo?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/gbva-ii.png",
-    alt: "GBVA II t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12021859-gbva-ii?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/plasmacon.png",
-    alt: "PlasmaCon 2021 Design t-shirt",
-    url: "https://www.teepublic.com/t-shirt/24500969-plasmacon-2021-design?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/real-ghostbusters-va.png",
-    alt: "The Real Ghostbusters Virginia t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12701074-the-real-ghostbusters-virginia?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/gbva-1a.png",
-    alt: "GBVA 1A t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12021889-gbva-1a?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/hazard.png",
-    alt: "Hazard t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12018937-hazard?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/ii-hazard.png",
-    alt: "GBVA II Hazard t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12021914-gbva-ii-hazard?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/junior-pufts-seal.png",
-    alt: "GBVA Junior Pufts Seal t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12473477-gbva-junior-pufts-seal?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/gbva-junior-pufts.png",
-    alt: "GBVA Junior Pufts t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12473218-gbva-junior-pufts?store_id=411517",
-  },
-  {
-    image: "/images/swag-thumbnails/virginia-is-for-busters.png",
-    alt: "Virginia Is For Busters t-shirt",
-    url: "https://www.teepublic.com/t-shirt/12172631-virginia-is-for-busters?store_id=411517",
-  },
-];
+const swagImageAttrs = await Promise.all(
+  swagItems.map((item) =>
+    getResponsiveImageAttrs({
+      src: item.image,
+      widths: [320, 480, 640],
+      sizes: "(max-width: 768px) 50vw, 20vw",
+      width: 640,
+      height: 640,
+      quality: 72,
+    }),
+  ),
+);
 ---
 
-<BaseLayout title="Donate">
+<BaseLayout
+  title="Donate"
+  description="Support Ghostbusters Virginia with donations, Proton Pets participation, and official merch purchases."
+  canonical="/donate"
+  ogTitle="Donate | Ghostbusters Virginia"
+  ogDescription="Help fund charity events, community outreach, and hospital visits through Ghostbusters Virginia."
+  ogImage="/images/gbv-community-photo.jpg"
+>
   <section class="container page" aria-labelledby="donate-title">
     <h1 id="donate-title" class="page-title">Support Ghostbusters Virginia</h1>
 
@@ -97,9 +66,19 @@ const swagItems = [
       </p>
       <div class="swag-grid">
         {
-          swagItems.map((item) => (
+          swagItems.map((item, index) => (
             <a href={item.url} target="_blank" rel="noopener noreferrer" class="swag-item">
-              <img src={item.image} alt={item.alt} loading="lazy" class="swag-thumb" />
+              <img
+                src={swagImageAttrs[index].src}
+                srcset={swagImageAttrs[index].srcset}
+                sizes={swagImageAttrs[index].sizes}
+                alt={item.alt}
+                loading="lazy"
+                decoding="async"
+                width={swagImageAttrs[index].width}
+                height={swagImageAttrs[index].height}
+                class="swag-thumb"
+              />
               <span class="sr-only"> (opens in new tab)</span>
             </a>
           ))

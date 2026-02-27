@@ -6,6 +6,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
 import { getCollection } from "astro:content";
+import { getResponsiveImageAttrs } from "../lib/images";
 
 const galleryItems = await getCollection("gallery");
 
@@ -16,6 +17,19 @@ const sorted = galleryItems.sort((a, b) => {
   if (b.data.date) return 1;
   return 0;
 });
+
+const galleryImageAttrs = await Promise.all(
+  sorted.map((item) =>
+    getResponsiveImageAttrs({
+      src: item.data.image,
+      widths: [480, 768, 1200],
+      sizes: "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+      width: 1200,
+      height: 750,
+      quality: 72,
+    }),
+  ),
+);
 
 const videos = [
   {
@@ -64,9 +78,29 @@ const newsLinks = [
       "Looking to raise money or awareness for your organization in Hampton Roads? You better call the Ghostbusters for this one! You may have seen their Ecto-1 on the streets of Hampton Roads with 20 years of experience in ghostbusting.",
   },
 ];
+
+const newsImageAttrs = await Promise.all(
+  newsLinks.map((link) =>
+    getResponsiveImageAttrs({
+      src: link.image,
+      widths: [480, 768, 960],
+      sizes: "(max-width: 768px) 100vw, 280px",
+      width: 960,
+      height: 540,
+      quality: 72,
+    }),
+  ),
+);
 ---
 
-<BaseLayout title="Media">
+<BaseLayout
+  title="Media"
+  description="Browse Ghostbusters Virginia photos, videos, and press coverage from events across the state."
+  canonical="/media"
+  ogTitle="Media | Ghostbusters Virginia"
+  ogDescription="Explore the latest gallery photos, videos, and news features for Ghostbusters Virginia."
+  ogImage="/images/gbv-gallery-16.jpg"
+>
   <section class="container page" aria-labelledby="media-title">
     <h1 id="media-title" class="page-title">Media</h1>
     <p class="page-intro">
@@ -89,8 +123,13 @@ const newsLinks = [
               <div class="video-card__thumb">
                 <img
                   src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+                  srcset={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg 320w, https://img.youtube.com/vi/${video.id}/hqdefault.jpg 480w, https://img.youtube.com/vi/${video.id}/maxresdefault.jpg 1280w`}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   alt={`Thumbnail for ${video.title}`}
                   loading="lazy"
+                  decoding="async"
+                  width="480"
+                  height="360"
                   class="video-card__image"
                 />
                 <div class="video-card__play" aria-hidden="true">
@@ -126,9 +165,14 @@ const newsLinks = [
                   >
                     <div class="gallery-card__image-wrapper">
                       <img
-                        src={item.data.image}
+                        src={galleryImageAttrs[index].src}
+                        srcset={galleryImageAttrs[index].srcset}
+                        sizes={galleryImageAttrs[index].sizes}
                         alt={item.data.alt}
                         loading="lazy"
+                        decoding="async"
+                        width={galleryImageAttrs[index].width}
+                        height={galleryImageAttrs[index].height}
                         class="gallery-card__image"
                       />
                     </div>
@@ -173,14 +217,19 @@ const newsLinks = [
       <h2 class="section-heading">In the News</h2>
       <ul class="news-list" role="list">
         {
-          newsLinks.map((link) => (
+          newsLinks.map((link, index) => (
             <li class="news-item">
               <a href={link.url} target="_blank" rel="noopener noreferrer" class="news-link">
                 <div class="news-link__image-wrapper">
                   <img
-                    src={link.image}
+                    src={newsImageAttrs[index].src}
+                    srcset={newsImageAttrs[index].srcset}
+                    sizes={newsImageAttrs[index].sizes}
                     alt={`${link.title} article thumbnail`}
                     loading="lazy"
+                    decoding="async"
+                    width={newsImageAttrs[index].width}
+                    height={newsImageAttrs[index].height}
                     class="news-link__image"
                   />
                 </div>
@@ -226,6 +275,8 @@ const newsLinks = [
 </BaseLayout>
 
 <script>
+  import { setLightboxPreviousFocus } from "../lib/lightbox";
+
   // Lightbox functionality — shared component handles close/escape/focus-trap
   const lightbox = document.getElementById("lightbox") as HTMLElement;
   const lightboxImage = document.getElementById("lightbox-image") as HTMLImageElement;
@@ -233,8 +284,11 @@ const newsLinks = [
   const lightboxIframe = document.getElementById("lightbox-iframe") as HTMLIFrameElement;
   const lightboxCaption = document.getElementById("lightbox-caption") as HTMLParagraphElement;
 
-  function openImageLightbox(image: string, alt: string, title: string) {
+  function openImageLightbox(image: string, alt: string, title: string, opener?: HTMLElement) {
     if (!lightbox || !lightboxImage || !lightboxCaption) return;
+    if (opener) {
+      setLightboxPreviousFocus(lightbox, opener, "media-opener");
+    }
     lightboxImage.src = image;
     lightboxImage.alt = alt;
     lightboxImage.hidden = false;
@@ -245,8 +299,11 @@ const newsLinks = [
     (lightbox.querySelector(".lightbox__close") as HTMLElement)?.focus();
   }
 
-  function openVideoLightbox(videoId: string, title: string) {
+  function openVideoLightbox(videoId: string, title: string, opener?: HTMLElement) {
     if (!lightbox || !lightboxIframe || !lightboxCaption) return;
+    if (opener) {
+      setLightboxPreviousFocus(lightbox, opener, "media-opener");
+    }
     lightboxIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     lightboxIframe.title = title;
     lightboxImage!.hidden = true;
@@ -263,7 +320,7 @@ const newsLinks = [
       const image = card.dataset.image ?? "";
       const alt = card.dataset.alt ?? "";
       const title = card.dataset.title ?? "";
-      openImageLightbox(image, alt, title);
+      openImageLightbox(image, alt, title, card);
     });
   });
 
@@ -272,7 +329,7 @@ const newsLinks = [
     card.addEventListener("click", () => {
       const videoId = card.dataset.videoId ?? "";
       const title = card.dataset.videoTitle ?? "";
-      openVideoLightbox(videoId, title);
+      openVideoLightbox(videoId, title, card);
     });
   });
 

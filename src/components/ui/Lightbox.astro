@@ -6,6 +6,10 @@
  * Supports images, optional video (YouTube embeds), and prev/next navigation.
  * Includes keyboard handling (Escape, Arrow keys) and focus trap.
  *
+ * Focus restoration contract:
+ * - Opening code should set `lightbox.dataset.previousFocus` to the opener element id.
+ * - If omitted, this component will capture the currently focused element as a fallback.
+ *
  * Styles are global in theme.css. This component provides markup + behaviour.
  *
  * @example
@@ -71,7 +75,6 @@ const { id = "lightbox", hasNav = false, hasVideo = false, label = "Media viewer
             id={`${id}-iframe`}
             src=""
             title=""
-            frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen
@@ -84,6 +87,8 @@ const { id = "lightbox", hasNav = false, hasVideo = false, label = "Media viewer
 </div>
 
 <script>
+  import { setLightboxPreviousFocus } from "../../lib/lightbox";
+
   /**
    * Shared lightbox behaviour — auto-initialises all .lightbox elements.
    * Handles: close button, backdrop click, Escape key, focus trap.
@@ -103,6 +108,15 @@ const { id = "lightbox", hasNav = false, hasVideo = false, label = "Media viewer
     // Per-lightbox event binding
     document.querySelectorAll<HTMLElement>(".lightbox").forEach((lb) => {
       const closeBtn = lb.querySelector<HTMLButtonElement>(".lightbox__close");
+
+      const observer = new MutationObserver(() => {
+        if (lb.hidden) return;
+        if (lb.dataset.previousFocus) return;
+        const active = document.activeElement as HTMLElement | null;
+        if (!active || active === document.body) return;
+        setLightboxPreviousFocus(lb, active, "lightbox-opener");
+      });
+      observer.observe(lb, { attributes: true, attributeFilter: ["hidden"] });
 
       // Close button
       closeBtn?.addEventListener("click", () => closeLightbox(lb));
