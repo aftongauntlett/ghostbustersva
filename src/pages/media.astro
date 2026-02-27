@@ -152,10 +152,19 @@ const newsLinks = [
             </ul>
             {sorted.length > 6 && (
               <div class="gallery-toggle">
-                <button class="btn btn--secondary gallery-toggle__btn" type="button" id="gallery-show-more">
+                <button
+                  class="btn btn--secondary gallery-toggle__btn"
+                  type="button"
+                  id="gallery-show-more"
+                >
                   Show More ({sorted.length - 6} more)
                 </button>
-                <button class="btn btn--secondary gallery-toggle__btn" type="button" id="gallery-show-less" hidden>
+                <button
+                  class="btn btn--secondary gallery-toggle__btn"
+                  type="button"
+                  id="gallery-show-less"
+                  hidden
+                >
                   Show Less
                 </button>
               </div>
@@ -372,14 +381,10 @@ const newsLinks = [
     font-size: var(--text-lg);
     color: var(--color-text-muted);
     text-align: center;
-    max-width: 55rem;
-    margin-inline: auto;
   }
 
   /* ── Section headings ── */
   .media-section {
-    max-width: 64rem;
-    margin-inline: auto;
     width: 100%;
   }
 

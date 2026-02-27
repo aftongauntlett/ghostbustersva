@@ -5,6 +5,7 @@
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Panel from "../components/ui/Panel.astro";
+import Button from "../components/ui/Button.astro";
 ---
 
 <BaseLayout title="About">
@@ -48,6 +49,12 @@ import Panel from "../components/ui/Panel.astro";
 
     <Panel heading="Community Initiatives">
       <h3 class="initiative-title">Proton Pets</h3>
+      <img
+        src="/images/news/proton-pets.jpeg"
+        alt="Proton Pets — Ghostbusters Virginia community fundraiser for local pet shelters"
+        class="initiative-image"
+        loading="lazy"
+      />
       <p>
         Every April, Ghostbusters Virginia calls on franchises across the globe to join
         <strong class="glow">Proton Pets</strong> — a month-long, community-driven fundraiser supporting
@@ -64,11 +71,27 @@ import Panel from "../components/ui/Panel.astro";
       <hr class="divider" />
       <p>
         Remember… dogs and cats living together equals
-        <strong class="glow">MASS CARING!</strong> Learn more and find out how to get involved at
-        <a href="https://whoyagonnacall.org/proton-pets" target="_blank" rel="noopener noreferrer">
-          whoyagonnacall.org/proton-pets<span class="sr-only"> (opens in new tab)</span>
-        </a>.
+        <strong class="glow">MASS CARING!</strong> Learn more and find out how to get involved.
       </p>
+      <div class="initiative-cta">
+        <Button variant="secondary" href="https://whoyagonnacall.org/proton-pets" external>
+          Learn About Proton Pets
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            ><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline
+              points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg
+          >
+        </Button>
+      </div>
     </Panel>
 
     <Panel heading="Our Mission">
@@ -130,8 +153,6 @@ import Panel from "../components/ui/Panel.astro";
 
   /* ── Panel sizing & body spacing ── */
   .page :global(.panel) {
-    max-width: 55rem;
-    margin-inline: auto;
     width: 100%;
   }
 
@@ -196,6 +217,20 @@ import Panel from "../components/ui/Panel.astro";
     color: var(--color-accent-hover);
     letter-spacing: var(--tracking-wider);
     margin-bottom: 0.75rem;
+  }
+
+  .initiative-image {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+  }
+
+  .initiative-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
   }
 
   .page :global(.panel) a {
