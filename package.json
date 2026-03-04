@@ -17,8 +17,12 @@
     "check": "npm run typecheck && npm run lint && npm run format:check && npm run test"
   },
   "dependencies": {
+    "@astrojs/markdoc": "^0.15.10",
+    "@astrojs/node": "^9.5.4",
     "@astrojs/react": "^4.4.2",
     "@astrojs/sitemap": "^3.6.0",
+    "@keystatic/astro": "^5.0.6",
+    "@keystatic/core": "^0.5.48",
     "@splidejs/splide": "^4.1.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
