@@ -1,0 +1,16 @@
+{
+  "page": "about",
+  "pageTitle": "About Ghostbusters Virginia",
+  "pageIntro": "Who we are, where we came from, and why we do what we do.",
+  "missionItems": [
+    "Celebrate and promote the Ghostbusters franchise across the Commonwealth of Virginia",
+    "Support charitable causes and give back to our local communities",
+    "Provide a welcoming space for fans of all ages and backgrounds",
+    "Unite Virginia's regional Ghostbusters groups under one banner"
+  ],
+  "protonPetsImage": "/images/news/proton-pets.jpeg",
+  "protonPetsImageAlt": "Proton Pets — Ghostbusters Virginia community fundraiser for local pet shelters",
+  "protonPetsText": "Every April, Ghostbusters Virginia calls on franchises across the globe to join Proton Pets — a month-long, community-driven fundraiser supporting local pet shelters and pet pantries.",
+  "protonPetsLinkLabel": "Learn About Proton Pets",
+  "protonPetsLinkUrl": "https://whoyagonnacall.org/proton-pets"
+}
