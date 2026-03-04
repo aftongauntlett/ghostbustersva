@@ -4,7 +4,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import markdoc from "@astrojs/markdoc";
 import keystatic from "@keystatic/astro";
-import node from "@astrojs/node";
+import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,6 +12,6 @@ export default defineConfig({
   // Keystatic's admin route (/keystatic) uses on-demand server rendering via the integration.
   output: "static",
   site: "https://ghostbustersva.com",
-  adapter: node({ mode: "standalone" }),
+  adapter: vercel(),
   integrations: [react(), sitemap(), markdoc(), keystatic()],
 });
