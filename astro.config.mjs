@@ -2,11 +2,16 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import markdoc from "@astrojs/markdoc";
+import keystatic from "@keystatic/astro";
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-  // Static output — no server needed
+  // Static output — all pages are pre-rendered at build time.
+  // Keystatic's admin route (/keystatic) uses on-demand server rendering via the integration.
   output: "static",
   site: "https://ghostbustersva.com",
-  integrations: [react(), sitemap()],
+  adapter: node({ mode: "standalone" }),
+  integrations: [react(), sitemap(), markdoc(), keystatic()],
 });

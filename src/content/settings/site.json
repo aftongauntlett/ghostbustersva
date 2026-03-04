@@ -1,0 +1,26 @@
+{
+  "siteName": "Ghostbusters Virginia",
+  "siteDescription": "Virginia's community Ghostbusters franchise — events, media, and how to join the team.",
+  "donateUrl": "",
+  "storeUrl": "https://www.teepublic.com/user/ghostbustersva",
+  "contactEmail": "info@ghostbustersva.com",
+  "socialLinks": [
+    {
+      "platform": "Facebook",
+      "url": "https://www.facebook.com/Ghostbusters.Virginia.757"
+    },
+    {
+      "platform": "Instagram",
+      "url": "https://www.instagram.com/ghostbustersva/"
+    },
+    {
+      "platform": "TikTok",
+      "url": "https://www.tiktok.com/@ghostbustersvirginia"
+    },
+    {
+      "platform": "YouTube",
+      "url": "https://www.youtube.com/@Ghostbusters_Virginia"
+    }
+  ],
+  "footerText": ""
+}

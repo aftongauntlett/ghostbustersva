@@ -1,0 +1,24 @@
+{
+  "page": "contact",
+  "pageTitle": "Contact Us",
+  "pageIntro": "Have a question, want to book us for an event, or just want to say hi? Reach out via the info below or connect with us on social media.",
+  "bookUsText": "Do you have a company function, parade, event opening, charity event, or just looking to bring the supernatural fun to a party? Don't wait another minute and contact your Paranormal Professionals — Ghostbusters, Virginia.",
+  "serviceAreasText": "Our friendly professional team is the only 501(c)(3) non-profit Ghostbusters charity group serving you in:",
+  "regions": [
+    {
+      "title": "Northern Virginia",
+      "areas": ["NOVA / DC Metro", "Fairfax & Loudoun", "Arlington & Alexandria"]
+    },
+    {
+      "title": "Central Virginia",
+      "areas": ["Richmond (804)", "Fredericksburg", "Charlottesville"]
+    },
+    {
+      "title": "Hampton Roads",
+      "areas": ["Virginia Beach (757)", "Norfolk & Chesapeake", "Newport News & Hampton"]
+    }
+  ],
+  "ctaCallout": "You know who to call!",
+  "ctaAside": "(or, in this case, email!)",
+  "footnoteText": "A full contact form is coming soon. For now, please email us directly or reach out on social media."
+}

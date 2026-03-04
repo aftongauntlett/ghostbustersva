@@ -75,15 +75,17 @@ const swagImageAttrs = await Promise.all(
        Runs immediately when parsed — no React hydration dependency. -->
   <script is:inline>
     (function () {
-      var container = document.querySelector('.hero-container');
-      var img = container && container.querySelector('.hero-bg-img');
+      var container = document.querySelector(".hero-container");
+      var img = container && container.querySelector(".hero-bg-img");
       if (!container) return;
-      function reveal() { container.classList.add('hero-ready'); }
+      function reveal() {
+        container.classList.add("hero-ready");
+      }
       if (img && img.complete && img.naturalWidth > 0) {
         reveal();
       } else if (img) {
-        img.addEventListener('load', reveal, { once: true });
-        img.addEventListener('error', reveal, { once: true });
+        img.addEventListener("load", reveal, { once: true });
+        img.addEventListener("error", reveal, { once: true });
         setTimeout(reveal, 1500);
       } else {
         setTimeout(reveal, 800);
