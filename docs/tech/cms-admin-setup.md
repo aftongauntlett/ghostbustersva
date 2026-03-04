@@ -16,9 +16,14 @@ Notes for handing the site off to the Ghostbusters team and spinning down the de
    - `KEYSTATIC_GITHUB_CLIENT_ID` = from step 4
    - `KEYSTATIC_GITHUB_CLIENT_SECRET` = from step 4
    - `KEYSTATIC_SECRET` = run `openssl rand -hex 32`
-6. **Deploy** — push any commit or trigger a manual deploy from Vercel.
-7. **Verify** — open `/admin`, sign in with GitHub, edit a test event, save, confirm it deploys.
-8. **Editor access** — add Ghostbusters team members as repo collaborators (write access). They sign in at `/admin` with their GitHub accounts.
+6. **Update domain references in code** — the codebase currently uses `ghostbustersva.vercel.app`. Find-and-replace to the production domain:
+   - `astro.config.mjs` → `site` value and `security.allowedDomains`
+   - `src/layouts/BaseLayout.astro` → fallback URLs for canonical and OG image
+   - `public/robots.txt` → sitemap URL
+   - `docs/cms-guide.md` → admin URL in editor instructions
+7. **Deploy** — push any commit or trigger a manual deploy from Vercel.
+8. **Verify** — open `/admin`, sign in with GitHub, edit a test event, save, confirm it deploys.
+9. **Editor access** — add Ghostbusters team members as repo collaborators (write access). They sign in at `/admin` with their GitHub accounts.
 
 ## Spindown (Developer)
 

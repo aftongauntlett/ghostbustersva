@@ -4,7 +4,7 @@ Use this page if you manage content and do not work in code.
 
 ## Sign in
 
-1. Open `https://ghostbustersva.com/admin` in your browser.
+1. Open `https://ghostbustersva.vercel.app/admin` in your browser.
 2. Sign in with your approved admin account.
 3. You will be taken to the content dashboard.
 

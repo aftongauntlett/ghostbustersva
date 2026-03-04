@@ -46,11 +46,14 @@ const {
 const pageTitle = title ? `${title} | ${siteName}` : siteName;
 const resolvedCanonical = new URL(
   canonical ?? Astro.url.pathname,
-  Astro.site ?? "https://ghostbustersva.com",
+  Astro.site ?? "https://ghostbustersva.vercel.app",
 ).toString();
 const resolvedOgTitle = ogTitle ?? pageTitle;
 const resolvedOgDescription = ogDescription ?? description;
-const resolvedOgImage = new URL(ogImage, Astro.site ?? "https://ghostbustersva.com").toString();
+const resolvedOgImage = new URL(
+  ogImage,
+  Astro.site ?? "https://ghostbustersva.vercel.app",
+).toString();
 ---
 
 <!doctype html>
