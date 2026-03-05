@@ -7,10 +7,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import EventCard from "../components/EventCard.astro";
 import { getCollection } from "astro:content";
 import { splitEventsByStatus } from "../lib/events";
+import { getPageCopy } from "../lib/page-copy";
 
 const allEvents = await getCollection("events");
 // Date-derived partitions reflect the current build snapshot.
 const { upcoming, past } = splitEventsByStatus(allEvents);
+
+const copy = (await getPageCopy("events")) as {
+  pageTitle?: string;
+  pageIntro?: string;
+  upcomingHeading?: string;
+  pastHeading?: string;
+  emptyText?: string;
+} | null;
 ---
 
 <BaseLayout
@@ -22,13 +31,15 @@ const { upcoming, past } = splitEventsByStatus(allEvents);
   ogImage="/images/ghostbusters-virginia-pageant-winner-ecto.jpg"
 >
   <section class="container page" aria-labelledby="events-title">
-    <h1 id="events-title" class="page-title">Events</h1>
-    <p class="page-intro">Meet the team, support local charities, and see the Ecto in person.</p>
+    <h1 id="events-title" class="page-title">{copy?.pageTitle || "Events"}</h1>
+    <p class="page-intro">
+      {copy?.pageIntro || "Meet the team, support local charities, and see the Ecto in person."}
+    </p>
 
     {
       upcoming.length > 0 && (
         <div class="event-section fade-in-section">
-          <h2 class="section-heading">Upcoming Events</h2>
+          <h2 class="section-heading">{copy?.upcomingHeading || "Upcoming Events"}</h2>
           <ul class="event-list" role="list">
             {upcoming.map((event) => (
               <EventCard event={event} status="upcoming" showCountdown />
@@ -41,7 +52,7 @@ const { upcoming, past } = splitEventsByStatus(allEvents);
     {
       past.length > 0 && (
         <div class="event-section fade-in-section">
-          <h2 class="section-heading">Past Events</h2>
+          <h2 class="section-heading">{copy?.pastHeading || "Past Events"}</h2>
           <ul class="event-list event-list--past" id="past-events-list" role="list">
             {past.map((event, index) => (
               <EventCard event={event} status="past" className={index >= 4 ? "past-hidden" : ""} />
@@ -61,7 +72,11 @@ const { upcoming, past } = splitEventsByStatus(allEvents);
       )
     }
 
-    {allEvents.length === 0 && <p class="empty-state">No events yet — check back soon!</p>}
+    {
+      allEvents.length === 0 && (
+        <p class="empty-state">{copy?.emptyText || "No events yet \u2014 check back soon!"}</p>
+      )
+    }
   </section>
 </BaseLayout>
 

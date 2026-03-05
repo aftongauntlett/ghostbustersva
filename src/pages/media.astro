@@ -7,6 +7,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
 import { getCollection } from "astro:content";
 import { getResponsiveImageAttrs } from "../lib/images";
+import { getPageCopy } from "../lib/page-copy";
 
 const galleryItems = await getCollection("gallery");
 
@@ -31,53 +32,27 @@ const galleryImageAttrs = await Promise.all(
   ),
 );
 
-const videos = [
-  {
-    id: "nkb_sAiDSRU",
-    title: "Ghostbusters, Virginia Trailer 2020 HD",
-  },
-  {
-    id: "NrVYVayRA7s",
-    title: "I Am Ghostbusters Spot (2021)",
-  },
-  {
-    id: "YcRhksZDeQw",
-    title: "PlasmaCon 2021 Opening Ceremonies",
-  },
-];
+// Videos and news are now CMS-managed collections
+const videoEntries = await getCollection("videos");
+const videos = videoEntries
+  .sort((a, b) => {
+    if (a.data.date && b.data.date) return b.data.date.localeCompare(a.data.date);
+    if (a.data.date) return -1;
+    if (b.data.date) return 1;
+    return 0;
+  })
+  .map((v) => ({ id: v.data.youtubeId, title: v.data.title }));
 
-const newsLinks = [
-  {
-    title: "Ghostbusters, Virginia teams up with Dominos for Toys for Tots",
-    date: "November 27, 2024",
-    location: "Woodbridge, Va.",
-    url: "https://www.facebook.com/share/p/1Ashb35y1u/",
-    source: "Facebook",
-    image: "/images/news/ghostbusters-virginia-toys-for-tots-dominos.jpg",
-    excerpt:
-      "Ghostbusters, Virginia has teamed up with Domino's pizza stores across Woodbridge to help gather toys for the annual Toys for Tots donation drive. Domino's has kindly offered to customers who bring in a toy to donate a one-topping large pizza for $6.",
-  },
-  {
-    title: "Ecto-1 will be on-hand for opening night premiere of 'Ghostbusters: Afterlife'",
-    date: "November 19, 2021",
-    location: "Chesapeake, Va.",
-    url: "https://www.13newsnow.com/article/news/community/ghostbusters-virginia-premiere-afterlife-charity-cinema-cafe/291-ca4322bf-dae9-4321-9408-43e5c2887077",
-    source: "13 News Now",
-    image: "/images/news/ghostbusters-virginia-13-news-now-afterlife-premiere.png",
-    excerpt:
-      'Thirty-seven years after the original movie, "Ghostbusters: Afterlife" is set for opening night on Friday. Over in Chesapeake, there is one man ready to arrive in style. "Saw original movie in the theatre back in \'84," said Jeremy West. West is a member of Ghostbusters, Virginia.',
-  },
-  {
-    title: "Who You Gonna Call? Ghostbusters, Virginia!",
-    date: "September 28, 2021",
-    location: "Portsmouth, Va.",
-    url: "https://www.wavy.com/hr-show/cc-who-you-gonna-call-ghostbusters-virginia/",
-    source: "WAVY TV 10",
-    image: "/images/news/ghostbusters-virginia-wavy-tv-feature.png",
-    excerpt:
-      "Looking to raise money or awareness for your organization in Hampton Roads? You better call the Ghostbusters for this one! You may have seen their Ecto-1 on the streets of Hampton Roads with 20 years of experience in ghostbusting.",
-  },
-];
+const newsEntries = await getCollection("news");
+const newsLinks = newsEntries.map((n) => ({
+  title: n.data.title,
+  date: n.data.date,
+  location: n.data.location ?? "",
+  url: n.data.url,
+  source: n.data.source,
+  image: n.data.image ?? "/images/logo.png",
+  excerpt: n.data.excerpt,
+}));
 
 const newsImageAttrs = await Promise.all(
   newsLinks.map((link) =>
@@ -91,6 +66,14 @@ const newsImageAttrs = await Promise.all(
     }),
   ),
 );
+
+const copy = (await getPageCopy("media")) as {
+  pageTitle?: string;
+  pageIntro?: string;
+  videosHeading?: string;
+  galleryHeading?: string;
+  newsHeading?: string;
+} | null;
 ---
 
 <BaseLayout
@@ -102,14 +85,17 @@ const newsImageAttrs = await Promise.all(
   ogImage="/images/ghostbusters-virginia-bike-show-dog.jpg"
 >
   <section class="container page" aria-labelledby="media-title">
-    <h1 id="media-title" class="page-title">Media</h1>
+    <h1 id="media-title" class="page-title">{copy?.pageTitle || "Media"}</h1>
     <p class="page-intro">
-      Photos, videos, and press coverage from our events. Click any photo to enlarge.
+      {
+        copy?.pageIntro ||
+          "Photos, videos, and press coverage from our events. Click any photo to enlarge."
+      }
     </p>
 
     <!-- ── Videos ── -->
     <div class="media-section fade-in-section">
-      <h2 class="section-heading">Videos</h2>
+      <h2 class="section-heading">{copy?.videosHeading || "Videos"}</h2>
       <div class="video-grid">
         {
           videos.map((video) => (
@@ -148,7 +134,7 @@ const newsImageAttrs = await Promise.all(
 
     <!-- ── Gallery ── -->
     <div class="media-section fade-in-section">
-      <h2 class="section-heading">Gallery</h2>
+      <h2 class="section-heading">{copy?.galleryHeading || "Photo Gallery"}</h2>
       {
         sorted.length > 0 ? (
           <>
@@ -214,7 +200,7 @@ const newsImageAttrs = await Promise.all(
 
     <!-- ── In the News ── -->
     <div class="media-section fade-in-section">
-      <h2 class="section-heading">In the News</h2>
+      <h2 class="section-heading">{copy?.newsHeading || "In the News"}</h2>
       <ul class="news-list" role="list">
         {
           newsLinks.map((link, index) => (

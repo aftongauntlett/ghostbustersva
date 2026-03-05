@@ -37,17 +37,36 @@ export default config({
     brand: {
       name: "Ghostbusters Virginia CMS",
     },
+    navigation: {
+      // Page-copy singletons — editors update titles, intros, and descriptions
+      Pages: [
+        "aboutPageCopy",
+        "joinPageCopy",
+        "eventsPageCopy",
+        "mediaPageCopy",
+        "contactPageCopy",
+        "donatePageCopy",
+      ],
+      // Collections with entries — events, photos, videos, press links
+      Content: ["events", "gallery", "videos", "news"],
+      Settings: ["settings"],
+    },
   },
   collections: {
     /**
      * Events collection — mirrors src/content/events/ and the Zod schema
      * in src/content.config.ts.
+     *
+     * No body/content field — editors use structured fields only.
+     * The events page renders title, date, location, summary, and image.
      */
     events: collection({
       label: "Events",
       slugField: "title",
       path: "src/content/events/*",
       format: { contentField: "body" },
+      entryLayout: "form",
+      columns: ["date", "location"],
       schema: {
         title: fields.slug({
           name: {
@@ -107,22 +126,26 @@ export default config({
           defaultValue: false,
         }),
         body: fields.markdoc({
-          label: "Body",
-          description: "Optional detailed description of the event (Markdown).",
+          label: "Extra Details (optional)",
+          description:
+            "Optional extra text — currently not shown on the website. Use Summary for the visible description.",
           extension: "md",
         }),
       },
     }),
 
     /**
-     * Gallery collection — mirrors src/content/gallery/ and the Zod schema
-     * in src/content.config.ts.
+     * Gallery collection — photo gallery entries shown on the Media page.
+     *
+     * Form-only layout — editors fill in structured fields, no free-form body.
      */
     gallery: collection({
-      label: "Media / Gallery",
+      label: "Gallery",
       slugField: "title",
       path: "src/content/gallery/*",
       format: { contentField: "body" },
+      entryLayout: "form",
+      columns: ["alt", "date"],
       schema: {
         title: fields.slug({
           name: {
@@ -148,9 +171,92 @@ export default config({
           description: "Optional date the photo was taken.",
         }),
         body: fields.markdoc({
-          label: "Body",
-          description: "Optional additional details about this gallery entry.",
+          label: "Extra Details (optional)",
+          description: "Optional notes — not currently displayed on the site.",
           extension: "md",
+        }),
+      },
+    }),
+
+    /**
+     * Videos collection — YouTube videos shown in the Videos section
+     * of the Media page. Replaces the hardcoded array.
+     */
+    videos: collection({
+      label: "Videos",
+      slugField: "title",
+      path: "src/content/videos/*",
+      format: { data: "json" },
+      columns: ["youtubeId"],
+      schema: {
+        title: fields.slug({
+          name: {
+            label: "Title",
+            description: "Video title displayed below the thumbnail.",
+            validation: { isRequired: true },
+          },
+        }),
+        youtubeId: fields.text({
+          label: "YouTube Video ID",
+          description:
+            "The ID from the YouTube URL. For https://www.youtube.com/watch?v=nkb_sAiDSRU, the ID is 'nkb_sAiDSRU'.",
+          validation: { isRequired: true },
+        }),
+        date: fields.date({
+          label: "Date",
+          description: "When the video was published. Used for sorting (newest first).",
+        }),
+      },
+    }),
+
+    /**
+     * News collection — press/news links shown in the "In the News"
+     * section of the Media page. Replaces the hardcoded array.
+     */
+    news: collection({
+      label: "News",
+      slugField: "title",
+      path: "src/content/news/*",
+      format: { data: "json" },
+      columns: ["source", "date"],
+      schema: {
+        title: fields.slug({
+          name: {
+            label: "Title",
+            description: "Headline of the news article or feature.",
+            validation: { isRequired: true },
+          },
+        }),
+        date: fields.text({
+          label: "Date",
+          description: "Publication date (e.g. 'November 27, 2024').",
+          validation: { isRequired: true },
+        }),
+        location: fields.text({
+          label: "Location",
+          description: "Where the story is about (e.g. 'Woodbridge, Va.').",
+        }),
+        url: fields.url({
+          label: "Article URL",
+          description: "Link to the original article or post.",
+          validation: { isRequired: true },
+        }),
+        source: fields.text({
+          label: "Source",
+          description: "Publication name (e.g. '13 News Now', 'Facebook').",
+          validation: { isRequired: true },
+        }),
+        image: fields.image({
+          label: "Thumbnail Image",
+          description: "Thumbnail shown next to the news link.",
+          directory: "public/images/news",
+          publicPath: "/images/news/",
+        }),
+        excerpt: fields.text({
+          label: "Excerpt",
+          description: "A short snippet from the article.",
+          multiline: true,
+          validation: { isRequired: true },
         }),
       },
     }),
@@ -243,6 +349,80 @@ export default config({
         noteText: fields.text({
           label: "Background Check Note",
           multiline: true,
+        }),
+      },
+    }),
+
+    /**
+     * Events page copy — editable title and intro text for the Events page.
+     */
+    eventsPageCopy: singleton({
+      label: "Events Page",
+      path: "src/content/page-copy/events",
+      format: { data: "json" },
+      schema: {
+        page: fields.text({ label: "Page ID", defaultValue: "events" }),
+        pageTitle: fields.text({
+          label: "Page Title",
+          defaultValue: "Events",
+          validation: { isRequired: true },
+        }),
+        pageIntro: fields.text({
+          label: "Page Intro",
+          description: "Short description shown below the page title.",
+          multiline: true,
+          defaultValue: "Meet the team, support local charities, and see the Ecto in person.",
+          validation: { isRequired: true },
+        }),
+        upcomingHeading: fields.text({
+          label: "Upcoming Section Heading",
+          defaultValue: "Upcoming Events",
+        }),
+        pastHeading: fields.text({
+          label: "Past Section Heading",
+          defaultValue: "Past Events",
+        }),
+        emptyText: fields.text({
+          label: "Empty State Text",
+          description: "Shown when there are no events.",
+          defaultValue: "No events yet — check back soon!",
+        }),
+      },
+    }),
+
+    /**
+     * Media page copy — editable title and intro text for the Media page.
+     */
+    mediaPageCopy: singleton({
+      label: "Media Page",
+      path: "src/content/page-copy/media",
+      format: { data: "json" },
+      schema: {
+        page: fields.text({ label: "Page ID", defaultValue: "media" }),
+        pageTitle: fields.text({
+          label: "Page Title",
+          defaultValue: "Media",
+          validation: { isRequired: true },
+        }),
+        pageIntro: fields.text({
+          label: "Page Intro",
+          description: "Short description shown below the page title.",
+          multiline: true,
+          defaultValue:
+            "Photos, videos, and press coverage from our events. Click any photo to enlarge.",
+          validation: { isRequired: true },
+        }),
+        videosHeading: fields.text({
+          label: "Videos Section Heading",
+          defaultValue: "Videos",
+        }),
+        galleryHeading: fields.text({
+          label: "Gallery Section Heading",
+          defaultValue: "Photo Gallery",
+        }),
+        newsHeading: fields.text({
+          label: "News Section Heading",
+          defaultValue: "In the News",
         }),
       },
     }),

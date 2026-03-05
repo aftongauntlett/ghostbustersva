@@ -73,6 +73,8 @@ Content still lives in this repository as files (git-based CMS workflow).
 
 For day-to-day team use, this is all you need.
 
+> **Need help?** See the [Editing Guide](docs/editing-guide.md) for a step-by-step walkthrough of the CMS.
+
 ---
 
 ## Technical Docs (Developers)
@@ -85,6 +87,7 @@ For day-to-day team use, this is all you need.
 - [PRD Workflow](docs/prds/README.md)
 - [CMS Guide](docs/cms-guide.md) — editor quickstart
 - [AGENT.md](AGENT.md) — AI project guide
+- [Editing Guide](docs/editing-guide.md) — step-by-step CMS guide for editors
 
 ---
 
@@ -97,16 +100,21 @@ The site includes **Keystatic CMS** — a browser-based content editor that lets
 1. Open `/admin` on the deployed site.
 2. Click **Sign in with GitHub**.
 3. You need **write access** to the `ghostbustersva` repo — ask the project lead if you don't have it.
-4. Use sections for **Events**, **Media / Gallery**, **Page Copy**, and **Site Settings**.
+4. Use sections in the sidebar for Events, Gallery, Videos, News, page copy, and Site Settings.
 
 ### What You Can Edit
 
-| Section         | What it controls                                                |
-| --------------- | --------------------------------------------------------------- |
-| Events          | Event listings — title, date, location, summary, images, status |
-| Media / Gallery | Photo gallery entries — image, title, alt text, date            |
-| Page Copy       | Editable text on About, Join, Contact, and Donate pages         |
-| Site Settings   | Site name, description, donate URL, store URL, social links     |
+| Section       | What it controls                                                |
+| ------------- | --------------------------------------------------------------- |
+| Events        | Event listings — title, date, location, summary, images, status |
+| Gallery       | Photo gallery entries — image, title, alt text, date            |
+| Videos        | YouTube videos shown on the Media page                          |
+| News          | Press coverage / news links shown on the Media page             |
+| About Page    | Editable text on the About page                                 |
+| Join Page     | Editable text on the Join page                                  |
+| Contact Page  | Editable text on the Contact page                               |
+| Donate Page   | Editable text on the Donate page                                |
+| Site Settings | Site name, description, donate URL, store URL, social links     |
 
 ### Where Content is Stored
 
@@ -116,6 +124,8 @@ All content is stored as files in this repository:
 | --------------- | -------------------------------- | -------- |
 | Events          | `src/content/events/`            | Markdown |
 | Gallery entries | `src/content/gallery/`           | Markdown |
+| Videos          | `src/content/videos/`            | JSON     |
+| News            | `src/content/news/`              | JSON     |
 | Page copy       | `src/content/page-copy/`         | JSON     |
 | Site settings   | `src/content/settings/site.json` | JSON     |
 | Images          | `public/images/`                 | JPG/PNG  |

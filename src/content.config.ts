@@ -72,7 +72,7 @@ const gallery = defineCollection({
  * Stored as JSON at src/content/settings/site.json.
  */
 const settings = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "src/content/settings" }),
+  loader: glob({ pattern: "site.json", base: "src/content/settings" }),
   schema: z.object({
     siteName: z.string(),
     siteDescription: z.string(),
@@ -89,6 +89,36 @@ const settings = defineCollection({
       .optional()
       .default([]),
     footerText: z.string().optional(),
+  }),
+});
+
+/**
+ * Videos collection — YouTube videos shown on the Media page.
+ * Managed via Keystatic CMS.
+ */
+const videos = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "src/content/videos" }),
+  schema: z.object({
+    title: z.string(),
+    youtubeId: z.string(),
+    date: z.string().optional(),
+  }),
+});
+
+/**
+ * News collection — press/news links shown on the Media page.
+ * Managed via Keystatic CMS.
+ */
+const news = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "src/content/news" }),
+  schema: z.object({
+    title: z.string(),
+    date: z.string(),
+    location: z.string().optional(),
+    url: z.string().url(),
+    source: z.string(),
+    image: z.string().optional(),
+    excerpt: z.string(),
   }),
 });
 
@@ -148,14 +178,34 @@ const donatePageCopy = z.object({
   swagNote: z.string(),
 });
 
+const eventsPageCopy = z.object({
+  page: z.literal("events"),
+  pageTitle: z.string(),
+  pageIntro: z.string(),
+  upcomingHeading: z.string().optional(),
+  pastHeading: z.string().optional(),
+  emptyText: z.string().optional(),
+});
+
+const mediaPageCopy = z.object({
+  page: z.literal("media"),
+  pageTitle: z.string(),
+  pageIntro: z.string(),
+  videosHeading: z.string().optional(),
+  galleryHeading: z.string().optional(),
+  newsHeading: z.string().optional(),
+});
+
 const pageCopy = defineCollection({
   loader: glob({ pattern: "**/*.json", base: "src/content/page-copy" }),
   schema: z.discriminatedUnion("page", [
     aboutPageCopy,
     joinPageCopy,
+    eventsPageCopy,
+    mediaPageCopy,
     contactPageCopy,
     donatePageCopy,
   ]),
 });
 
-export const collections = { events, gallery, settings, pageCopy };
+export const collections = { events, gallery, videos, news, settings, pageCopy };
