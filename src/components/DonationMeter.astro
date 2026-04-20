@@ -16,7 +16,9 @@ const DANGER_START_PERCENT = 80;
 const DANGER_INNER_RADIUS = 187;
 
 function pointOnArc(angleDeg: number, radius: number) {
-  const angleRad = (angleDeg * Math.PI) / 180;
+  const angleRad = (
+                     angleDeg * Math.PI
+                   ) / 180;
 
   return {
     x: CENTER_X + Math.sin(angleRad) * radius,
@@ -28,7 +30,11 @@ const arcStart = pointOnArc(ARC_START_DEG, TICK_OUTER_RADIUS);
 const arcEnd = pointOnArc(ARC_END_DEG, TICK_OUTER_RADIUS);
 const arcPath = `M ${arcStart.x} ${arcStart.y} A ${TICK_OUTER_RADIUS} ${TICK_OUTER_RADIUS} 0 1 1 ${arcEnd.x} ${arcEnd.y}`;
 
-const dangerStartDeg = ARC_START_DEG + (DANGER_START_PERCENT / 100) * (ARC_END_DEG - ARC_START_DEG);
+const dangerStartDeg = ARC_START_DEG + (
+  DANGER_START_PERCENT / 100
+) * (
+                         ARC_END_DEG - ARC_START_DEG
+                       );
 const dangerOuterStart = pointOnArc(dangerStartDeg, TICK_OUTER_RADIUS);
 const dangerOuterEnd = pointOnArc(ARC_END_DEG, TICK_OUTER_RADIUS);
 const dangerInnerStart = pointOnArc(dangerStartDeg, DANGER_INNER_RADIUS);
@@ -41,7 +47,11 @@ const dangerSectorPath =
 
 const ticks = Array.from({ length: 51 }, (_, index) => {
   const percent = index * 2;
-  const angle = ARC_START_DEG + (percent / 100) * (ARC_END_DEG - ARC_START_DEG);
+  const angle = ARC_START_DEG + (
+    percent / 100
+  ) * (
+                  ARC_END_DEG - ARC_START_DEG
+                );
   const isMajor = percent % 10 === 0;
   const innerRadius = isMajor ? TICK_INNER_MAJOR : TICK_INNER_MINOR;
   const outer = pointOnArc(angle, TICK_OUTER_RADIUS);
@@ -66,7 +76,11 @@ const scaleLabels = [
   { percent: 80, value: 40000, radius: 180, anchor: "middle" },
   { percent: 100, value: 50000, radius: 180, anchor: "end" },
 ].map(({ percent, value, radius, anchor }) => {
-  const angle = ARC_START_DEG + (percent / 100) * (ARC_END_DEG - ARC_START_DEG);
+  const angle = ARC_START_DEG + (
+    percent / 100
+  ) * (
+                  ARC_END_DEG - ARC_START_DEG
+                );
   const point = pointOnArc(angle, radius);
 
   return {
@@ -105,212 +119,262 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   <p class="sr-only donation-meter__status" data-meter-status aria-live="polite" aria-atomic="true">
     Donation meter loading.
   </p>
-  <svg
-    class="donation-meter__svg"
-    viewBox="0 0 600 400"
-    role="img"
-    aria-labelledby="donation-meter-title"
-  >
-    <defs>
-      <radialGradient id="meter-face-gradient" cx="50%" cy="44%" r="70%">
-        <stop offset="0%" class="donation-meter__stop-face-center"></stop>
-        <stop offset="100%" class="donation-meter__stop-face-edge"></stop>
-      </radialGradient>
+  <section id="frame">
+    <img src="/images/donate-meter/screw-head.svg" class="screw-tl" />
+    <img src="/images/donate-meter/screw-head.svg" class="screw-tr" />
+    <img src="/images/donate-meter/screw-head.svg" class="screw-br" />
+    <img src="/images/donate-meter/screw-head.svg" class="screw-bl" />
 
-      <radialGradient id="meter-bezel-gradient" cx="48%" cy="40%" r="70%">
-        <stop offset="0%" class="donation-meter__stop-bezel-outer"></stop>
-        <stop offset="58%" class="donation-meter__stop-bezel-mid"></stop>
-        <stop offset="100%" class="donation-meter__stop-bezel-inner"></stop>
-      </radialGradient>
-
-      <radialGradient id="meter-pivot-gradient" cx="42%" cy="35%" r="70%">
-        <stop offset="0%" class="donation-meter__stop-pivot-center"></stop>
-        <stop offset="100%" class="donation-meter__stop-pivot-edge"></stop>
-      </radialGradient>
-
-      <pattern id="meter-face-texture" width="4" height="4" patternUnits="userSpaceOnUse">
-        <circle cx="1" cy="1" r="0.32" class="donation-meter__texture-dot"></circle>
-        <circle cx="3" cy="3" r="0.32" class="donation-meter__texture-dot"></circle>
-      </pattern>
-
-      <pattern
-        id="meter-bezel-brush"
-        width="6"
-        height="6"
-        patternUnits="userSpaceOnUse"
-        patternTransform="rotate(18)"
-      >
-        <line x1="0" y1="0" x2="0" y2="6" class="donation-meter__bezel-brush-line"></line>
-      </pattern>
-    </defs>
-
-    <rect x="6" y="6" width="588" height="388" rx="4" class="donation-meter__panel"></rect>
-    <rect x="12" y="12" width="576" height="376" rx="3" class="donation-meter__bezel"></rect>
-    <rect x="12" y="12" width="576" height="376" rx="3" class="donation-meter__bezel-brush"></rect>
-    <rect x="18" y="18" width="564" height="336" rx="2" class="donation-meter__face"></rect>
-    <rect x="18" y="18" width="564" height="336" rx="2" class="donation-meter__face-texture"></rect>
-
-    <g
-      class="donation-meter__arc-band-group donation-meter__arc-band-group--total"
-      tabindex="0"
+    <div class="noise-wrapper" data-side="top">
+      <img src="/images/donate-meter/rust.svg" class="noise-x" />
+      <img src="/images/donate-meter/rust.svg" class="noise-x noise-under" />
+    </div>
+    <div class="noise-wrapper" data-side="right">
+      <img src="/images/donate-meter/rust.svg" class="noise-y" />
+      <img src="/images/donate-meter/rust.svg" class="noise-y noise-under" />
+    </div>
+    <div class="noise-wrapper" data-side="left">
+      <img src="/images/donate-meter/rust.svg" class="noise-y" />
+      <img src="/images/donate-meter/rust.svg" class="noise-y noise-under" />
+    </div>
+    <div class="noise-wrapper" data-side="bottom">
+      <img src="/images/donate-meter/rust.svg" class="noise-x" />
+      <img src="/images/donate-meter/rust.svg" class="noise-x noise-under" />
+    </div>
+    <svg
+      class="donation-meter__svg"
+      viewBox="0 0 600 400"
       role="img"
-      aria-label="Total raised arc band"
+      aria-labelledby="donation-meter-title"
     >
-      <path d={arcHitTotal} class="donation-meter__arc-band-hit"></path>
-      <path
-        data-meter-arc-total
-        d=""
-        class="donation-meter__arc-band donation-meter__arc-band--total"></path>
-      <g class="donation-meter__arc-label donation-meter__arc-label--total" aria-hidden="true">
-        <rect
-          x="136"
-          y="115"
-          width="110"
-          height="28"
-          rx="3"
-          class="donation-meter__arc-label-bg donation-meter__arc-label-bg--total"></rect>
-        <text x="190" y="125" class="donation-meter__arc-label-name">RAISED + MATCHING</text>
-        <text x="190" y="137" class="donation-meter__arc-label-value" data-meter-arc-label-total
-          >—</text
+      <defs>
+        <radialGradient id="meter-face-gradient" cx="50%" cy="44%" r="70%">
+          <stop offset="0%" class="donation-meter__stop-face-center"></stop>
+          <stop offset="100%" class="donation-meter__stop-face-edge"></stop>
+        </radialGradient>
+
+        <radialGradient id="meter-bezel-gradient" cx="48%" cy="40%" r="70%">
+          <stop offset="0%" class="donation-meter__stop-bezel-outer"></stop>
+          <stop offset="58%" class="donation-meter__stop-bezel-mid"></stop>
+          <stop offset="100%" class="donation-meter__stop-bezel-inner"></stop>
+        </radialGradient>
+
+        <radialGradient id="meter-pivot-gradient" cx="42%" cy="35%" r="70%">
+          <stop offset="0%" class="donation-meter__stop-pivot-center"></stop>
+          <stop offset="100%" class="donation-meter__stop-pivot-edge"></stop>
+        </radialGradient>
+
+        <pattern id="meter-face-texture" width="4" height="4" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.32" class="donation-meter__texture-dot"></circle>
+          <circle cx="3" cy="3" r="0.32" class="donation-meter__texture-dot"></circle>
+        </pattern>
+
+        <pattern
+          id="meter-bezel-brush"
+          width="6"
+          height="6"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(18)"
         >
-      </g>
-    </g>
+          <line x1="0" y1="0" x2="0" y2="6" class="donation-meter__bezel-brush-line"></line>
+        </pattern>
+      </defs>
 
-    <g
-      class="donation-meter__arc-band-group donation-meter__arc-band-group--giveback"
-      tabindex="0"
-      role="img"
-      aria-label="Give Back arc band"
-    >
-      <path d={arcHitGiveback} class="donation-meter__arc-band-hit"></path>
-      <path
-        data-meter-arc-giveback
-        d=""
-        class="donation-meter__arc-band donation-meter__arc-band--giveback"></path>
-      <g class="donation-meter__arc-label donation-meter__arc-label--giveback" aria-hidden="true">
-        <rect
-          x="166"
-          y="145"
-          width="90"
-          height="28"
-          rx="3"
-          class="donation-meter__arc-label-bg donation-meter__arc-label-bg--giveback"></rect>
-        <text x="211" y="155" class="donation-meter__arc-label-name">TOTAL RAISED</text>
-        <text x="211" y="167" class="donation-meter__arc-label-value" data-meter-arc-label-giveback
-          >—</text
-        >
-      </g>
-    </g>
+      <rect x="6" y="6" width="588" height="388" rx="4" class="donation-meter__panel"></rect>
+      <rect x="12" y="12" width="576" height="376" rx="3" class="donation-meter__bezel"></rect>
+      <rect x="12"
+            y="12"
+            width="576"
+            height="376"
+            rx="3"
+            class="donation-meter__bezel-brush"></rect>
+      <rect x="18" y="18" width="564" height="336" rx="2" class="donation-meter__face"></rect>
+      <rect x="18"
+            y="18"
+            width="564"
+            height="336"
+            rx="2"
+            class="donation-meter__face-texture"></rect>
 
-    <g
-      class="donation-meter__arc-band-group donation-meter__arc-band-group--wish"
-      tabindex="0"
-      role="img"
-      aria-label="Make-A-Wish arc band"
-    >
-      <path d={arcHitWish} class="donation-meter__arc-band-hit"></path>
-      <path data-meter-arc-wish d="" class="donation-meter__arc-band donation-meter__arc-band--wish"
-      ></path>
-      <g class="donation-meter__arc-label donation-meter__arc-label--wish" aria-hidden="true">
-        <rect
-          x="196"
-          y="175"
-          width="90"
-          height="28"
-          rx="3"
-          class="donation-meter__arc-label-bg donation-meter__arc-label-bg--wish"></rect>
-        <text x="241" y="185" class="donation-meter__arc-label-name">MAKE-A-WISH</text>
-        <text x="241" y="197" class="donation-meter__arc-label-value" data-meter-arc-label-wish
-          >—</text
-        >
-      </g>
-    </g>
-
-    <path d={arcPath} class="donation-meter__arc"></path>
-    <path d={dangerSectorPath} class="donation-meter__danger-zone"></path>
-
-    {
-      ticks.map((tick) => (
-        <line
-          x1={tick.x1}
-          y1={tick.y1}
-          x2={tick.x2}
-          y2={tick.y2}
-          class:list={[
-            "donation-meter__tick",
-            tick.isMajor && "donation-meter__tick--major",
-            tick.isDanger && "donation-meter__tick--danger",
-          ]}
-        />
-      ))
-    }
-
-    {
-      scaleLabels.map((label) => (
-        <text
-          x={label.x}
-          y={label.y}
-          class="donation-meter__scale-label"
-          text-anchor={label.anchor}
-          dominant-baseline="middle"
-        >
-          {label.value.toLocaleString("en-US")}
-        </text>
-      ))
-    }
-
-    <text
-      id="donation-meter-title"
-      x={CENTER_X}
-      y="304"
-      class="donation-meter__dial-title"
-      text-anchor="middle">VA GIGA-GIVERES</text
-    >
-    <text x={CENTER_X} y="328" class="donation-meter__dial-range" text-anchor="middle">
-      <tspan data-meter-raised class="donation-meter__dial-value donation-meter__dial-value--raised"
-        >$0</tspan
+      <g
+        class="donation-meter__arc-band-group donation-meter__arc-band-group--total"
+        tabindex="0"
+        role="img"
+        aria-label="Total raised arc band"
       >
-      <tspan> OF </tspan>
-      <tspan data-meter-goal class="donation-meter__dial-value donation-meter__dial-value--goal"
-        >$50,000</tspan
+        <path d={arcHitTotal} class="donation-meter__arc-band-hit"></path>
+        <path
+          data-meter-arc-total
+          d=""
+          class="donation-meter__arc-band donation-meter__arc-band--total"></path>
+        <g class="donation-meter__arc-label donation-meter__arc-label--total" aria-hidden="true">
+          <rect
+            x="136"
+            y="115"
+            width="110"
+            height="28"
+            rx="3"
+            class="donation-meter__arc-label-bg donation-meter__arc-label-bg--total"></rect>
+          <text x="190" y="125" class="donation-meter__arc-label-name">RAISED + MATCHING</text>
+          <text x="190" y="137" class="donation-meter__arc-label-value" data-meter-arc-label-total
+          >—
+          </text
+          >
+        </g>
+      </g>
+
+      <g
+        class="donation-meter__arc-band-group donation-meter__arc-band-group--giveback"
+        tabindex="0"
+        role="img"
+        aria-label="Give Back arc band"
       >
-      <tspan> GOAL</tspan>
-    </text>
+        <path d={arcHitGiveback} class="donation-meter__arc-band-hit"></path>
+        <path
+          data-meter-arc-giveback
+          d=""
+          class="donation-meter__arc-band donation-meter__arc-band--giveback"></path>
+        <g class="donation-meter__arc-label donation-meter__arc-label--giveback" aria-hidden="true">
+          <rect
+            x="166"
+            y="145"
+            width="90"
+            height="28"
+            rx="3"
+            class="donation-meter__arc-label-bg donation-meter__arc-label-bg--giveback"></rect>
+          <text x="211" y="155" class="donation-meter__arc-label-name">TOTAL RAISED</text>
+          <text x="211"
+                y="167"
+                class="donation-meter__arc-label-value"
+                data-meter-arc-label-giveback
+          >—
+          </text
+          >
+        </g>
+      </g>
 
-    <text x="32" y="345" class="donation-meter__serial" text-anchor="start">501-C3</text>
+      <g
+        class="donation-meter__arc-band-group donation-meter__arc-band-group--wish"
+        tabindex="0"
+        role="img"
+        aria-label="Make-A-Wish arc band"
+      >
+        <path d={arcHitWish} class="donation-meter__arc-band-hit"></path>
+        <path data-meter-arc-wish
+              d=""
+              class="donation-meter__arc-band donation-meter__arc-band--wish"
+        ></path>
+        <g class="donation-meter__arc-label donation-meter__arc-label--wish" aria-hidden="true">
+          <rect
+            x="196"
+            y="175"
+            width="90"
+            height="28"
+            rx="3"
+            class="donation-meter__arc-label-bg donation-meter__arc-label-bg--wish"></rect>
+          <text x="241" y="185" class="donation-meter__arc-label-name">MAKE-A-WISH</text>
+          <text x="241" y="197" class="donation-meter__arc-label-value" data-meter-arc-label-wish
+          >—
+          </text
+          >
+        </g>
+      </g>
 
-    <rect x="12" y="354" width="576" height="34" rx="3" class="donation-meter__bottom-rail"></rect>
+      <path d={arcPath} class="donation-meter__arc"></path>
+      <path d={dangerSectorPath} class="donation-meter__danger-zone"></path>
 
-    <g data-meter-needle-wish transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
-      <path
-        d="M 299.1 248 L 300.9 248 L 301.5 158 L 300 138 L 298.5 158 Z"
-        class="donation-meter__needle--wish"></path>
-      <path
-        d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
-        class="donation-meter__needle-tail--wish"></path>
-    </g>
+      {
+        ticks.map((tick) => (
+          <line
+            x1={tick.x1}
+            y1={tick.y1}
+            x2={tick.x2}
+            y2={tick.y2}
+            class:list={[
+              "donation-meter__tick",
+              tick.isMajor && "donation-meter__tick--major",
+              tick.isDanger && "donation-meter__tick--danger",
+            ]}
+          />
+        ))
+      }
 
-    <g data-meter-needle-giveback transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
-      <path
-        d="M 299.1 248 L 300.9 248 L 301.5 116 L 300 96 L 298.5 116 Z"
-        class="donation-meter__needle--giveback"></path>
-      <path
-        d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
-        class="donation-meter__needle-tail--giveback"></path>
-    </g>
+      {
+        scaleLabels.map((label) => (
+          <text
+            x={label.x}
+            y={label.y}
+            class="donation-meter__scale-label"
+            text-anchor={label.anchor}
+            dominant-baseline="middle"
+          >
+            {label.value.toLocaleString("en-US")}
+          </text>
+        ))
+      }
 
-    <g data-meter-needle transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
-      <path
-        d="M 299.1 248 L 300.9 248 L 301.5 74 L 300 54 L 298.5 74 Z"
-        class="donation-meter__needle"></path>
-      <path
-        d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
-        class="donation-meter__needle-tail"></path>
-    </g>
+      <text
+        id="donation-meter-title"
+        x={CENTER_X}
+        y="304"
+        class="donation-meter__dial-title"
+        text-anchor="middle">VA GIGA-GIVERES
+      </text
+      >
+      <text x={CENTER_X} y="328" class="donation-meter__dial-range" text-anchor="middle">
+        <tspan data-meter-raised
+               class="donation-meter__dial-value donation-meter__dial-value--raised"
+        >$0
+        </tspan
+        >
+        <tspan> OF</tspan>
+        <tspan data-meter-goal class="donation-meter__dial-value donation-meter__dial-value--goal"
+        >$50,000
+        </tspan
+        >
+        <tspan> GOAL</tspan>
+      </text>
 
-    <circle cx={CENTER_X} cy={CENTER_Y} r="9" class="donation-meter__pivot-core"></circle>
-    <circle cx="298.5" cy="244.6" r="1.7" class="donation-meter__pivot-highlight"></circle>
-  </svg>
+      <text x="32" y="345" class="donation-meter__serial" text-anchor="start">501-C3</text>
+
+      <rect x="12"
+            y="354"
+            width="576"
+            height="34"
+            rx="3"
+            class="donation-meter__bottom-rail"></rect>
+
+      <g data-meter-needle-wish transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
+        <path
+          d="M 299.1 248 L 300.9 248 L 301.5 158 L 300 138 L 298.5 158 Z"
+          class="donation-meter__needle--wish"></path>
+        <path
+          d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
+          class="donation-meter__needle-tail--wish"></path>
+      </g>
+
+      <g data-meter-needle-giveback transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
+        <path
+          d="M 299.1 248 L 300.9 248 L 301.5 116 L 300 96 L 298.5 116 Z"
+          class="donation-meter__needle--giveback"></path>
+        <path
+          d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
+          class="donation-meter__needle-tail--giveback"></path>
+      </g>
+
+      <g data-meter-needle transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
+        <path
+          d="M 299.1 248 L 300.9 248 L 301.5 74 L 300 54 L 298.5 74 Z"
+          class="donation-meter__needle"></path>
+        <path
+          d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
+          class="donation-meter__needle-tail"></path>
+      </g>
+
+      <circle cx={CENTER_X} cy={CENTER_Y} r="9" class="donation-meter__pivot-core"></circle>
+      <circle cx="298.5" cy="244.6" r="1.7" class="donation-meter__pivot-highlight"></circle>
+    </svg>
+  </section>
 </div>
 
 <script>
@@ -358,11 +422,15 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   function lerp(start: number, end: number, progress: number): number {
-    return start + (end - start) * progress;
+    return start + (
+      end - start
+    ) * progress;
   }
 
   function toNeedleAngle(ratio: number): number {
-    return ARC_START_DEG + clamp(ratio, 0, 1) * (ARC_END_DEG - ARC_START_DEG);
+    return ARC_START_DEG + clamp(ratio, 0, 1) * (
+      ARC_END_DEG - ARC_START_DEG
+    );
   }
 
   function setNeedle(needle: SVGGElement, ratio: number): void {
@@ -382,7 +450,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   function isCurrentToken(needle: SVGGElement, token: number): boolean {
-    return (motionTokens.get(needle) ?? 0) === token;
+    return (
+             motionTokens.get(needle) ?? 0
+           ) === token;
   }
 
   function stopOverloadTeeter(needle: SVGGElement): void {
@@ -398,17 +468,23 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
   function easeOutCubic(progress: number): number {
     const clamped = clamp(progress, 0, 1);
-    return 1 - (1 - clamped) ** 3;
+    return 1 - (
+           1 - clamped
+    ) ** 3;
   }
 
   function easeOutQuint(progress: number): number {
     const clamped = clamp(progress, 0, 1);
-    return 1 - (1 - clamped) ** 5;
+    return 1 - (
+           1 - clamped
+    ) ** 5;
   }
 
   function easeInOutSine(progress: number): number {
     const clamped = clamp(progress, 0, 1);
-    return -(Math.cos(Math.PI * clamped) - 1) / 2;
+    return -(
+      Math.cos(Math.PI * clamped) - 1
+    ) / 2;
   }
 
   function setCurrencyText(node: Element, amount: number): void {
@@ -510,7 +586,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         b: lerp(palette.low.b, palette.mid.b, t),
       };
     } else {
-      const t = (ratio - 0.5) * 2;
+      const t = (
+                  ratio - 0.5
+                ) * 2;
       color = {
         r: lerp(palette.mid.r, palette.high.r, t),
         g: lerp(palette.mid.g, palette.high.g, t),
@@ -526,8 +604,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     const normalizedGoal = Math.max(0, Math.round(goalAmount));
     const nextStatus =
       normalizedGoal > 0
-        ? `Raised ${currencyFormatter.format(normalizedRaised)} of ${currencyFormatter.format(normalizedGoal)} goal.`
-        : `Raised ${currencyFormatter.format(normalizedRaised)}. Goal unavailable.`;
+      ? `Raised ${currencyFormatter.format(normalizedRaised)} of ${currencyFormatter.format(
+        normalizedGoal)} goal.`
+      : `Raised ${currencyFormatter.format(normalizedRaised)}. Goal unavailable.`;
 
     if (statusTextCache.get(statusNode) === nextStatus) {
       return;
@@ -566,12 +645,20 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
    * Returns "" when ratio <= 0 (invisible / no data).
    */
   function buildArcBandPath(ratio: number, outerR: number, innerR: number): string {
-    if (ratio <= 0) return "";
+    if (ratio <= 0) {
+      return "";
+    }
 
     const clampedRatio = Math.min(ratio, 1);
-    const startRad = (ARC_START_DEG * Math.PI) / 180;
-    const endDeg = ARC_START_DEG + clampedRatio * (ARC_END_DEG - ARC_START_DEG);
-    const endRad = (endDeg * Math.PI) / 180;
+    const startRad = (
+                       ARC_START_DEG * Math.PI
+                     ) / 180;
+    const endDeg = ARC_START_DEG + clampedRatio * (
+      ARC_END_DEG - ARC_START_DEG
+    );
+    const endRad = (
+                     endDeg * Math.PI
+                   ) / 180;
 
     const ox1 = PIVOT_X + Math.sin(startRad) * outerR;
     const oy1 = PIVOT_Y - Math.cos(startRad) * outerR;
@@ -597,7 +684,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
   /** Trigger the CSS fade-in transition on an arc band. */
   function showArcBand(arc: SVGPathElement | null): void {
-    if (!arc) return;
+    if (!arc) {
+      return;
+    }
     arc.dataset.arcVisible = "";
   }
 
@@ -612,16 +701,22 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     }
 
     if (progress <= 0.68) {
-      const phase = clamp((progress - 0.12) / 0.56, 0, 1);
+      const phase = clamp((
+                            progress - 0.12
+                          ) / 0.56, 0, 1);
       return lerp(dipAngle, overshootAngle, easeOutCubic(phase));
     }
 
     if (progress <= 0.82) {
-      const phase = clamp((progress - 0.68) / 0.14, 0, 1);
+      const phase = clamp((
+                            progress - 0.68
+                          ) / 0.14, 0, 1);
       return lerp(overshootAngle, recoilAngle, easeInOutSine(phase));
     }
 
-    const phase = clamp((progress - 0.82) / 0.18, 0, 1);
+    const phase = clamp((
+                          progress - 0.82
+                        ) / 0.18, 0, 1);
     return lerp(recoilAngle, targetAngle, easeOutQuint(phase));
   }
 
@@ -674,10 +769,12 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
           return;
         }
 
-        const progress = clamp((now - start) / frameDuration, 0, 1);
+        const progress = clamp((
+                                 now - start
+                               ) / frameDuration, 0, 1);
         const angle = mechanical
-          ? getMechanicalAngle(progress, startAngle, targetAngle)
-          : lerp(startAngle, targetAngle, easeInOutSine(progress));
+                      ? getMechanicalAngle(progress, startAngle, targetAngle)
+                      : lerp(startAngle, targetAngle, easeInOutSine(progress));
 
         setNeedleAngle(needle, angle);
 
@@ -730,7 +827,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       const frameDuration = Math.max(220, durationMs);
 
       const frame = (now: number) => {
-        const progress = clamp((now - start) / frameDuration, 0, 1);
+        const progress = clamp((
+                                 now - start
+                               ) / frameDuration, 0, 1);
         const eased = easeOutQuint(progress);
         updateReadout(
           root,
@@ -871,8 +970,12 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
     const palette = getRaisedPalette();
     setNeedle(needle, 0);
-    if (givebackNeedle) setNeedle(givebackNeedle, 0);
-    if (wishNeedle) setNeedle(wishNeedle, 0);
+    if (givebackNeedle) {
+      setNeedle(givebackNeedle, 0);
+    }
+    if (wishNeedle) {
+      setNeedle(wishNeedle, 0);
+    }
     root.dataset.state = "loading";
     updateReadout(root, raisedNode, goalNode, statusNode, 0, FALLBACK_GOAL, palette);
     statusNode.textContent = "Donation meter loading latest totals.";
@@ -910,12 +1013,12 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     // this position once the fetch resolves.
     const cachedGivebackRatio =
       cached && cached.givebackRaised > 0
-        ? getProgressRatio(cached.givebackRaised, FALLBACK_GOAL)
-        : 0;
+      ? getProgressRatio(cached.givebackRaised, FALLBACK_GOAL)
+      : 0;
     const cachedTotalRatio =
       cached && cached.givebackRaised > 0
-        ? getProgressRatio(2 * cached.givebackRaised, FALLBACK_GOAL)
-        : 0;
+      ? getProgressRatio(2 * cached.givebackRaised, FALLBACK_GOAL)
+      : 0;
 
     if (cachedGivebackRatio > 0) {
       if (arcGiveback) {
@@ -932,8 +1035,12 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         );
         showArcBand(arcTotal);
       }
-      if (labelGiveback) setCurrencyText(labelGiveback, cached!.givebackRaised);
-      if (labelTotal) setCurrencyText(labelTotal, 2 * cached!.givebackRaised);
+      if (labelGiveback) {
+        setCurrencyText(labelGiveback, cached!.givebackRaised);
+      }
+      if (labelTotal) {
+        setCurrencyText(labelTotal, 2 * cached!.givebackRaised);
+      }
       if (givebackNeedle) {
         animateNeedle(givebackNeedle, 0, cachedGivebackRatio, true).catch(
           (e: unknown) => console.warn("Giveback needle cache animation failed.", e),
@@ -959,8 +1066,12 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     const totalRaised = 2 * givebackRaised;
 
     // Update arc band tooltip labels with live values.
-    if (labelTotal) setCurrencyText(labelTotal, totalRaised);
-    if (labelGiveback) setCurrencyText(labelGiveback, givebackRaised);
+    if (labelTotal) {
+      setCurrencyText(labelTotal, totalRaised);
+    }
+    if (labelGiveback) {
+      setCurrencyText(labelGiveback, givebackRaised);
+    }
 
     // Animate giveback needle (needle 2) from cached position to live value.
     // Fade in the giveback arc band after the needle reaches its position.
@@ -1066,7 +1177,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
       // Set wish arc geometry now that wishRaised is known, then fire needle
       // from the cached position (or 0) to the live value.
-      if (labelWish) setCurrencyText(labelWish, wishRaised);
+      if (labelWish) {
+        setCurrencyText(labelWish, wishRaised);
+      }
       if (arcWish) {
         arcWish.setAttribute(
           "d",
@@ -1147,7 +1260,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
           e.preventDefault(); // prevent simulated mouse events + double-tap zoom
           const isOpen = "labelOpen" in group.dataset;
           bandGroups.forEach((g) => delete g.dataset.labelOpen);
-          if (!isOpen) group.dataset.labelOpen = "";
+          if (!isOpen) {
+            group.dataset.labelOpen = "";
+          }
         },
         { passive: false },
       );
@@ -1156,7 +1271,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     root.addEventListener(
       "touchstart",
       (e) => {
-        if (!(e.target as Element).closest(".donation-meter__arc-band-group")) {
+        if (!(
+          e.target as Element
+        ).closest(".donation-meter__arc-band-group")) {
           bandGroups.forEach((g) => delete g.dataset.labelOpen);
         }
       },
@@ -1166,316 +1283,424 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 </script>
 
 <style>
-  .donation-meter {
-    --meter-raised-readout: var(--color-meter-readout-muted);
-    --meter-goal-readout: var(--color-meter-readout-goal);
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-    width: min(100%, 620px);
-    margin-inline: auto;
+@media screen and (max-width: 451px) {
+  #frame {
+    --frame-height: calc(188px);
+    --frame-width: calc(300px);
+    --screw-x-offset: 3px;
+    --screw-y-offset: 2px;
+    --screw-size: 36px;
+  }
   }
 
-  .donation-meter__svg {
-    width: 100%;
-    height: auto;
-    display: block;
+@media screen and (min-width: 451px) and (max-width: 850px) {
+  #frame {
+  --frame-height: calc(277px);
+  --frame-width: calc(450px);
+  }
   }
 
-  .donation-meter__panel {
-    fill: transparent;
-    stroke: none;
-    stroke-width: 1.2;
+.donation-meter {
+  --frame-height: calc(500px);
+  --frame-width: calc(800px);
+  --screw-x-offset: 8px;
+  --screw-y-offset: 3px;
+  --screw-size: 60px;
+
+  --meter-raised-readout: var(--color-meter-readout-muted);
+  --meter-goal-readout: var(--color-meter-readout-goal);
+
+  --noise-data: url("data:image/svg+xml,%3Csvg%20%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20%20xmlns%3Axlink%3D'http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink'%20%20width%3D'300'%20height%3D'300'%3E%3Cfilter%20id%3D'n'%20x%3D'0'%20y%3D'0'%3E%3CfeTurbulence%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3D'fractalNoise'%20%20%20%20%20%20%20%20%20%20%20%20%20%20baseFrequency%3D'0.67'%20%20%20%20%20%20%20%20%20%20%20%20%20%20stitchTiles%3D'stitch'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'300'%20height%3D'300'%20fill%3D'transparent'%2F%3E%3Crect%20width%3D'300'%20height%3D'300'%20filter%3D%22url(%23n)%22%20opacity%3D'0.30'%2F%3E%3C%2Fsvg%3E");
+  --rust-scale: 30%;
+  --rust-scale-x: calc(var(--frame-height) / var(--frame-width) * var(--rust-scale));
+  --rust-scale-y: calc(var(--frame-width) / var(--frame-height) * var(--rust-scale));
+
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  margin-inline: auto;
+  display: flex;
+  justify-content: center;
   }
 
-  .donation-meter__stop-face-center {
-    stop-color: var(--color-meter-face-center);
+.donation-meter__svg {
+  width: calc(var(--frame-width) * 0.8);
+  margin: calc(var(--frame-height) * 0.1) calc(var(--frame-width) * 0.1);
+  height: calc(var(--frame-height) * 0.8);
+  display: block;
+  position: relative;
+  z-index: 100;
   }
 
-  .donation-meter__stop-face-edge {
-    stop-color: var(--color-meter-face-edge);
+.donation-meter__panel {
+  fill: transparent;
+  stroke: none;
+  stroke-width: 1.2;
   }
 
-  .donation-meter__stop-bezel-outer {
-    stop-color: var(--color-meter-bezel-outer);
+.donation-meter__stop-face-center {
+  stop-color: var(--color-meter-face-center);
   }
 
-  .donation-meter__stop-bezel-mid {
-    stop-color: var(--color-meter-bezel-mid);
+.donation-meter__stop-face-edge {
+  stop-color: var(--color-meter-face-edge);
   }
 
-  .donation-meter__stop-bezel-inner {
-    stop-color: var(--color-meter-bezel-inner);
+.donation-meter__stop-bezel-outer {
+  stop-color: var(--color-meter-bezel-outer);
   }
 
-  .donation-meter__stop-pivot-center {
-    stop-color: var(--color-meter-pivot-center);
+.donation-meter__stop-bezel-mid {
+  stop-color: var(--color-meter-bezel-mid);
   }
 
-  .donation-meter__stop-pivot-edge {
-    stop-color: var(--color-meter-pivot-edge);
+.donation-meter__stop-bezel-inner {
+  stop-color: var(--color-meter-bezel-inner);
   }
 
-  .donation-meter__texture-dot {
-    fill: var(--color-meter-face-texture);
+.donation-meter__stop-pivot-center {
+  stop-color: var(--color-meter-pivot-center);
   }
 
-  .donation-meter__bezel-brush-line {
-    stroke: var(--color-meter-brush-line);
-    stroke-width: 0.45;
+.donation-meter__stop-pivot-edge {
+  stop-color: var(--color-meter-pivot-edge);
   }
 
-  .donation-meter__bezel {
-    fill: url(#meter-bezel-gradient);
-    stroke: var(--color-meter-bezel-stroke);
-    stroke-width: 1.1;
+.donation-meter__texture-dot {
+  fill: var(--color-meter-face-texture);
   }
 
-  .donation-meter__bezel-brush {
-    fill: url(#meter-bezel-brush);
-    opacity: 0.42;
+.donation-meter__bezel-brush-line {
+  stroke: var(--color-meter-brush-line);
+  stroke-width: 0.45;
   }
 
-  .donation-meter__face {
-    fill: url(#meter-face-gradient);
-    stroke: var(--color-meter-face-stroke);
-    stroke-width: 1.25;
+.donation-meter__bezel {
+  fill: url(#meter-bezel-gradient);
+  stroke: var(--color-meter-bezel-stroke);
+  stroke-width: 1.1;
   }
 
-  .donation-meter__face-texture {
-    fill: url(#meter-face-texture);
-    opacity: 0.34;
+.donation-meter__bezel-brush {
+  fill: url(#meter-bezel-brush);
+  opacity: 0.42;
   }
 
-  .donation-meter__arc-band--total {
-    fill: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
-    opacity: 0;
-    transition: opacity 0.6s ease-in;
+.donation-meter__face {
+  fill: url(#meter-face-gradient);
+  stroke: var(--color-meter-face-stroke);
+  stroke-width: 1.25;
   }
 
-  .donation-meter__arc-band--total[data-arc-visible] {
-    opacity: 0.18;
+.donation-meter__face-texture {
+  fill: url(#meter-face-texture);
+  opacity: 0.34;
   }
 
-  .donation-meter__arc-band--giveback {
-    fill: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
-    opacity: 0;
-    transition: opacity 0.6s ease-in;
+.donation-meter__arc-band--total {
+  fill: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
+  opacity: 0;
+  transition: opacity 0.6s ease-in;
   }
 
-  .donation-meter__arc-band--giveback[data-arc-visible] {
-    opacity: 0.22;
+.donation-meter__arc-band--total[data-arc-visible] {
+  opacity: 0.18;
   }
 
+.donation-meter__arc-band--giveback {
+  fill: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
+  opacity: 0;
+  transition: opacity 0.6s ease-in;
+  }
+
+.donation-meter__arc-band--giveback[data-arc-visible] {
+  opacity: 0.22;
+  }
+
+.donation-meter__arc-band--wish {
+  fill: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
+  opacity: 0;
+  transition: opacity 0.6s ease-in;
+  }
+
+.donation-meter__arc-band--wish[data-arc-visible] {
+  opacity: 0.22;
+  }
+
+@media (prefers-reduced-motion: reduce) {
+  .donation-meter__arc-band--total,
+  .donation-meter__arc-band--giveback,
   .donation-meter__arc-band--wish {
-    fill: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
-    opacity: 0;
-    transition: opacity 0.6s ease-in;
+  transition: none,;
+  }
   }
 
-  .donation-meter__arc-band--wish[data-arc-visible] {
-    opacity: 0.22;
+/* Transparent hit area — catches pointer events for the full 180° band */
+.donation-meter__arc-band-hit {
+  fill: none;
+  pointer-events: all;
+  cursor: pointer;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .donation-meter__arc-band--total,
-    .donation-meter__arc-band--giveback,
-    .donation-meter__arc-band--wish {
-      transition: none;
-    }
+/* Arc band tooltip labels */
+.donation-meter__arc-label {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-out;
   }
 
-  /* Transparent hit area — catches pointer events for the full 180° band */
-  .donation-meter__arc-band-hit {
-    fill: none;
-    pointer-events: all;
-    cursor: pointer;
+.donation-meter__arc-band-group:hover .donation-meter__arc-label,
+.donation-meter__arc-band-group:focus-visible .donation-meter__arc-label,
+.donation-meter__arc-band-group[data-label-open] .donation-meter__arc-label {
+  opacity: 1;
   }
 
-  /* Arc band tooltip labels */
-  .donation-meter__arc-label {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease-out;
+.donation-meter__arc-band-group {
+  outline: none;
   }
 
-  .donation-meter__arc-band-group:hover .donation-meter__arc-label,
-  .donation-meter__arc-band-group:focus-visible .donation-meter__arc-label,
-  .donation-meter__arc-band-group[data-label-open] .donation-meter__arc-label {
-    opacity: 1;
+.donation-meter__arc-label-bg {
+  fill: rgba(8, 12, 18, 0.88);
   }
 
-  .donation-meter__arc-band-group {
-    outline: none;
+.donation-meter__arc-label-bg--total {
+  stroke: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
+  stroke-width: 0.75;
   }
 
-  .donation-meter__arc-label-bg {
-    fill: rgba(8, 12, 18, 0.88);
+.donation-meter__arc-label-bg--giveback {
+  stroke: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
+  stroke-width: 0.75;
   }
 
-  .donation-meter__arc-label-bg--total {
-    stroke: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
-    stroke-width: 0.75;
+.donation-meter__arc-label-bg--wish {
+  stroke: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
+  stroke-width: 0.75;
   }
 
-  .donation-meter__arc-label-bg--giveback {
-    stroke: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
-    stroke-width: 0.75;
+.donation-meter__arc-label-name {
+  fill: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-display);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-anchor: middle;
   }
 
-  .donation-meter__arc-label-bg--wish {
-    stroke: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
-    stroke-width: 0.75;
+.donation-meter__arc-label-value {
+  fill: rgba(255, 255, 255, 0.95);
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  text-anchor: middle;
   }
 
-  .donation-meter__arc-label-name {
-    fill: rgba(255, 255, 255, 0.6);
-    font-family: var(--font-display);
-    font-size: 7.5px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-anchor: middle;
+.donation-meter__arc {
+  fill: none;
+  stroke: var(--color-meter-arc);
+  stroke-width: 1.15;
+  opacity: 0.82;
   }
 
-  .donation-meter__arc-label-value {
-    fill: rgba(255, 255, 255, 0.95);
-    font-family: var(--font-display);
-    font-size: 10px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
-    text-anchor: middle;
+.donation-meter__danger-zone {
+  fill: var(--color-meter-danger-fill);
   }
 
-  .donation-meter__arc {
-    fill: none;
-    stroke: var(--color-meter-arc);
-    stroke-width: 1.15;
-    opacity: 0.82;
+.donation-meter__tick {
+  stroke: var(--color-meter-tick);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  opacity: 0.95;
   }
 
-  .donation-meter__danger-zone {
-    fill: var(--color-meter-danger-fill);
+.donation-meter__tick--major {
+  stroke: var(--color-meter-tick-major);
+  stroke-width: 1.35;
   }
 
-  .donation-meter__tick {
-    stroke: var(--color-meter-tick);
-    stroke-width: 0.9;
-    stroke-linecap: round;
-    opacity: 0.95;
+.donation-meter__tick--danger {
+  stroke: var(--color-meter-danger);
   }
 
-  .donation-meter__tick--major {
-    stroke: var(--color-meter-tick-major);
-    stroke-width: 1.35;
+.donation-meter__scale-label {
+  fill: var(--color-meter-readout-dim);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   }
 
-  .donation-meter__tick--danger {
-    stroke: var(--color-meter-danger);
+.donation-meter__dial-title {
+  fill: var(--color-meter-readout);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   }
 
-  .donation-meter__scale-label {
-    fill: var(--color-meter-readout-dim);
-    font-family: var(--font-display);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
+.donation-meter__dial-range {
+  fill: var(--color-meter-readout-muted);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
   }
 
-  .donation-meter__dial-title {
-    fill: var(--color-meter-readout);
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
+.donation-meter__dial-value--raised {
+  fill: var(--meter-raised-readout);
   }
 
-  .donation-meter__dial-range {
-    fill: var(--color-meter-readout-muted);
-    font-family: var(--font-display);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    font-variant-numeric: tabular-nums;
-    text-transform: uppercase;
+.donation-meter__dial-value--goal {
+  fill: var(--meter-goal-readout);
   }
 
-  .donation-meter__dial-value--raised {
-    fill: var(--meter-raised-readout);
+.donation-meter__needle,
+.donation-meter__needle-tail {
+  fill: var(--color-meter-needle-total, #ef4444);
+  filter: drop-shadow(
+  0 0.8px 1.2px var(--color-meter-needle-total-shadow, rgba(239, 68, 68, 0.45))
+  );
   }
 
-  .donation-meter__dial-value--goal {
-    fill: var(--meter-goal-readout);
+.donation-meter__needle--giveback,
+.donation-meter__needle-tail--giveback {
+  fill: var(--color-meter-needle-giveback, #3b82f6);
+  filter: drop-shadow(
+  0 0.8px 1.2px var(--color-meter-needle-giveback-shadow, rgba(59, 130, 246, 0.45))
+  );
   }
 
-  .donation-meter__needle,
-  .donation-meter__needle-tail {
-    fill: var(--color-meter-needle-total, #ef4444);
-    filter: drop-shadow(
-      0 0.8px 1.2px var(--color-meter-needle-total-shadow, rgba(239, 68, 68, 0.45))
-    );
+.donation-meter__needle--wish,
+.donation-meter__needle-tail--wish {
+  fill: var(--color-meter-needle-wish, #22c55e);
+  filter: drop-shadow(
+  0 0.8px 1.2px var(--color-meter-needle-wish-shadow, rgba(34, 197, 94, 0.45))
+  );
   }
 
-  .donation-meter__needle--giveback,
-  .donation-meter__needle-tail--giveback {
-    fill: var(--color-meter-needle-giveback, #3b82f6);
-    filter: drop-shadow(
-      0 0.8px 1.2px var(--color-meter-needle-giveback-shadow, rgba(59, 130, 246, 0.45))
-    );
+.donation-meter__giveback-readout {
+  fill: var(--color-meter-readout-dim);
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
   }
 
-  .donation-meter__needle--wish,
-  .donation-meter__needle-tail--wish {
-    fill: var(--color-meter-needle-wish, #22c55e);
-    filter: drop-shadow(
-      0 0.8px 1.2px var(--color-meter-needle-wish-shadow, rgba(34, 197, 94, 0.45))
-    );
+.donation-meter__dial-value--giveback {
+  fill: var(--color-meter-needle-giveback, #3b82f6);
   }
 
-  .donation-meter__giveback-readout {
-    fill: var(--color-meter-readout-dim);
-    font-family: var(--font-display);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    font-variant-numeric: tabular-nums;
-    text-transform: uppercase;
+.donation-meter__pivot-core {
+  fill: url(#meter-pivot-gradient);
+  stroke: var(--color-meter-bezel-stroke);
+  stroke-width: 0.8;
   }
 
-  .donation-meter__dial-value--giveback {
-    fill: var(--color-meter-needle-giveback, #3b82f6);
+.donation-meter__pivot-highlight {
+  fill: var(--color-meter-pivot-highlight);
   }
 
-  .donation-meter__pivot-core {
-    fill: url(#meter-pivot-gradient);
-    stroke: var(--color-meter-bezel-stroke);
-    stroke-width: 0.8;
+.donation-meter__bottom-rail {
+  fill: var(--color-meter-bottom-rail);
   }
 
-  .donation-meter__pivot-highlight {
-    fill: var(--color-meter-pivot-highlight);
+.donation-meter__serial {
+  fill: var(--color-meter-readout-dim);
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
   }
 
-  .donation-meter__bottom-rail {
-    fill: var(--color-meter-bottom-rail);
+.donation-meter[data-state="error"] .donation-meter__dial-range {
+  fill: var(--color-meter-danger);
   }
 
-  .donation-meter__serial {
-    fill: var(--color-meter-readout-dim);
-    font-family: var(--font-display);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    opacity: 0.65;
+.donation-meter[data-state="goal"] .donation-meter__dial-range {
+  fill: var(--color-meter-readout-goal);
   }
 
-  .donation-meter[data-state="error"] .donation-meter__dial-range {
-    fill: var(--color-meter-danger);
+#frame {
+  position: relative;
+  height: var(--frame-height);
+  width: var(--frame-width);
+  overflow: hidden;
+  border-radius: 1em;
+  background: var(--noise-data), #b7110edd;
   }
 
-  .donation-meter[data-state="goal"] .donation-meter__dial-range {
-    fill: var(--color-meter-readout-goal);
+.noise-wrapper {
+  top: 0; left: 0; right: 0; bottom: 0; position: absolute;
+  transform-origin: top left;
   }
+
+.noise-wrapper[data-side="right"] {
+  transform: translateX(100%) rotate(90deg);
+  }
+
+.noise-wrapper[data-side="left"] {
+  transform: translateY(100%) rotate(-90deg);
+  }
+
+.noise-wrapper[data-side="bottom"] {
+  transform: scale(-1, -1);
+  transform-origin: center;
+  }
+
+.noise-x, .noise-y {
+  position: absolute;
+  top: 0; left: 0;
+  opacity: 0.25;
+  transform-origin: top left;
+  z-index: 2;
+  }
+
+.noise-under {
+  z-index: 1;
+  top: 5px;
+  filter: blur(3px);
+  }
+
+.noise-x {
+  width: 100vw;
+  transform: scaleY(var(--rust-scale-x));
+  }
+
+.noise-y {
+  width: 100vh;
+  transform: scaleY(var(--rust-scale-y));
+  }
+
+.screw-tl, .screw-tr, .screw-br, .screw-bl {
+  position: absolute;
+  width: var(--screw-size);
+  height: var(--screw-size);
+  z-index: 0;
+  }
+
+.screw-tl {
+  top: var(--screw-y-offset); left: var(--screw-x-offset); transform: rotate(10deg);
+  }
+
+.screw-tr {
+  top: var(--screw-y-offset); right: var(--screw-x-offset); transform: rotate(50deg);
+  }
+
+.screw-bl {
+  bottom: var(--screw-y-offset); left: var(--screw-x-offset); transform: rotate(-40deg);
+  }
+
+.screw-br {
+  bottom: var(--screw-y-offset); right: var(--screw-x-offset); transform: rotate(15deg);
+  }
+
 </style>
