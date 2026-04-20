@@ -58,8 +58,6 @@
   "maxEctoVehiclesLabel": "Maximum number of ecto vehicles that can be accommodated",
   "memberParkingInfoLabel": "Where should members park on the day of the event?",
   "memberParkingInfoPlaceholder": "Describe member parking location and instructions…",
-  "paidParkingCoveredLegend": "Is paid parking covered for members?",
-  "optionNA": "N/A",
 
   "tablesLegend": "Tables",
   "tablesOptionWeBring": "We provide tables",

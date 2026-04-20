@@ -119,27 +119,48 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   <p class="sr-only donation-meter__status" data-meter-status aria-live="polite" aria-atomic="true">
     Donation meter loading.
   </p>
+  <!-- Inline SVG definitions — loaded once, referenced via <use> to avoid per-frame img re-validation -->
+  <svg aria-hidden="true" focusable="false" style="display:none">
+    <defs>
+      <filter id="dm-sfilt" width="1.899" height="1.899" x="-.45" y="-.45" style="color-interpolation-filters:sRGB"><feTurbulence baseFrequency="0.013 0.013" result="turbulence" seed="1" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" in2="turbulence" result="fbSourceGraphic" scale="6.6" xChannelSelector="R" yChannelSelector="G"/><feColorMatrix in="fbSourceGraphic" result="fbSourceGraphicAlpha" values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"/><feGaussianBlur in="fbSourceGraphic" result="result6" stdDeviation=".5"/><feComposite in="result6" in2="result6" operator="in" result="result7"/><feGaussianBlur in="result7" result="result3" stdDeviation="5"/><feComposite in2="result7" result="result91"/><feComposite in="result3" in2="result91" operator="in" result="result5"/><feColorMatrix result="result4" values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"/><feSpecularLighting in="result4" result="result11" specularConstant="2" specularExponent="45" surfaceScale="3"><fePointLight x="-5000" y="-10000" z="20000"/></feSpecularLighting><feComposite in2="result4" k1="1" operator="arithmetic" result="result10"/><feComposite in="result5" in2="result10" k2=".6" k3="1" operator="arithmetic" result="result8"/><feGaussianBlur in="result8" result="result31" stdDeviation="2"/><feComposite in2="result8" result="result9"/><feBlend in2="result9"/></filter>
+      <symbol id="dm-screw-head" viewBox="0 0 80.899 80.9">
+        <path d="M40.268 28.88a2.15 2.15 0 0 0-2.115 2.184l.113 7.27-7.27.113a2.15 2.15 0 0 0-2.117 2.183 2.15 2.15 0 0 0 2.184 2.118l7.27-.114.113 7.27a2.15 2.15 0 0 0 2.184 2.115 2.15 2.15 0 0 0 2.117-2.183l-.114-7.27 7.268-.113a2.15 2.15 0 0 0 2.117-2.184 2.15 2.15 0 0 0-2.183-2.115l-7.27.113-.113-7.27a2.15 2.15 0 0 0-2.184-2.117m.182-9.73c-11.748 0-21.3 9.552-21.3 21.3s9.552 21.3 21.3 21.3 21.299-9.551 21.299-21.3c0-11.748-9.55-21.3-21.299-21.3m0 2.6c10.343 0 18.7 8.358 18.7 18.7 0 10.344-8.357 18.7-18.7 18.7s-18.701-8.356-18.701-18.7c0-10.342 8.358-18.7 18.701-18.7" style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;stroke-linecap:round;stroke-linejoin:round;filter:url(#dm-sfilt);enable-background:accumulate;stop-color:#000;stop-opacity:1"/>
+        <path d="M40.268 28.88a2.15 2.15 0 0 0-2.115 2.184l.113 7.27-7.27.113a2.15 2.15 0 0 0-2.117 2.183 2.15 2.15 0 0 0 2.184 2.118l7.27-.114.113 7.27a2.15 2.15 0 0 0 2.184 2.115 2.15 2.15 0 0 0 2.117-2.183l-.114-7.27 7.268-.113a2.15 2.15 0 0 0 2.117-2.184 2.15 2.15 0 0 0-2.183-2.115l-7.27.113-.113-7.27a2.15 2.15 0 0 0-2.184-2.117m.182-9.73c-11.748 0-21.3 9.552-21.3 21.3s9.552 21.3 21.3 21.3 21.299-9.551 21.299-21.3c0-11.748-9.55-21.3-21.299-21.3m0 2.6c10.343 0 18.7 8.358 18.7 18.7 0 10.344-8.357 18.7-18.7 18.7s-18.701-8.356-18.701-18.7c0-10.342 8.358-18.7 18.701-18.7" style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;fill:#510;fill-opacity:1;stroke:#2d1000;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#dm-sfilt);enable-background:accumulate;stop-color:#000;stop-opacity:1"/>
+      </symbol>
+      <filter id="dm-rf16" width="1.006" height="2" x="-.003" y="-.031" style="color-interpolation-filters: sRGB"><feTurbulence baseFrequency=".03" numOctaves="5" result="result8" seed="8" type="fractalNoise"/><feColorMatrix result="result5" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 4 -0.7"/><feComposite in="SourceGraphic" in2="result5" operator="in" result="result11"/><feDisplacementMap in="result11" in2="result8" result="result4" scale="50" xChannelSelector="R" yChannelSelector="G"/><feComposite in="result4" in2="SourceAlpha" k2="1.3" operator="arithmetic" result="result7"/><feColorMatrix in="result7" result="fbSourceGraphicAlpha" values="1 0 0 -1 0 1 0 1 -1 0 1 0 0 -1 0 -0.8 -1 0 4 -2.5"/><feGaussianBlur result="result10" stdDeviation=".5"/><feDiffuseLighting diffuseConstant=".4" in="result10" lighting-color="#672020" result="result6" surfaceScale="15"><feDistantLight azimuth="235" elevation="25"/></feDiffuseLighting><feComposite in="result6" in2="result7" operator="in" result="result2"/><feComposite in2="result7" k2=".8" k3=".8" operator="arithmetic" result="result12"/><feBlend in2="result12" mode="lighten"/></filter>
+      <filter id="dm-rn" x="0" y="0"><feTurbulence baseFrequency=".67" stitchTiles="stitch" type="fractalNoise"/></filter>
+      <symbol id="dm-rust-strip" viewBox="0 0 400 70">
+        <g style="filter: url(#dm-rf16)" transform="translate(106.76 -108.768)">
+          <path fill="#672020" d="M-106.75 88.788h399.99s-5.93 14.56-12.68 24.305c-7.469 10.776-16.269 16.716-26.428 14.034-6.75-1.78-10.96-10.037-21.51-14.925-20.35-9.41-28.39 10.696-44.409 11.677-11.16.688-19.44-2.904-18.54-10.543.57-4.797.29-7.083-2.72-5.93-5.85 3.946-8.759 9.987-17.559 11.849-1.87 1.953-7.85-2.439-13-10.564-4.02-1.68-15.09 8.297-26.539 8.864-8.33 1.791-7.54-11.009-11.75-12.496-4.33-.992-18.949 11.13-46.528 14.904-11.07-.172-9.18-2.722-33.2-.506-7.39-2.104-18.889-5.696-28.339-13.457-11.47 2.934-25.01 3.48-34.419.748-9.9 3.724-2.14 4.776-29.71 11.181-6.179.01-9.419-.576-14.129-8.014-5.59-4.664-13.83-9.035-18.54-21.147z"/>
+          <path fill="#891919" filter="url(#dm-rn)" d="M-106.75 88.788h399.99s-5.93 14.56-12.68 24.305c-7.469 10.776-16.269 16.716-26.428 14.034-6.75-1.78-10.96-10.037-21.51-14.925-20.35-9.41-28.39 10.696-44.409 11.677-11.16.688-19.44-2.904-18.54-10.543.57-4.797.29-7.083-2.72-5.93-5.85 3.946-8.759 9.987-17.559 11.849-1.87 1.953-7.85-2.439-13-10.564-4.02-1.68-15.09 8.297-26.539 8.864-8.33 1.791-7.54-11.009-11.75-12.496-4.33-.992-18.949 11.13-46.528 14.904-11.07-.172-9.18-2.722-33.2-.506-7.39-2.104-18.889-5.696-28.339-13.457-11.47 2.934-25.01 3.48-34.419.748-9.9 3.724-2.14 4.776-29.71 11.181-6.179.01-9.419-.576-14.129-8.014-5.59-4.664-13.83-9.035-18.54-21.147z"/>
+          <path fill="#350000" style="opacity: 0.5" d="M-106.74 88.778h399.98s-5.93 14.19-12.679 23.687c-7.47 10.503-16.269 16.292-26.428 13.678-6.75-1.735-10.96-9.782-21.51-14.546-20.348-9.17-31.308 20.532-44.407 11.38-5.27-3.678-6.49-5.157-8.24-10.561-1.45-4.487-10.01-6.617-13.02-5.483-5.849 3.846-8.759 9.733-17.558 11.548-1.87 1.903-7.85-2.377-13-10.296-3.03-25.916-15.089 8.087-26.538 8.64-8.33 1.745-7.54-10.73-11.75-12.18-4.33-.966-18.949 10.848-46.527 14.526-11.07-.167-15.95-20.354-39.968-18.204-7.39-2.052-15.95-5.839-29.809-4.99-11.47 2.86-16.769 12.968-26.178 10.305-9.9 3.63.51-8.412-27.06-2.16-6.179.01-12.659 2.052-17.368-5.197-5.59-4.546-13.25 1.647-17.96-10.157z"/>
+          <path fill="#000000" filter="url(#dm-rn)" style="opacity: 0.5" d="M-106.74 88.778h399.98s-5.93 14.19-12.679 23.687c-7.47 10.503-16.269 16.292-26.428 13.678-6.75-1.735-10.96-9.782-21.51-14.546-20.348-9.17-31.308 20.532-44.407 11.38-5.27-3.678-6.49-5.157-8.24-10.561-1.45-4.487-10.01-6.617-13.02-5.483-5.849 3.846-8.759 9.733-17.558 11.548-1.87 1.903-7.85-2.377-13-10.296-3.03-25.916-15.089 8.087-26.538 8.64-8.33 1.745-7.54-10.73-11.75-12.18-4.33-.966-18.949 10.848-46.527 14.526-11.07-.167-15.95-20.354-39.968-18.204-7.39-2.052-15.95-5.839-29.809-4.99-11.47 2.86-16.769 12.968-26.178 10.305-9.9 3.63.51-8.412-27.06-2.16-6.179.01-12.659 2.052-17.368-5.197-5.59-4.546-13.25 1.647-17.96-10.157z"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
   <section id="frame">
-    <img src="/images/donate-meter/screw-head.svg" class="screw-tl" />
-    <img src="/images/donate-meter/screw-head.svg" class="screw-tr" />
-    <img src="/images/donate-meter/screw-head.svg" class="screw-br" />
-    <img src="/images/donate-meter/screw-head.svg" class="screw-bl" />
+    <svg class="screw-tl" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
+    <svg class="screw-tr" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
+    <svg class="screw-br" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
+    <svg class="screw-bl" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
 
     <div class="noise-wrapper" data-side="top">
-      <img src="/images/donate-meter/rust.svg" class="noise-x" />
-      <img src="/images/donate-meter/rust.svg" class="noise-x noise-under" />
+      <svg class="noise-x" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-x noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
     </div>
     <div class="noise-wrapper" data-side="right">
-      <img src="/images/donate-meter/rust.svg" class="noise-y" />
-      <img src="/images/donate-meter/rust.svg" class="noise-y noise-under" />
+      <svg class="noise-y" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-y noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
     </div>
     <div class="noise-wrapper" data-side="left">
-      <img src="/images/donate-meter/rust.svg" class="noise-y" />
-      <img src="/images/donate-meter/rust.svg" class="noise-y noise-under" />
+      <svg class="noise-y" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-y noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
     </div>
     <div class="noise-wrapper" data-side="bottom">
-      <img src="/images/donate-meter/rust.svg" class="noise-x" />
-      <img src="/images/donate-meter/rust.svg" class="noise-x noise-under" />
+      <svg class="noise-x" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-x noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
     </div>
     <svg
       class="donation-meter__svg"
@@ -569,7 +590,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   function setRaisedFill(
-    root: HTMLElement,
+    raisedEl: Element,
     amount: number,
     goal: number,
     palette: MeterRaisedPalette,
@@ -596,7 +617,12 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       };
     }
 
-    root.style.setProperty("--meter-raised-readout", rgbToCss(color));
+    // Set fill directly on the readout element rather than on the meter root via a
+    // CSS custom property. Setting a custom property on the root triggers a full
+    // style recalculation across the entire .donation-meter subtree, which causes
+    // Chrome to re-validate every <img> descendant (screw/rust SVGs) on every rAF
+    // frame — producing hundreds of redundant network requests.
+    (raisedEl as SVGElement).style.fill = rgbToCss(color);
   }
 
   function setLiveStatus(statusNode: HTMLElement, raisedAmount: number, goalAmount: number): void {
@@ -617,7 +643,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   function updateReadout(
-    root: HTMLElement,
     raisedEl: Element,
     goalEl: Element,
     statusNode: HTMLElement,
@@ -626,7 +651,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     palette: MeterRaisedPalette,
   ): void {
     setCurrencyText(raisedEl, raisedAmount);
-    setRaisedFill(root, raisedAmount, goalAmount, palette);
+    setRaisedFill(raisedEl, raisedAmount, goalAmount, palette);
     setCurrencyText(goalEl, goalAmount);
     setLiveStatus(statusNode, raisedAmount, goalAmount);
   }
@@ -688,10 +713,14 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       return;
     }
     arc.dataset.arcVisible = "";
+    const group = arc.closest<SVGGElement>(".donation-meter__arc-band-group");
+    if (group) {
+      group.dataset.hasData = "";
+    }
   }
 
   function getMechanicalAngle(progress: number, startAngle: number, targetAngle: number): number {
-    const dipAngle = startAngle - 8.5;
+    const dipAngle = Math.max(startAngle - 8.5, ARC_START_DEG);
     const overshootAngle = clamp(targetAngle + 4.3, ARC_START_DEG - 10, ARC_END_DEG + 3.5);
     const recoilAngle = targetAngle - 1.9;
 
@@ -801,7 +830,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   async function animateAmount(
-    root: HTMLElement,
     raisedEl: Element,
     goalEl: Element,
     statusNode: HTMLElement,
@@ -818,7 +846,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     const endGoal = Math.max(0, toGoal);
 
     if (hasReducedMotion()) {
-      updateReadout(root, raisedEl, goalEl, statusNode, endAmount, endGoal, palette);
+      updateReadout(raisedEl, goalEl, statusNode, endAmount, endGoal, palette);
       return;
     }
 
@@ -832,7 +860,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
                                ) / frameDuration, 0, 1);
         const eased = easeOutQuint(progress);
         updateReadout(
-          root,
           raisedEl,
           goalEl,
           statusNode,
@@ -852,7 +879,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       window.requestAnimationFrame(frame);
     });
 
-    updateReadout(root, raisedEl, goalEl, statusNode, endAmount, endGoal, palette);
+    updateReadout(raisedEl, goalEl, statusNode, endAmount, endGoal, palette);
   }
 
   type MeterCache = {
@@ -916,7 +943,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   function startIdleMotion(
-    root: HTMLElement,
     needle: SVGGElement,
     raisedEl: Element,
     goalEl: Element,
@@ -937,7 +963,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       latestAmount = 2200 * eased;
       latestRatio = 0.06 + Math.sin(elapsed / 230) * 0.0035;
 
-      updateReadout(root, raisedEl, goalEl, statusNode, latestAmount, FALLBACK_GOAL, palette);
+      updateReadout(raisedEl, goalEl, statusNode, latestAmount, FALLBACK_GOAL, palette);
       setNeedle(needle, latestRatio);
     }, 60);
 
@@ -977,7 +1003,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       setNeedle(wishNeedle, 0);
     }
     root.dataset.state = "loading";
-    updateReadout(root, raisedNode, goalNode, statusNode, 0, FALLBACK_GOAL, palette);
+    updateReadout(raisedNode, goalNode, statusNode, 0, FALLBACK_GOAL, palette);
     statusNode.textContent = "Donation meter loading latest totals.";
 
     const cached = readCachedMeter();
@@ -1048,7 +1074,13 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       }
     }
 
-    // Step 1: Await giveback data before any animation or wish fetch (PRD 003).
+    // Kick off the wish fetch immediately so it runs in parallel with giveback.
+    // The promise is awaited later inside the try block below.
+    const wishDataPromise = getWishData();
+
+    // Step 1: Await giveback data before animating the main needle (PRD 003).
+    // Starting both fetches concurrently preserves the ordering requirement while
+    // cutting total wait time from (giveback + wish) down to max(giveback, wish).
     // If the request fails, givebackRaised defaults to 0 and processing continues.
     let givebackRaised = 0;
     try {
@@ -1113,8 +1145,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       let currentGoal = FALLBACK_GOAL;
       let currentRatio = 0;
 
-      const wishDataPromise = getWishData();
-
       if (cached && cached.goal > 0) {
         currentAmount = cached.raised;
         currentGoal = cached.goal;
@@ -1124,7 +1154,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         await Promise.all([
           animateNeedle(needle, 0, currentRatio, true),
           animateAmount(
-            root,
             raisedNode,
             goalNode,
             statusNode,
@@ -1139,8 +1168,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       }
 
       let stopIdle: (() => { ratio: number; amount: number }) | null = null;
-      if (!cached && !hasReducedMotion()) {
-        stopIdle = startIdleMotion(root, needle, raisedNode, goalNode, statusNode, palette);
+      if (!cached && !hasReducedMotion() && givebackRaised > 0) {
+        stopIdle = startIdleMotion(needle, raisedNode, goalNode, statusNode, palette);
       }
 
       const { raised: wishRaised } = await wishDataPromise;
@@ -1159,7 +1188,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       await Promise.all([
         animateNeedle(needle, currentRatio, ratio, true, isOverload),
         animateAmount(
-          root,
           raisedNode,
           goalNode,
           statusNode,
@@ -1218,7 +1246,6 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         if (cached && cached.goal > 0) {
           setNeedle(needle, getProgressRatio(cached.raised, cached.goal));
           updateReadout(
-            root,
             raisedNode,
             goalNode,
             statusNode,
@@ -1228,7 +1255,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
           );
         } else {
           setNeedle(needle, 0);
-          updateReadout(root, raisedNode, goalNode, statusNode, 0, FALLBACK_GOAL, palette);
+          updateReadout(raisedNode, goalNode, statusNode, 0, FALLBACK_GOAL, palette);
         }
 
         root.dataset.state = "fallback";
@@ -1238,7 +1265,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       }
 
       setNeedle(needle, 0);
-      updateReadout(root, raisedNode, goalNode, statusNode, 0, 0, palette);
+      updateReadout(raisedNode, goalNode, statusNode, 0, 0, palette);
       root.dataset.state = "error";
       statusNode.textContent = "Donation meter unavailable right now.";
       console.error("Wish donation meter failed to load.", error);
@@ -1451,14 +1478,19 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   transition: opacity 0.15s ease-out;
   }
 
-.donation-meter__arc-band-group:hover .donation-meter__arc-label,
-.donation-meter__arc-band-group:focus-visible .donation-meter__arc-label,
-.donation-meter__arc-band-group[data-label-open] .donation-meter__arc-label {
+.donation-meter__arc-band-group[data-has-data]:hover .donation-meter__arc-label,
+.donation-meter__arc-band-group[data-has-data]:focus-visible .donation-meter__arc-label,
+.donation-meter__arc-band-group[data-has-data][data-label-open] .donation-meter__arc-label {
   opacity: 1;
   }
 
 .donation-meter__arc-band-group {
   outline: none;
+  }
+
+.donation-meter__arc-band-group:not([data-has-data]) .donation-meter__arc-band-hit {
+  pointer-events: none;
+  cursor: default;
   }
 
 .donation-meter__arc-label-bg {
@@ -1636,6 +1668,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   overflow: hidden;
   border-radius: 1em;
   background: var(--noise-data), #b7110edd;
+  isolation: isolate;
   }
 
 .noise-wrapper {
@@ -1662,6 +1695,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   opacity: 0.25;
   transform-origin: top left;
   z-index: 2;
+  aspect-ratio: 400 / 70;
+  overflow: visible;
   }
 
 .noise-under {
