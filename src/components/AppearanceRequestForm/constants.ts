@@ -1,7 +1,7 @@
 import type { FormCopy, FormData } from "./types";
 
 export const SESSION_KEY = "gbva-appearance-request";
-export const FORMSPREE_URL = "https://formspree.io/f/xpqybzjj";
+export const APPEARANCE_ENDPOINT = "/api/appearance";
 
 /** Total number of wizard steps. Matches STEP_COMPONENTS length in AppearanceRequestForm.tsx. */
 export const TOTAL_STEPS = 5;

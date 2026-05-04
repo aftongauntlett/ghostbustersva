@@ -126,81 +126,15 @@ export function validateStep(
 }
 
 // ------------------------------------------------------------------ //
-// FormSpree payload builder                                            //
+// Appearance request payload builder                                   //
 // ------------------------------------------------------------------ //
 
 export function buildPayload(formData: FormData): Record<string, string> {
-  const payload: Record<string, string> = {
-    _subject: `Appearance Request: ${formData.eventName}`,
-    "Event Name": formData.eventName,
-    "Event Type":
-      formData.eventType === "Other" ? `Other: ${formData.eventTypeOther}` : formData.eventType,
-    "Event Scheduled": formData.isScheduled === "yes" ? "Yes" : "No",
+  return {
+    ...formData,
+    _hp: "",
+    _t: String(Date.now()),
   };
-
-  const addIfValue = (label: string, value: string): void => {
-    if (value) payload[label] = value;
-  };
-
-  const addPairs = (pairs: Array<[string, string]>): void => {
-    for (const [label, value] of pairs) {
-      payload[label] = value;
-    }
-  };
-
-  if (formData.isScheduled === "yes") {
-    addPairs([
-      ["Event Start Date", formData.eventStartDate],
-      ["Event End Date", formData.eventEndDate],
-      ["Event Start Time", formData.eventStartTime],
-      ["Event End Time", formData.eventEndTime],
-      ["Earliest Setup / Arrival Time", formData.earliestSetupTime],
-      ["Required Leave Time", formData.requiredLeaveTime],
-    ]);
-  }
-  if (formData.isScheduled === "no") addIfValue("Timing Notes", formData.unscheduledNote);
-
-  addIfValue("Location Description", formData.locationDescription);
-  addIfValue("Google Place ID", formData.placeId);
-  addIfValue("Street Address", formData.addressLine1);
-  addIfValue("Address Line 2", formData.addressLine2);
-  addIfValue("City", formData.city);
-  addIfValue("State", formData.state);
-  addIfValue("ZIP Code", formData.zipCode);
-
-  payload["Requesting Ecto Vehicle"] = formData.requestEctoVehicle === "yes" ? "Yes" : "No";
-  if (formData.requestEctoVehicle === "yes") {
-    addPairs([
-      ["Ecto Vehicle Parking Information", formData.ectoVehicleParkingInfo],
-      ["Maximum Ecto Vehicles", formData.maxEctoVehicles],
-    ]);
-  }
-  payload["Member Parking Information"] = formData.memberParkingInfo;
-
-  payload["Tables"] = formData.tablesProvided;
-  if (formData.tablesProvided === "we provide tables")
-    payload["Number of Tables"] = formData.numberOfTables;
-  payload["Chairs"] = formData.chairsProvided;
-  if (formData.chairsProvided === "we provide chairs")
-    payload["Number of Chairs"] = formData.numberOfChairs;
-
-  payload["Charitable Donations Allowed"] = formData.charitableDonationsAllowed;
-  if (formData.charitableDonationsAllowed === "yes" && formData.collectDonationsForHost) {
-    payload["Donations For"] = formData.collectDonationsForHost;
-    if (formData.collectDonationsForHost === "host choice") {
-      addIfValue("Charity", formData.charityInfo);
-    }
-  }
-
-  // FormSpree uses 'email' as the reply-to address
-  payload["email"] = formData.contactEmail;
-  payload["Contact Name"] = formData.contactName;
-  addIfValue("Phone Number", formData.contactPhone);
-  addIfValue("Company Name", formData.companyName);
-  addIfValue("Company / Event Website", formData.companyWebsite);
-  addIfValue("Additional Information", formData.additionalInfo);
-
-  return payload;
 }
 
 // ------------------------------------------------------------------ //
