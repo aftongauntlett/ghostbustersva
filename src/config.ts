@@ -6,7 +6,7 @@
 export const siteConfig = {
   title: "Ghostbusters Virginia",
   description:
-    "Virginia's community Ghostbusters franchise — events, media, and how to join the team.",
+    "",
   copyright: `© ${new Date().getFullYear()} Ghostbusters Virginia. All rights reserved.`,
 
   /** Navigation links shown in the header (and optionally the footer). */

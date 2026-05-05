@@ -343,33 +343,33 @@ const ogImage = copy.ogImage || "/images/ghostbusters-virginia-full-team-photo.j
       )
     }
 
-    {/* ── Videos ── */}
-    {
-      safeVideos.length > 0 && (
-        <div class="page-band page-band--white">
-          <div class="container">
-            <SectionHeading id="videos">{videosHeading}</SectionHeading>
-            <ul class="video-grid" role="list">
-              {safeVideos.map((video) => (
-                <li class="video-card" role="listitem">
-                  <div class="video-frame">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.data.youtubeId}`}
-                      title={video.data.title}
-                      loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerpolicy="strict-origin-when-cross-origin"
-                      allowfullscreen
-                    />
-                  </div>
-                  <p class="video-title">{video.data.title}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )
-    }
+    <!--{/* ── Videos ── */}-->
+    <!--{-->
+    <!--  safeVideos.length > 0 && (-->
+    <!--    <div class="page-band page-band&#45;&#45;white">-->
+    <!--      <div class="container">-->
+    <!--        <SectionHeading id="videos">{videosHeading}</SectionHeading>-->
+    <!--        <ul class="video-grid" role="list">-->
+    <!--          {safeVideos.map((video) => (-->
+    <!--            <li class="video-card" role="listitem">-->
+    <!--              <div class="video-frame">-->
+    <!--                <iframe-->
+    <!--                  src={`https://www.youtube.com/embed/${video.data.youtubeId}`}-->
+    <!--                  title={video.data.title}-->
+    <!--                  loading="lazy"-->
+    <!--                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"-->
+    <!--                  referrerpolicy="strict-origin-when-cross-origin"-->
+    <!--                  allowfullscreen-->
+    <!--                />-->
+    <!--              </div>-->
+    <!--              <p class="video-title">{video.data.title}</p>-->
+    <!--            </li>-->
+    <!--          ))}-->
+    <!--        </ul>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--  )-->
+    <!--}-->
 
     <Lightbox
       id="press-gallery-lightbox"

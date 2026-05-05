@@ -1,6 +1,5 @@
 {
-  "siteName": "Ghostbusters Virginia",
-  "siteDescription": "Virginia's community Ghostbusters franchise — events, media, and how to join the team.",
+  "siteName": "Ghostbusters Virginia", "siteDescription": "",
   "donateUrl": "https://secure2.wish.org/site/TR;jsessionid=00000000.app20002b?team_id=58435&fr_id=7464&pg=team&NONCE_TOKEN=16AE47C509ECB858ECB963CD3D174802",
   "paypalUrl": "https://www.paypal.com/US/fundraiser/charity/4434256",
   "contactEmail": "info@ghostbustersva.com",
@@ -15,14 +14,6 @@
     {
       "platform": "Instagram",
       "url": "https://www.instagram.com/ghostbustersva/"
-    },
-    {
-      "platform": "TikTok",
-      "url": "https://www.tiktok.com/@ghostbustersvirginia"
-    },
-    {
-      "platform": "YouTube",
-      "url": "https://www.youtube.com/@Ghostbusters_Virginia"
     }
   ],
   "navLogo": "/images/logo.png",
@@ -34,9 +25,7 @@
     { "label": "Events", "href": "/events", "external": false, "group": "primary" },
     { "label": "Contact", "href": "/contact", "external": false, "group": "primary" },
     { "label": "About", "href": "/about", "external": false, "group": "more" },
-    { "label": "Proton Pets", "href": "/proton-pets", "external": false, "group": "more" },
-    { "label": "Press", "href": "/press", "external": false, "group": "primary" },
-    { "label": "Code of Conduct", "href": "/code-of-conduct", "external": false, "group": "more" }
+    { "label": "Press", "href": "/press", "external": false, "group": "primary" }
   ],
   "footerCopyrightText": "",
   "codeOfConductUrl": "/code-of-conduct",
