@@ -138,28 +138,12 @@ const mtftfLogo = await getResponsiveImageAttrs({
       <div class="container container--mid">
         <div class="meter-top">
           <DonationMeter />
-          <p class="meter-caption">
-            The needle shows our team&rsquo;s total raised for Make-A-Wish Greater Virginia since
-            2021, measured against the current campaign goal.
-          </p>
+          <!--<p class="meter-caption">-->
+          <!--  The needle shows our team&rsquo;s total raised for Make-A-Wish Greater Virginia since-->
+          <!--  2021, measured against the current campaign goal.-->
+          <!--</p>-->
         </div>
         <div class="impact-stats">
-          <div class="impact-stat">
-            <span class="impact-stat__value">Wish Your Way</span>
-            <span class="impact-stat__label"
-              >Make-A-Wish's peer-to-peer fundraising challenge. Teams form around a shared personal
-              goal&mdash;a run, a cosplay weekend, a community event&mdash;and raise money in its
-              honor. We bring the Ecto-1, the suits, and the commitment.</span
-            >
-          </div>
-          <div class="impact-stat">
-            <span class="impact-stat__value">Since 2021</span>
-            <span class="impact-stat__label"
-              >Ghostbusters Virginia has been a registered fundraising team in the Make-A-Wish
-              Greater Virginia chapter since 2021. Every appearance, every dollar, and every fan
-              interaction is part of that effort.</span
-            >
-          </div>
           <div class="impact-stat">
             <span class="impact-stat__value">Make-A-Wish VA</span>
             <span class="impact-stat__label"
@@ -168,46 +152,66 @@ const mtftfLogo = await getResponsiveImageAttrs({
               giving&mdash;no government support.</span
             >
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="page-band page-band--white">
-      <div class="container container--mid">
-        <SectionHeading>{donationHeading}</SectionHeading>
-        <p class="prose-text prose-text--centered-mobile">{donationText}</p>
-        <div class="donation-layout">
-          <div class="donation-layout__image-col">
-            <img
-              {...donationImage}
-              alt={donationImageAlt}
-              class="donation-layout__image"
-              loading="lazy"
-              decoding="async"
-            />
+          <div class="impact-stat">
+            <span class="impact-stat__value">Toys for Tots</span>
+            <span class="impact-stat__label"
+              >Created by the Marine Corps Reserve, Toys for Tots collects
+              gifts during the holidays and beyond, helping
+              disadvantaged children.  Reinforcing the belief that every child
+              deserves moments of happiness and a brighter future.
+            </span
+            >
           </div>
-
-          <div class="donation-support-block">
-            <CardListPanel title={donationCardHeading}>
-              {donationItems.map((item) => <li>{item}</li>)}
-              <div slot="footer" class="donate-cta donate-cta--card">
-                <Button variant="secondary" href={safeDonateUrl} external>
-                  {donationCtaLabel}
-                </Button>
-              </div>
-            </CardListPanel>
-
-            <img
-              {...mtftfLogo}
-              class="donation-support-block__logo"
-              alt="MTFTF official logo"
-              loading="lazy"
-              decoding="async"
-            />
+          <div class="impact-stat">
+            <span class="impact-stat__value">Proton Pets</span>
+            <span class="impact-stat__label"
+              >
+              Proton Pets, created by GBVA, is a worldwide initiative supporting pets and animal welfare.
+              The program works to make a real difference for both pets and their owners while
+              raising awareness about the importance of community pet pantries.
+            </span
+            >
           </div>
         </div>
       </div>
     </div>
+
+    <!--<div class="page-band page-band&#45;&#45;white">-->
+    <!--  <div class="container container&#45;&#45;mid">-->
+    <!--    <SectionHeading>{donationHeading}</SectionHeading>-->
+    <!--    <p class="prose-text prose-text&#45;&#45;centered-mobile">{donationText}</p>-->
+    <!--    <div class="donation-layout">-->
+    <!--      <div class="donation-layout__image-col">-->
+    <!--        <img-->
+    <!--          {...donationImage}-->
+    <!--          alt={donationImageAlt}-->
+    <!--          class="donation-layout__image"-->
+    <!--          loading="lazy"-->
+    <!--          decoding="async"-->
+    <!--        />-->
+    <!--      </div>-->
+
+    <!--      <div class="donation-support-block">-->
+    <!--        <CardListPanel title={donationCardHeading}>-->
+    <!--          {donationItems.map((item) => <li>{item}</li>)}-->
+    <!--          <div slot="footer" class="donate-cta donate-cta&#45;&#45;card">-->
+    <!--            <Button variant="secondary" href={safeDonateUrl} external>-->
+    <!--              {donationCtaLabel}-->
+    <!--            </Button>-->
+    <!--          </div>-->
+    <!--        </CardListPanel>-->
+
+    <!--        <img-->
+    <!--          {...mtftfLogo}-->
+    <!--          class="donation-support-block__logo"-->
+    <!--          alt="MTFTF official logo"-->
+    <!--          loading="lazy"-->
+    <!--          decoding="async"-->
+    <!--        />-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <!--</div>-->
 
     <div class="page-band page-band--alt">
       <div class="container container--wide">
@@ -237,41 +241,6 @@ const mtftfLogo = await getResponsiveImageAttrs({
             <div class="donate-cta donate-cta--right">
               <Button variant="secondary" href={safeCommunityCtaHref}>
                 {communityCtaLabel}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="page-band page-band--white">
-      <div class="container container--wide">
-        <SectionHeading>{volunteerHeading}</SectionHeading>
-        <div class="zigzag zigzag--reverse">
-          <div class="zigzag__media">
-            <LightboxImageTrigger
-              group="donate-gallery"
-              src={volunteerImage.src}
-              alt={volunteerImageAlt}
-              buttonClass="page-image-lightbox"
-              overlayClass="page-image-lightbox__overlay"
-            >
-              <img
-                {...volunteerImage}
-                alt={volunteerImageAlt}
-                class="zigzag__img"
-                loading="lazy"
-                decoding="async"
-              />
-            </LightboxImageTrigger>
-          </div>
-          <div class="zigzag__text">
-            <div class="zigzag__copy">
-              {volunteerParagraphs.map((paragraph) => <p class="prose-text">{paragraph}</p>)}
-            </div>
-            <div class="donate-cta">
-              <Button variant="secondary-alt" href={safeVolunteerCtaHref}>
-                {volunteerCtaLabel}
               </Button>
             </div>
           </div>
