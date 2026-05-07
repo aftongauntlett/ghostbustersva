@@ -112,7 +112,7 @@ const safeHeroPrimaryCtaHref = isSafeExternalUrl(settings.paypalUrl)
 const safeHeroSecondaryCtaHref = isSafeExternalUrl(settings.donateUrl)
   ? settings.donateUrl
   : defaultMakeAWishDonateUrl;
-const safeEventsCtaHref = getSafeHref(eventsCtaHref) || "/events";
+const safeEventsCtaHref = `${getSafeHref(eventsCtaHref) || "/events"}#past-events`;
 const safeNoUpcomingEventsContactHref = getSafeHref(noUpcomingEventsContactHref) || "/contact";
 const safeJoinCtaHref = getSafeHref(joinCtaHref) || "/join";
 const safeSupportCtaHref = "/donate";
