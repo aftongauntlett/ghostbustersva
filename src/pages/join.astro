@@ -25,13 +25,15 @@ const quoteLineTwo =
   "Ready to get out there and start busting some ghosts? Excellent news rookie, we have openings!";
 const whatWeLookForText =
   copy.whatWeLookForText ||
-  "To apply for membership in Ghostbusters, Virginia we simply ask that you review our Code of Conduct, and have at least one Ghostbusters canon costume. To meet these requirements, a canon costume needs to include the following:";
+  "To apply for membership in Ghostbusters, Virginia we simply ask that you review our" +
+  " Charter & Code of Conduct, and have at least one Ghostbusters canon costume. To meet these" +
+  " requirements, a canon costume needs to include the following:";
 const requiredGear = copy.requiredGearItems || [
   "A flight suit",
   "Black boots",
   "White web belt",
   "Elbow pads",
-  "At least one belt gizmo",
+  "At least one belt accessory",
 ];
 const beltGizmos = copy.beltGizmoItems || [
   "MT500 Motorola Walkie Talkie",
@@ -136,6 +138,10 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
                 ))
               }
             </CardListPanel>
+            <div class="join-docs-wrapper">
+              <a href="https://bit.ly/gbva-charter" target="_blank">Charter</a> &amp;
+              <a href="https://bit.ly/gbva-code-of-conduct" target="_blank">Code of Conduct</a>
+            </div>
             <div class="join-cta-wrapper">
               <Button variant="secondary-alt" href="/contact">Join Today</Button>
             </div>
@@ -174,8 +180,16 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
     margin-inline: auto;
   }
 
+  .join-docs-wrapper {
+    margin-top: var(--space-sm);
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    font-size: 0.8em;
+  }
+
   .join-cta-wrapper {
-    margin-top: var(--space-2xl);
+    margin-top: var(--space-xl);
     text-align: center;
   }
 

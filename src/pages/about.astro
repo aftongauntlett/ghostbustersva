@@ -267,6 +267,9 @@ const missionCtaHref = copy.missionCtaHref || "/press";
         <SectionHeading>{missionHeading}</SectionHeading>
         <CardListPanel title={missionCardTitle}>
           {missionItems.map((item) => <li>{item}</li>)}
+          <div class="charter-wrapper">
+            <a href="https://bit.ly/gbva-charter">Read our Charter</a>
+          </div>
         </CardListPanel>
         <div class="mission-cta">
           <Button variant="secondary" href={missionCtaHref}>{missionCtaLabel}</Button>
@@ -387,6 +390,12 @@ const missionCtaHref = copy.missionCtaHref || "/press";
       letter-spacing: var(--tracking-wide);
       line-height: var(--leading-tight);
       text-transform: uppercase;
+    }
+
+    .charter-wrapper {
+      margin-top: var(--space-sm);
+      display: flex;
+      justify-content: center;
     }
 
     /* --- Wider container for zigzag rows --- */
