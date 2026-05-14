@@ -2,6 +2,9 @@
 /**
  * Donate page — Supporting Ghostbusters Virginia's charitable mission.
  */
+
+import CTAs from "../components/CTAs.astro";
+import HeroSection from "../components/HeroSection.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
@@ -17,10 +20,19 @@ import { getPageCopy } from "../lib/page-copy";
 
 const copy = await getPageCopy("donate");
 const settings = await getSiteSettings();
-const defaultDonateUrl =
+
+const primaryDonateCtaLabel = "Donate with PayPal";
+const secondaryDonateCtaLabel = "Donate to Make-A-Wish";
+const defaultPaypalDonateUrl = "https://www.paypal.com/US/fundraiser/charity/4434256";
+const defaultMakeAWishDonateUrl =
   "https://secure2.wish.org/site/TR;jsessionid=00000000.app20002b?team_id=58435&fr_id=7464&pg=team&NONCE_TOKEN=16AE47C509ECB858ECB963CD3D174802";
-const donateUrl = settings.donateUrl || defaultDonateUrl;
-const safeDonateUrl = isSafeExternalUrl(donateUrl) ? donateUrl : defaultDonateUrl;
+const safePrimaryCtaHref = isSafeExternalUrl(settings.paypalUrl)
+                               ? settings.paypalUrl
+                               : defaultPaypalDonateUrl;
+const safeSecondaryCtaHref = isSafeExternalUrl(settings.donateUrl)
+                                 ? settings.donateUrl
+                                 : defaultMakeAWishDonateUrl;
+
 
 const pageTitle = copy.pageTitle || "Support Our Mission";
 const pageIntro =
@@ -138,11 +150,8 @@ const mtftfLogo = await getResponsiveImageAttrs({
       <div class="container container--mid">
         <div class="meter-top">
           <DonationMeter />
-          <!--<p class="meter-caption">-->
-          <!--  The needle shows our team&rsquo;s total raised for Make-A-Wish Greater Virginia since-->
-          <!--  2021, measured against the current campaign goal.-->
-          <!--</p>-->
         </div>
+        <h3 class="meter-caption">We support many charities, including the following groups &amp; programs...</h3>
         <div class="impact-stats">
           <div class="impact-stat">
             <span class="impact-stat__value">Make-A-Wish VA</span>
@@ -172,6 +181,16 @@ const mtftfLogo = await getResponsiveImageAttrs({
             </span
             >
           </div>
+        </div>
+        <div class="donate-section">
+          <CTAs
+            primaryCtaLabel={primaryDonateCtaLabel}
+            primaryCtaHref={safePrimaryCtaHref}
+            primaryCtaExternal
+            secondaryCtaLabel={secondaryDonateCtaLabel}
+            secondaryCtaHref={safeSecondaryCtaHref}
+            secondaryCtaExternal
+            />
         </div>
       </div>
     </div>
@@ -263,6 +282,14 @@ const mtftfLogo = await getResponsiveImageAttrs({
     font-size: var(--text-base);
     line-height: var(--leading-loose);
     margin-bottom: 0;
+  }
+
+  .donate-section {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: center;
+    justify-content: center;
+    margin-top: var(--space-md);
   }
 
   .donate-cta {

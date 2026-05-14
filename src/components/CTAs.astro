@@ -1,0 +1,42 @@
+---
+import Button from "./ui/Button.astro";
+
+interface Props {
+  primaryCtaLabel: string;
+  primaryCtaHref: string;
+  primaryCtaExternal?: boolean;
+  secondaryCtaLabel?: string;
+  secondaryCtaHref?: string;
+  secondaryCtaExternal?: boolean;
+}
+
+const {
+  primaryCtaLabel,
+  primaryCtaHref,
+  primaryCtaExternal = false,
+  secondaryCtaLabel,
+  secondaryCtaHref,
+  secondaryCtaExternal = false,
+} = Astro.props;
+
+---
+<Button
+  variant="primary"
+  class="btn--lg btn--donate-hero"
+  href={primaryCtaHref}
+  external={primaryCtaExternal}
+>
+  {primaryCtaLabel}
+</Button>
+{
+  secondaryCtaLabel && secondaryCtaHref ? (
+  <Button
+    variant="secondary"
+    class="btn--lg"
+    href={secondaryCtaHref}
+    external={secondaryCtaExternal}
+  >
+    {secondaryCtaLabel}
+  </Button>
+    ) : null
+}
