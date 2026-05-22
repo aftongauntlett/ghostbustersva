@@ -116,7 +116,7 @@ const RIGHT_FILES = [
 /* ------------------------------------------------------------------ */
 
 class SoundQueue {
-  private files: string[];
+  private readonly files: string[];
   private queue: string[] = [];
   private lastPlayed: string | null = null;
 
@@ -333,12 +333,6 @@ export default function ZenerGame() {
 
   // Dark overlay opacity: 5% per wrong answer, max 50% at 10
   const overlayOpacity = Math.min(incorrectCount * 0.05, 0.5);
-
-  // Score preview while waiting
-  const scorePreviewFor = (sym: ZenerSymbol): number => {
-    const rem = deck.slice(currentIndex);
-    return calcScore(sym, rem);
-  };
 
   /* ---------------------------------------------------------------- */
   /* CSS class helpers                                                  */

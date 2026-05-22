@@ -126,16 +126,17 @@ export function validateStep(
 }
 
 // ------------------------------------------------------------------ //
-// FormSpree payload builder                                            //
+// Appearance request payload builder                                   //
 // ------------------------------------------------------------------ //
 
 export function buildPayload(formData: FormData): Record<string, string> {
   const payload: Record<string, string> = {
-    _subject: `Appearance Request: ${formData.eventName}`,
     "Event Name": formData.eventName,
     "Event Type":
       formData.eventType === "Other" ? `Other: ${formData.eventTypeOther}` : formData.eventType,
     "Event Scheduled": formData.isScheduled === "yes" ? "Yes" : "No",
+    _hp: "",
+    _t: String(Date.now()),
   };
 
   const addIfValue = (label: string, value: string): void => {
@@ -192,9 +193,9 @@ export function buildPayload(formData: FormData): Record<string, string> {
     }
   }
 
-  // FormSpree uses 'email' as the reply-to address
-  payload["email"] = formData.contactEmail;
+  // Contact info — reply-to is handled natively by the endpoint
   payload["Contact Name"] = formData.contactName;
+  payload["Contact Email"] = formData.contactEmail;
   addIfValue("Phone Number", formData.contactPhone);
   addIfValue("Company Name", formData.companyName);
   addIfValue("Company / Event Website", formData.companyWebsite);

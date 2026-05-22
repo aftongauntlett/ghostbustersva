@@ -1,3 +1,6 @@
+// Record load time immediately — used for timing anti-spam check
+const _loadTime = Date.now();
+
 const DEFAULT_EVENT_INQUIRY_VALUES = [];
 
 const resolveEventInquiryValues = () => {
@@ -322,6 +325,89 @@ async function initContactForm() {
   } catch (err) {
     console.warn("date clear button init failed:", err);
   }
+
+  // AJAX form submission
+  const form = document.querySelector("form.contact-form");
+  if (!form) return;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const submitButton = form.querySelector('[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+
+    // Remove any previous error alert
+    const prevAlert = form.querySelector(".contact-form__submit-error");
+    if (prevAlert) prevAlert.remove();
+
+    // Collect all named form fields
+    const data = {};
+    const formData = new FormData(form);
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+
+    // Anti-spam fields
+    // _hp is the honeypot field (name="_hp"), already in the form DOM
+    data["_hp"] = data["_hp"] ?? "";
+    // Rename _gotcha to _hp if legacy field is present
+    if ("_gotcha" in data) {
+      data["_hp"] = data["_gotcha"];
+      delete data["_gotcha"];
+    }
+    data["_t"] = _loadTime;
+
+    // Optional Turnstile token
+    const turnstileToken = document.getElementById("cf-turnstile-response");
+    if (turnstileToken && turnstileToken.value) {
+      data["cf-turnstile-response"] = turnstileToken.value;
+    }
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const json = await res.json().catch(() => ({}));
+
+      if (json.ok) {
+        form.innerHTML =
+          '<p class="contact-form__success" role="status">Thanks! We\'ll be in touch.</p>';
+      } else {
+        const alert = document.createElement("p");
+        alert.className = "contact-form__submit-error";
+        alert.setAttribute("role", "alert");
+        alert.textContent = "Something went wrong. Please try again.";
+        const actions = form.querySelector(".contact-form__actions");
+        if (actions) {
+          actions.after(alert);
+        } else {
+          form.appendChild(alert);
+        }
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
+      }
+    } catch {
+      const alert = document.createElement("p");
+      alert.className = "contact-form__submit-error";
+      alert.setAttribute("role", "alert");
+      alert.textContent = "A network error occurred. Please check your connection and try again.";
+      const actions = form.querySelector(".contact-form__actions");
+      if (actions) {
+        actions.after(alert);
+      } else {
+        form.appendChild(alert);
+      }
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
+  });
 }
 
 if (document.readyState === "loading") {

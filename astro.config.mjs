@@ -19,6 +19,13 @@ export default defineConfig({
   env: {
     schema: {
       GOOGLE_MAPS_API_KEY: envField.string({ context: "client", access: "public", optional: true }),
+      RESEND_API_KEY: envField.string({ context: "server", access: "secret" }),
+      CONTACT_FROM_EMAIL: envField.string({ context: "server", access: "secret" }),
+      CONTACT_TO_EMAIL: envField.string({ context: "server", access: "secret" }),
+      UPSTASH_REDIS_REST_URL: envField.string({ context: "server", access: "secret", optional: true }),
+      UPSTASH_REDIS_REST_TOKEN: envField.string({ context: "server", access: "secret", optional: true }),
+      PUBLIC_TURNSTILE_SITE_KEY: envField.string({ context: "client", access: "public", optional: true }),
+      TURNSTILE_SECRET_KEY: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
   adapter: vercel(),

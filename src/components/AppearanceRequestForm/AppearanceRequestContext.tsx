@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { FormCopy, FormData } from "./types";
-import { SESSION_KEY, FORMSPREE_URL, DEFAULT_FORM_DATA, FORM_COPY, TOTAL_STEPS } from "./constants";
+import { SESSION_KEY, APPEARANCE_ENDPOINT, DEFAULT_FORM_DATA, FORM_COPY, TOTAL_STEPS } from "./constants";
 import {
   validateStep,
   isStepComplete,
@@ -141,17 +141,18 @@ export function AppearanceRequestProvider({ children }: { children: ReactNode })
     setSubmitError("");
 
     try {
-      const res = await fetch(FORMSPREE_URL, {
+      const res = await fetch(APPEARANCE_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(buildPayload(formData)),
       });
 
-      if (res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+
+      if (data.ok) {
         setSubmitted(true);
         clearSession(SESSION_KEY);
       } else {
-        const data = (await res.json().catch(() => ({}))) as { error?: string };
         setSubmitError(data.error ?? copy.errorSubmitFailed);
       }
     } catch {

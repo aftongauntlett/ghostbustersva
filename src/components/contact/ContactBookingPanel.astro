@@ -23,7 +23,6 @@ interface Props {
   bookingImage: ImageAttrs;
   bookingImageAlt: string;
   contactFormDescription: string;
-  formspreeAction: string;
   inquiryOptions: DropdownOption[];
   eventInquiryAllowlistJson: string;
   contactFormSubmitLabel: string;
@@ -34,7 +33,6 @@ const {
   bookingImage,
   bookingImageAlt,
   contactFormDescription,
-  formspreeAction,
   inquiryOptions,
   eventInquiryAllowlistJson,
   contactFormSubmitLabel,
@@ -63,7 +61,6 @@ const {
       {contactFormDescription}
     </p>
     <form
-      action={formspreeAction}
       method="POST"
       class="contact-form"
       data-event-inquiry-allowlist={eventInquiryAllowlistJson}
@@ -147,11 +144,12 @@ const {
       </label>
       <input
         type="text"
-        name="_gotcha"
+        name="_hp"
         tabindex="-1"
         autocomplete="off"
         class="contact-form__honeypot"
       />
+      <input type="hidden" name="_t" value="" data-timing-field />
       <div class="contact-form__actions">
         <Button type="submit" variant="primary">{contactFormSubmitLabel}</Button>
       </div>

@@ -36,11 +36,6 @@ const bookingSectionHeading = copy.bookingSectionHeading || "Event Bookings & Ap
 const contactFormDescription =
   copy.contactFormDescription ||
   "Got a ghost problem? A media inquiry? Just want to say hey? We're listening.";
-const defaultFormAction = "https://formspree.io/f/xpqybzjj";
-const formspreeAction =
-  settings.contactFormActionUrl && isSafeExternalUrl(settings.contactFormActionUrl)
-    ? settings.contactFormActionUrl
-    : defaultFormAction;
 const contactFormSubmitLabel = copy.contactFormSubmitLabel || "Send Message";
 const inquiryOptions = inquiryTypeOptions.map((value) => ({ value, label: value }));
 const eventInquiryAllowlistJson = serializeEventInquiryAllowlist();
@@ -114,7 +109,6 @@ const bookingImage = await getResponsiveImageAttrs({
           bookingImage={bookingImage}
           bookingImageAlt={bookingImageAlt}
           contactFormDescription={contactFormDescription}
-          formspreeAction={formspreeAction}
           inquiryOptions={inquiryOptions}
           eventInquiryAllowlistJson={eventInquiryAllowlistJson}
           contactFormSubmitLabel={contactFormSubmitLabel}
