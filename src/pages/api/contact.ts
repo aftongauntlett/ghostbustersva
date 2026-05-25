@@ -29,8 +29,10 @@ async function verifyTurnstile(token: string, siteUrl: string): Promise<boolean>
 export const POST: APIRoute = async ({ request, site }) => {
   // 1. Origin check
   const origin = request.headers.get("origin");
+  const isVercel = origin?.startsWith('https://gbva-site')
+                   && origin?.endsWith('vercel.app');
   const siteOrigin = site ? new URL(site).origin : null;
-  if (siteOrigin && origin && origin !== siteOrigin) {
+  if (!isVercel && siteOrigin && origin && origin !== siteOrigin) {
     return new Response(JSON.stringify({ ok: false, error: "invalid_request" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
