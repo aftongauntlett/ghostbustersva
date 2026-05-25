@@ -38,7 +38,7 @@ export async function sendEmail(
 
   if (error) {
     console.error({ event: "email_send_error", error });
-    return { ok: false, error: "send_failed" };
+    return { ok: false, error: error.name };
   }
 
   return { ok: true };
