@@ -12,13 +12,11 @@ const CENTER_Y = 248;
 const TICK_OUTER_RADIUS = 210;
 const TICK_INNER_MINOR = 199;
 const TICK_INNER_MAJOR = 189;
-const DANGER_START_PERCENT = 80;
+const DANGER_START_PERCENT = (20000 / 30000) * 100; // danger zone: 20k–30k
 const DANGER_INNER_RADIUS = 187;
 
 function pointOnArc(angleDeg: number, radius: number) {
-  const angleRad = (
-                     angleDeg * Math.PI
-                   ) / 180;
+  const angleRad = (angleDeg * Math.PI) / 180;
 
   return {
     x: CENTER_X + Math.sin(angleRad) * radius,
@@ -30,11 +28,7 @@ const arcStart = pointOnArc(ARC_START_DEG, TICK_OUTER_RADIUS);
 const arcEnd = pointOnArc(ARC_END_DEG, TICK_OUTER_RADIUS);
 const arcPath = `M ${arcStart.x} ${arcStart.y} A ${TICK_OUTER_RADIUS} ${TICK_OUTER_RADIUS} 0 1 1 ${arcEnd.x} ${arcEnd.y}`;
 
-const dangerStartDeg = ARC_START_DEG + (
-  DANGER_START_PERCENT / 100
-) * (
-                         ARC_END_DEG - ARC_START_DEG
-                       );
+const dangerStartDeg = ARC_START_DEG + (DANGER_START_PERCENT / 100) * (ARC_END_DEG - ARC_START_DEG);
 const dangerOuterStart = pointOnArc(dangerStartDeg, TICK_OUTER_RADIUS);
 const dangerOuterEnd = pointOnArc(ARC_END_DEG, TICK_OUTER_RADIUS);
 const dangerInnerStart = pointOnArc(dangerStartDeg, DANGER_INNER_RADIUS);
@@ -47,11 +41,7 @@ const dangerSectorPath =
 
 const ticks = Array.from({ length: 51 }, (_, index) => {
   const percent = index * 2;
-  const angle = ARC_START_DEG + (
-    percent / 100
-  ) * (
-                  ARC_END_DEG - ARC_START_DEG
-                );
+  const angle = ARC_START_DEG + (percent / 100) * (ARC_END_DEG - ARC_START_DEG);
   const isMajor = percent % 10 === 0;
   const innerRadius = isMajor ? TICK_INNER_MAJOR : TICK_INNER_MINOR;
   const outer = pointOnArc(angle, TICK_OUTER_RADIUS);
@@ -70,17 +60,13 @@ const ticks = Array.from({ length: 51 }, (_, index) => {
 
 const scaleLabels = [
   { percent: 0, value: 0, radius: 180, anchor: "start" },
-  { percent: 20, value: 10000, radius: 180, anchor: "middle" },
-  { percent: 40, value: 20000, radius: 180, anchor: "middle" },
-  { percent: 60, value: 30000, radius: 180, anchor: "middle" },
-  { percent: 80, value: 40000, radius: 180, anchor: "middle" },
-  { percent: 100, value: 50000, radius: 180, anchor: "end" },
+  { percent: 20, value: 6000, radius: 180, anchor: "middle" },
+  { percent: 40, value: 12000, radius: 180, anchor: "middle" },
+  { percent: 60, value: 18000, radius: 180, anchor: "middle" },
+  { percent: 80, value: 24000, radius: 180, anchor: "middle" },
+  { percent: 100, value: 30000, radius: 180, anchor: "end" },
 ].map(({ percent, value, radius, anchor }) => {
-  const angle = ARC_START_DEG + (
-    percent / 100
-  ) * (
-                  ARC_END_DEG - ARC_START_DEG
-                );
+  const angle = ARC_START_DEG + (percent / 100) * (ARC_END_DEG - ARC_START_DEG);
   const point = pointOnArc(angle, radius);
 
   return {
@@ -122,45 +108,168 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   <!-- Inline SVG definitions — loaded once, referenced via <use> to avoid per-frame img re-validation -->
   <svg aria-hidden="true" focusable="false" style="display:none">
     <defs>
-      <filter id="dm-sfilt" width="1.899" height="1.899" x="-.45" y="-.45" style="color-interpolation-filters:sRGB"><feTurbulence baseFrequency="0.013 0.013" result="turbulence" seed="1" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" in2="turbulence" result="fbSourceGraphic" scale="6.6" xChannelSelector="R" yChannelSelector="G"/><feColorMatrix in="fbSourceGraphic" result="fbSourceGraphicAlpha" values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"/><feGaussianBlur in="fbSourceGraphic" result="result6" stdDeviation=".5"/><feComposite in="result6" in2="result6" operator="in" result="result7"/><feGaussianBlur in="result7" result="result3" stdDeviation="5"/><feComposite in2="result7" result="result91"/><feComposite in="result3" in2="result91" operator="in" result="result5"/><feColorMatrix result="result4" values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"/><feSpecularLighting in="result4" result="result11" specularConstant="2" specularExponent="45" surfaceScale="3"><fePointLight x="-5000" y="-10000" z="20000"/></feSpecularLighting><feComposite in2="result4" k1="1" operator="arithmetic" result="result10"/><feComposite in="result5" in2="result10" k2=".6" k3="1" operator="arithmetic" result="result8"/><feGaussianBlur in="result8" result="result31" stdDeviation="2"/><feComposite in2="result8" result="result9"/><feBlend in2="result9"/></filter>
+      <filter
+        id="dm-sfilt"
+        width="1.899"
+        height="1.899"
+        x="-.45"
+        y="-.45"
+        style="color-interpolation-filters:sRGB"
+        ><feTurbulence baseFrequency="0.013 0.013" result="turbulence" seed="1" type="fractalNoise"
+        ></feTurbulence><feDisplacementMap
+          in="SourceGraphic"
+          in2="turbulence"
+          result="fbSourceGraphic"
+          scale="6.6"
+          xChannelSelector="R"
+          yChannelSelector="G"></feDisplacementMap><feColorMatrix
+          in="fbSourceGraphic"
+          result="fbSourceGraphicAlpha"
+          values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"></feColorMatrix><feGaussianBlur
+          in="fbSourceGraphic"
+          result="result6"
+          stdDeviation=".5"></feGaussianBlur><feComposite
+          in="result6"
+          in2="result6"
+          operator="in"
+          result="result7"></feComposite><feGaussianBlur
+          in="result7"
+          result="result3"
+          stdDeviation="5"></feGaussianBlur><feComposite in2="result7" result="result91"
+        ></feComposite><feComposite in="result3" in2="result91" operator="in" result="result5"
+        ></feComposite><feColorMatrix
+          result="result4"
+          values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"></feColorMatrix><feSpecularLighting
+          in="result4"
+          result="result11"
+          specularConstant="2"
+          specularExponent="45"
+          surfaceScale="3"
+          ><fePointLight x="-5000" y="-10000" z="20000"></fePointLight></feSpecularLighting
+        ><feComposite in2="result4" k1="1" operator="arithmetic" result="result10"
+        ></feComposite><feComposite
+          in="result5"
+          in2="result10"
+          k2=".6"
+          k3="1"
+          operator="arithmetic"
+          result="result8"></feComposite><feGaussianBlur
+          in="result8"
+          result="result31"
+          stdDeviation="2"></feGaussianBlur><feComposite in2="result8" result="result9"
+        ></feComposite><feBlend in2="result9"></feBlend></filter
+      >
       <symbol id="dm-screw-head" viewBox="0 0 80.899 80.9">
-        <path d="M40.268 28.88a2.15 2.15 0 0 0-2.115 2.184l.113 7.27-7.27.113a2.15 2.15 0 0 0-2.117 2.183 2.15 2.15 0 0 0 2.184 2.118l7.27-.114.113 7.27a2.15 2.15 0 0 0 2.184 2.115 2.15 2.15 0 0 0 2.117-2.183l-.114-7.27 7.268-.113a2.15 2.15 0 0 0 2.117-2.184 2.15 2.15 0 0 0-2.183-2.115l-7.27.113-.113-7.27a2.15 2.15 0 0 0-2.184-2.117m.182-9.73c-11.748 0-21.3 9.552-21.3 21.3s9.552 21.3 21.3 21.3 21.299-9.551 21.299-21.3c0-11.748-9.55-21.3-21.299-21.3m0 2.6c10.343 0 18.7 8.358 18.7 18.7 0 10.344-8.357 18.7-18.7 18.7s-18.701-8.356-18.701-18.7c0-10.342 8.358-18.7 18.701-18.7" style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;stroke-linecap:round;stroke-linejoin:round;filter:url(#dm-sfilt);enable-background:accumulate;stop-color:#000;stop-opacity:1"/>
-        <path d="M40.268 28.88a2.15 2.15 0 0 0-2.115 2.184l.113 7.27-7.27.113a2.15 2.15 0 0 0-2.117 2.183 2.15 2.15 0 0 0 2.184 2.118l7.27-.114.113 7.27a2.15 2.15 0 0 0 2.184 2.115 2.15 2.15 0 0 0 2.117-2.183l-.114-7.27 7.268-.113a2.15 2.15 0 0 0 2.117-2.184 2.15 2.15 0 0 0-2.183-2.115l-7.27.113-.113-7.27a2.15 2.15 0 0 0-2.184-2.117m.182-9.73c-11.748 0-21.3 9.552-21.3 21.3s9.552 21.3 21.3 21.3 21.299-9.551 21.299-21.3c0-11.748-9.55-21.3-21.299-21.3m0 2.6c10.343 0 18.7 8.358 18.7 18.7 0 10.344-8.357 18.7-18.7 18.7s-18.701-8.356-18.701-18.7c0-10.342 8.358-18.7 18.701-18.7" style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;fill:#510;fill-opacity:1;stroke:#2d1000;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#dm-sfilt);enable-background:accumulate;stop-color:#000;stop-opacity:1"/>
+        <path
+          d="M40.268 28.88a2.15 2.15 0 0 0-2.115 2.184l.113 7.27-7.27.113a2.15 2.15 0 0 0-2.117 2.183 2.15 2.15 0 0 0 2.184 2.118l7.27-.114.113 7.27a2.15 2.15 0 0 0 2.184 2.115 2.15 2.15 0 0 0 2.117-2.183l-.114-7.27 7.268-.113a2.15 2.15 0 0 0 2.117-2.184 2.15 2.15 0 0 0-2.183-2.115l-7.27.113-.113-7.27a2.15 2.15 0 0 0-2.184-2.117m.182-9.73c-11.748 0-21.3 9.552-21.3 21.3s9.552 21.3 21.3 21.3 21.299-9.551 21.299-21.3c0-11.748-9.55-21.3-21.299-21.3m0 2.6c10.343 0 18.7 8.358 18.7 18.7 0 10.344-8.357 18.7-18.7 18.7s-18.701-8.356-18.701-18.7c0-10.342 8.358-18.7 18.701-18.7"
+          style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;stroke-linecap:round;stroke-linejoin:round;filter:url(#dm-sfilt);enable-background:accumulate;stop-color:#000;stop-opacity:1"
+        ></path>
+        <path
+          d="M40.268 28.88a2.15 2.15 0 0 0-2.115 2.184l.113 7.27-7.27.113a2.15 2.15 0 0 0-2.117 2.183 2.15 2.15 0 0 0 2.184 2.118l7.27-.114.113 7.27a2.15 2.15 0 0 0 2.184 2.115 2.15 2.15 0 0 0 2.117-2.183l-.114-7.27 7.268-.113a2.15 2.15 0 0 0 2.117-2.184 2.15 2.15 0 0 0-2.183-2.115l-7.27.113-.113-7.27a2.15 2.15 0 0 0-2.184-2.117m.182-9.73c-11.748 0-21.3 9.552-21.3 21.3s9.552 21.3 21.3 21.3 21.299-9.551 21.299-21.3c0-11.748-9.55-21.3-21.299-21.3m0 2.6c10.343 0 18.7 8.358 18.7 18.7 0 10.344-8.357 18.7-18.7 18.7s-18.701-8.356-18.701-18.7c0-10.342 8.358-18.7 18.701-18.7"
+          style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;fill:#510;fill-opacity:1;stroke:#2d1000;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#dm-sfilt);enable-background:accumulate;stop-color:#000;stop-opacity:1"
+        ></path>
       </symbol>
-      <filter id="dm-rf16" width="1.006" height="2" x="-.003" y="-.031" style="color-interpolation-filters: sRGB"><feTurbulence baseFrequency=".03" numOctaves="5" result="result8" seed="8" type="fractalNoise"/><feColorMatrix result="result5" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 4 -0.7"/><feComposite in="SourceGraphic" in2="result5" operator="in" result="result11"/><feDisplacementMap in="result11" in2="result8" result="result4" scale="50" xChannelSelector="R" yChannelSelector="G"/><feComposite in="result4" in2="SourceAlpha" k2="1.3" operator="arithmetic" result="result7"/><feColorMatrix in="result7" result="fbSourceGraphicAlpha" values="1 0 0 -1 0 1 0 1 -1 0 1 0 0 -1 0 -0.8 -1 0 4 -2.5"/><feGaussianBlur result="result10" stdDeviation=".5"/><feDiffuseLighting diffuseConstant=".4" in="result10" lighting-color="#672020" result="result6" surfaceScale="15"><feDistantLight azimuth="235" elevation="25"/></feDiffuseLighting><feComposite in="result6" in2="result7" operator="in" result="result2"/><feComposite in2="result7" k2=".8" k3=".8" operator="arithmetic" result="result12"/><feBlend in2="result12" mode="lighten"/></filter>
-      <filter id="dm-rn" x="0" y="0"><feTurbulence baseFrequency=".67" stitchTiles="stitch" type="fractalNoise"/></filter>
+      <filter
+        id="dm-rf16"
+        width="1.006"
+        height="2"
+        x="-.003"
+        y="-.031"
+        style="color-interpolation-filters: sRGB"
+        ><feTurbulence
+          baseFrequency=".03"
+          numOctaves="5"
+          result="result8"
+          seed="8"
+          type="fractalNoise"></feTurbulence><feColorMatrix
+          result="result5"
+          values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 4 -0.7"></feColorMatrix><feComposite
+          in="SourceGraphic"
+          in2="result5"
+          operator="in"
+          result="result11"></feComposite><feDisplacementMap
+          in="result11"
+          in2="result8"
+          result="result4"
+          scale="50"
+          xChannelSelector="R"
+          yChannelSelector="G"></feDisplacementMap><feComposite
+          in="result4"
+          in2="SourceAlpha"
+          k2="1.3"
+          operator="arithmetic"
+          result="result7"></feComposite><feColorMatrix
+          in="result7"
+          result="fbSourceGraphicAlpha"
+          values="1 0 0 -1 0 1 0 1 -1 0 1 0 0 -1 0 -0.8 -1 0 4 -2.5"></feColorMatrix><feGaussianBlur
+          result="result10"
+          stdDeviation=".5"></feGaussianBlur><feDiffuseLighting
+          diffuseConstant=".4"
+          in="result10"
+          lighting-color="#672020"
+          result="result6"
+          surfaceScale="15"
+          ><feDistantLight azimuth="235" elevation="25"></feDistantLight></feDiffuseLighting
+        ><feComposite in="result6" in2="result7" operator="in" result="result2"
+        ></feComposite><feComposite
+          in2="result7"
+          k2=".8"
+          k3=".8"
+          operator="arithmetic"
+          result="result12"></feComposite><feBlend in2="result12" mode="lighten"></feBlend></filter
+      >
+      <filter id="dm-rn" x="0" y="0"
+        ><feTurbulence baseFrequency=".67" stitchTiles="stitch" type="fractalNoise"
+        ></feTurbulence></filter
+      >
       <symbol id="dm-rust-strip" viewBox="0 0 400 70">
         <g style="filter: url(#dm-rf16)" transform="translate(106.76 -108.768)">
-          <path fill="#672020" d="M-106.75 88.788h399.99s-5.93 14.56-12.68 24.305c-7.469 10.776-16.269 16.716-26.428 14.034-6.75-1.78-10.96-10.037-21.51-14.925-20.35-9.41-28.39 10.696-44.409 11.677-11.16.688-19.44-2.904-18.54-10.543.57-4.797.29-7.083-2.72-5.93-5.85 3.946-8.759 9.987-17.559 11.849-1.87 1.953-7.85-2.439-13-10.564-4.02-1.68-15.09 8.297-26.539 8.864-8.33 1.791-7.54-11.009-11.75-12.496-4.33-.992-18.949 11.13-46.528 14.904-11.07-.172-9.18-2.722-33.2-.506-7.39-2.104-18.889-5.696-28.339-13.457-11.47 2.934-25.01 3.48-34.419.748-9.9 3.724-2.14 4.776-29.71 11.181-6.179.01-9.419-.576-14.129-8.014-5.59-4.664-13.83-9.035-18.54-21.147z"/>
-          <path fill="#891919" filter="url(#dm-rn)" d="M-106.75 88.788h399.99s-5.93 14.56-12.68 24.305c-7.469 10.776-16.269 16.716-26.428 14.034-6.75-1.78-10.96-10.037-21.51-14.925-20.35-9.41-28.39 10.696-44.409 11.677-11.16.688-19.44-2.904-18.54-10.543.57-4.797.29-7.083-2.72-5.93-5.85 3.946-8.759 9.987-17.559 11.849-1.87 1.953-7.85-2.439-13-10.564-4.02-1.68-15.09 8.297-26.539 8.864-8.33 1.791-7.54-11.009-11.75-12.496-4.33-.992-18.949 11.13-46.528 14.904-11.07-.172-9.18-2.722-33.2-.506-7.39-2.104-18.889-5.696-28.339-13.457-11.47 2.934-25.01 3.48-34.419.748-9.9 3.724-2.14 4.776-29.71 11.181-6.179.01-9.419-.576-14.129-8.014-5.59-4.664-13.83-9.035-18.54-21.147z"/>
-          <path fill="#350000" style="opacity: 0.5" d="M-106.74 88.778h399.98s-5.93 14.19-12.679 23.687c-7.47 10.503-16.269 16.292-26.428 13.678-6.75-1.735-10.96-9.782-21.51-14.546-20.348-9.17-31.308 20.532-44.407 11.38-5.27-3.678-6.49-5.157-8.24-10.561-1.45-4.487-10.01-6.617-13.02-5.483-5.849 3.846-8.759 9.733-17.558 11.548-1.87 1.903-7.85-2.377-13-10.296-3.03-25.916-15.089 8.087-26.538 8.64-8.33 1.745-7.54-10.73-11.75-12.18-4.33-.966-18.949 10.848-46.527 14.526-11.07-.167-15.95-20.354-39.968-18.204-7.39-2.052-15.95-5.839-29.809-4.99-11.47 2.86-16.769 12.968-26.178 10.305-9.9 3.63.51-8.412-27.06-2.16-6.179.01-12.659 2.052-17.368-5.197-5.59-4.546-13.25 1.647-17.96-10.157z"/>
-          <path fill="#000000" filter="url(#dm-rn)" style="opacity: 0.5" d="M-106.74 88.778h399.98s-5.93 14.19-12.679 23.687c-7.47 10.503-16.269 16.292-26.428 13.678-6.75-1.735-10.96-9.782-21.51-14.546-20.348-9.17-31.308 20.532-44.407 11.38-5.27-3.678-6.49-5.157-8.24-10.561-1.45-4.487-10.01-6.617-13.02-5.483-5.849 3.846-8.759 9.733-17.558 11.548-1.87 1.903-7.85-2.377-13-10.296-3.03-25.916-15.089 8.087-26.538 8.64-8.33 1.745-7.54-10.73-11.75-12.18-4.33-.966-18.949 10.848-46.527 14.526-11.07-.167-15.95-20.354-39.968-18.204-7.39-2.052-15.95-5.839-29.809-4.99-11.47 2.86-16.769 12.968-26.178 10.305-9.9 3.63.51-8.412-27.06-2.16-6.179.01-12.659 2.052-17.368-5.197-5.59-4.546-13.25 1.647-17.96-10.157z"/>
+          <path
+            fill="#672020"
+            d="M-106.75 88.788h399.99s-5.93 14.56-12.68 24.305c-7.469 10.776-16.269 16.716-26.428 14.034-6.75-1.78-10.96-10.037-21.51-14.925-20.35-9.41-28.39 10.696-44.409 11.677-11.16.688-19.44-2.904-18.54-10.543.57-4.797.29-7.083-2.72-5.93-5.85 3.946-8.759 9.987-17.559 11.849-1.87 1.953-7.85-2.439-13-10.564-4.02-1.68-15.09 8.297-26.539 8.864-8.33 1.791-7.54-11.009-11.75-12.496-4.33-.992-18.949 11.13-46.528 14.904-11.07-.172-9.18-2.722-33.2-.506-7.39-2.104-18.889-5.696-28.339-13.457-11.47 2.934-25.01 3.48-34.419.748-9.9 3.724-2.14 4.776-29.71 11.181-6.179.01-9.419-.576-14.129-8.014-5.59-4.664-13.83-9.035-18.54-21.147z"
+          ></path>
+          <path
+            fill="#891919"
+            filter="url(#dm-rn)"
+            d="M-106.75 88.788h399.99s-5.93 14.56-12.68 24.305c-7.469 10.776-16.269 16.716-26.428 14.034-6.75-1.78-10.96-10.037-21.51-14.925-20.35-9.41-28.39 10.696-44.409 11.677-11.16.688-19.44-2.904-18.54-10.543.57-4.797.29-7.083-2.72-5.93-5.85 3.946-8.759 9.987-17.559 11.849-1.87 1.953-7.85-2.439-13-10.564-4.02-1.68-15.09 8.297-26.539 8.864-8.33 1.791-7.54-11.009-11.75-12.496-4.33-.992-18.949 11.13-46.528 14.904-11.07-.172-9.18-2.722-33.2-.506-7.39-2.104-18.889-5.696-28.339-13.457-11.47 2.934-25.01 3.48-34.419.748-9.9 3.724-2.14 4.776-29.71 11.181-6.179.01-9.419-.576-14.129-8.014-5.59-4.664-13.83-9.035-18.54-21.147z"
+          ></path>
+          <path
+            fill="#350000"
+            style="opacity: 0.5"
+            d="M-106.74 88.778h399.98s-5.93 14.19-12.679 23.687c-7.47 10.503-16.269 16.292-26.428 13.678-6.75-1.735-10.96-9.782-21.51-14.546-20.348-9.17-31.308 20.532-44.407 11.38-5.27-3.678-6.49-5.157-8.24-10.561-1.45-4.487-10.01-6.617-13.02-5.483-5.849 3.846-8.759 9.733-17.558 11.548-1.87 1.903-7.85-2.377-13-10.296-3.03-25.916-15.089 8.087-26.538 8.64-8.33 1.745-7.54-10.73-11.75-12.18-4.33-.966-18.949 10.848-46.527 14.526-11.07-.167-15.95-20.354-39.968-18.204-7.39-2.052-15.95-5.839-29.809-4.99-11.47 2.86-16.769 12.968-26.178 10.305-9.9 3.63.51-8.412-27.06-2.16-6.179.01-12.659 2.052-17.368-5.197-5.59-4.546-13.25 1.647-17.96-10.157z"
+          ></path>
+          <path
+            fill="#000000"
+            filter="url(#dm-rn)"
+            style="opacity: 0.5"
+            d="M-106.74 88.778h399.98s-5.93 14.19-12.679 23.687c-7.47 10.503-16.269 16.292-26.428 13.678-6.75-1.735-10.96-9.782-21.51-14.546-20.348-9.17-31.308 20.532-44.407 11.38-5.27-3.678-6.49-5.157-8.24-10.561-1.45-4.487-10.01-6.617-13.02-5.483-5.849 3.846-8.759 9.733-17.558 11.548-1.87 1.903-7.85-2.377-13-10.296-3.03-25.916-15.089 8.087-26.538 8.64-8.33 1.745-7.54-10.73-11.75-12.18-4.33-.966-18.949 10.848-46.527 14.526-11.07-.167-15.95-20.354-39.968-18.204-7.39-2.052-15.95-5.839-29.809-4.99-11.47 2.86-16.769 12.968-26.178 10.305-9.9 3.63.51-8.412-27.06-2.16-6.179.01-12.659 2.052-17.368-5.197-5.59-4.546-13.25 1.647-17.96-10.157z"
+          ></path>
         </g>
       </symbol>
     </defs>
   </svg>
 
   <section id="frame">
-    <svg class="screw-tl" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
-    <svg class="screw-tr" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
-    <svg class="screw-br" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
-    <svg class="screw-bl" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"/></svg>
+    <svg class="screw-tl" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"></use></svg>
+    <svg class="screw-tr" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"></use></svg>
+    <svg class="screw-br" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"></use></svg>
+    <svg class="screw-bl" viewBox="0 0 80.899 80.9"><use href="#dm-screw-head"></use></svg>
 
     <div class="noise-wrapper" data-side="top">
-      <svg class="noise-x" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
-      <svg class="noise-x noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-x" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
+      <svg class="noise-x noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
     </div>
     <div class="noise-wrapper" data-side="right">
-      <svg class="noise-y" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
-      <svg class="noise-y noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-y" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
+      <svg class="noise-y noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
     </div>
     <div class="noise-wrapper" data-side="left">
-      <svg class="noise-y" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
-      <svg class="noise-y noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-y" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
+      <svg class="noise-y noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
     </div>
     <div class="noise-wrapper" data-side="bottom">
-      <svg class="noise-x" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
-      <svg class="noise-x noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"/></svg>
+      <svg class="noise-x" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
+      <svg class="noise-x noise-under" viewBox="0 0 400 70"><use href="#dm-rust-strip"></use></svg>
     </div>
     <svg
       class="donation-meter__svg"
@@ -203,25 +312,17 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
       <rect x="6" y="6" width="588" height="388" rx="4" class="donation-meter__panel"></rect>
       <rect x="12" y="12" width="576" height="376" rx="3" class="donation-meter__bezel"></rect>
-      <rect x="12"
-            y="12"
-            width="576"
-            height="376"
-            rx="3"
-            class="donation-meter__bezel-brush"></rect>
+      <rect x="12" y="12" width="576" height="376" rx="3" class="donation-meter__bezel-brush"
+      ></rect>
       <rect x="18" y="18" width="564" height="336" rx="2" class="donation-meter__face"></rect>
-      <rect x="18"
-            y="18"
-            width="564"
-            height="336"
-            rx="2"
-            class="donation-meter__face-texture"></rect>
+      <rect x="18" y="18" width="564" height="336" rx="2" class="donation-meter__face-texture"
+      ></rect>
 
       <g
         class="donation-meter__arc-band-group donation-meter__arc-band-group--total"
         tabindex="0"
         role="img"
-        aria-label="Total raised arc band"
+        aria-label="Total Donations arc band"
       >
         <path d={arcHitTotal} class="donation-meter__arc-band-hit"></path>
         <path
@@ -236,11 +337,10 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
             height="28"
             rx="3"
             class="donation-meter__arc-label-bg donation-meter__arc-label-bg--total"></rect>
-          <text x="190" y="125" class="donation-meter__arc-label-name">RAISED + MATCHING</text>
+          <text x="190" y="125" class="donation-meter__arc-label-name">TOTAL DONATIONS</text>
           <text x="190" y="137" class="donation-meter__arc-label-value" data-meter-arc-label-total
-          >—
-          </text
-          >
+            >—
+          </text>
         </g>
       </g>
 
@@ -248,7 +348,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         class="donation-meter__arc-band-group donation-meter__arc-band-group--giveback"
         tabindex="0"
         role="img"
-        aria-label="Give Back arc band"
+        aria-label="Other Donations arc band"
       >
         <path d={arcHitGiveback} class="donation-meter__arc-band-hit"></path>
         <path
@@ -263,14 +363,14 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
             height="28"
             rx="3"
             class="donation-meter__arc-label-bg donation-meter__arc-label-bg--giveback"></rect>
-          <text x="211" y="155" class="donation-meter__arc-label-name">TOTAL RAISED</text>
-          <text x="211"
-                y="167"
-                class="donation-meter__arc-label-value"
-                data-meter-arc-label-giveback
-          >—
-          </text
-          >
+          <text x="211" y="155" class="donation-meter__arc-label-name">OTHER DONATIONS</text>
+          <text
+            x="211"
+            y="167"
+            class="donation-meter__arc-label-value"
+            data-meter-arc-label-giveback
+            >—
+          </text>
         </g>
       </g>
 
@@ -281,10 +381,10 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         aria-label="Make-A-Wish arc band"
       >
         <path d={arcHitWish} class="donation-meter__arc-band-hit"></path>
-        <path data-meter-arc-wish
-              d=""
-              class="donation-meter__arc-band donation-meter__arc-band--wish"
-        ></path>
+        <path
+          data-meter-arc-wish
+          d=""
+          class="donation-meter__arc-band donation-meter__arc-band--wish"></path>
         <g class="donation-meter__arc-label donation-meter__arc-label--wish" aria-hidden="true">
           <rect
             x="196"
@@ -295,9 +395,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
             class="donation-meter__arc-label-bg donation-meter__arc-label-bg--wish"></rect>
           <text x="241" y="185" class="donation-meter__arc-label-name">MAKE-A-WISH</text>
           <text x="241" y="197" class="donation-meter__arc-label-value" data-meter-arc-label-wish
-          >—
-          </text
-          >
+            >—
+          </text>
         </g>
       </g>
 
@@ -339,31 +438,26 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         x={CENTER_X}
         y="304"
         class="donation-meter__dial-title"
-        text-anchor="middle">VA GIGA-GIVERES
-      </text
-      >
+        text-anchor="middle"
+        >VA GIGA-GIVERES
+      </text>
       <text x={CENTER_X} y="328" class="donation-meter__dial-range" text-anchor="middle">
-        <tspan data-meter-raised
-               class="donation-meter__dial-value donation-meter__dial-value--raised"
-        >$0
-        </tspan
-        >
+        <tspan
+          data-meter-raised
+          class="donation-meter__dial-value donation-meter__dial-value--raised"
+          >$0
+        </tspan>
         <tspan> OF</tspan>
         <tspan data-meter-goal class="donation-meter__dial-value donation-meter__dial-value--goal"
-        >$50,000
-        </tspan
-        >
+          >$25,000
+        </tspan>
         <tspan> GOAL</tspan>
       </text>
 
       <text x="32" y="345" class="donation-meter__serial" text-anchor="start">501-C3</text>
 
-      <rect x="12"
-            y="354"
-            width="576"
-            height="34"
-            rx="3"
-            class="donation-meter__bottom-rail"></rect>
+      <rect x="12" y="354" width="576" height="34" rx="3" class="donation-meter__bottom-rail"
+      ></rect>
 
       <g data-meter-needle-wish transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
         <path
@@ -404,9 +498,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
   const ARC_START_DEG = -90;
   const ARC_END_DEG = 90;
-  const SCALE_MAX = 50000;
-  const FALLBACK_GOAL = 50000;
-  const CACHE_KEY = "gbva:donation-meter-cache-v3";
+  const SCALE_MAX = 30000;
+  const FALLBACK_GOAL = 25000;
+  const CACHE_KEY = "gbva:donation-meter-cache-v4";
   const PIVOT_X = 300;
   const PIVOT_Y = 248;
   const NEEDLE_ANIM_DURATION_MS = 5000;
@@ -443,15 +537,11 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   function lerp(start: number, end: number, progress: number): number {
-    return start + (
-      end - start
-    ) * progress;
+    return start + (end - start) * progress;
   }
 
   function toNeedleAngle(ratio: number): number {
-    return ARC_START_DEG + clamp(ratio, 0, 1) * (
-      ARC_END_DEG - ARC_START_DEG
-    );
+    return ARC_START_DEG + clamp(ratio, 0, 1) * (ARC_END_DEG - ARC_START_DEG);
   }
 
   function setNeedle(needle: SVGGElement, ratio: number): void {
@@ -471,9 +561,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   }
 
   function isCurrentToken(needle: SVGGElement, token: number): boolean {
-    return (
-             motionTokens.get(needle) ?? 0
-           ) === token;
+    return (motionTokens.get(needle) ?? 0) === token;
   }
 
   function stopOverloadTeeter(needle: SVGGElement): void {
@@ -489,23 +577,17 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
   function easeOutCubic(progress: number): number {
     const clamped = clamp(progress, 0, 1);
-    return 1 - (
-           1 - clamped
-    ) ** 3;
+    return 1 - (1 - clamped) ** 3;
   }
 
   function easeOutQuint(progress: number): number {
     const clamped = clamp(progress, 0, 1);
-    return 1 - (
-           1 - clamped
-    ) ** 5;
+    return 1 - (1 - clamped) ** 5;
   }
 
   function easeInOutSine(progress: number): number {
     const clamped = clamp(progress, 0, 1);
-    return -(
-      Math.cos(Math.PI * clamped) - 1
-    ) / 2;
+    return -(Math.cos(Math.PI * clamped) - 1) / 2;
   }
 
   function setCurrencyText(node: Element, amount: number): void {
@@ -607,9 +689,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         b: lerp(palette.low.b, palette.mid.b, t),
       };
     } else {
-      const t = (
-                  ratio - 0.5
-                ) * 2;
+      const t = (ratio - 0.5) * 2;
       color = {
         r: lerp(palette.mid.r, palette.high.r, t),
         g: lerp(palette.mid.g, palette.high.g, t),
@@ -630,9 +710,10 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     const normalizedGoal = Math.max(0, Math.round(goalAmount));
     const nextStatus =
       normalizedGoal > 0
-      ? `Raised ${currencyFormatter.format(normalizedRaised)} of ${currencyFormatter.format(
-        normalizedGoal)} goal.`
-      : `Raised ${currencyFormatter.format(normalizedRaised)}. Goal unavailable.`;
+        ? `Raised ${currencyFormatter.format(normalizedRaised)} of ${currencyFormatter.format(
+            normalizedGoal,
+          )} goal.`
+        : `Raised ${currencyFormatter.format(normalizedRaised)}. Goal unavailable.`;
 
     if (statusTextCache.get(statusNode) === nextStatus) {
       return;
@@ -675,15 +756,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     }
 
     const clampedRatio = Math.min(ratio, 1);
-    const startRad = (
-                       ARC_START_DEG * Math.PI
-                     ) / 180;
-    const endDeg = ARC_START_DEG + clampedRatio * (
-      ARC_END_DEG - ARC_START_DEG
-    );
-    const endRad = (
-                     endDeg * Math.PI
-                   ) / 180;
+    const startRad = (ARC_START_DEG * Math.PI) / 180;
+    const endDeg = ARC_START_DEG + clampedRatio * (ARC_END_DEG - ARC_START_DEG);
+    const endRad = (endDeg * Math.PI) / 180;
 
     const ox1 = PIVOT_X + Math.sin(startRad) * outerR;
     const oy1 = PIVOT_Y - Math.cos(startRad) * outerR;
@@ -730,22 +805,16 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     }
 
     if (progress <= 0.68) {
-      const phase = clamp((
-                            progress - 0.12
-                          ) / 0.56, 0, 1);
+      const phase = clamp((progress - 0.12) / 0.56, 0, 1);
       return lerp(dipAngle, overshootAngle, easeOutCubic(phase));
     }
 
     if (progress <= 0.82) {
-      const phase = clamp((
-                            progress - 0.68
-                          ) / 0.14, 0, 1);
+      const phase = clamp((progress - 0.68) / 0.14, 0, 1);
       return lerp(overshootAngle, recoilAngle, easeInOutSine(phase));
     }
 
-    const phase = clamp((
-                          progress - 0.82
-                        ) / 0.18, 0, 1);
+    const phase = clamp((progress - 0.82) / 0.18, 0, 1);
     return lerp(recoilAngle, targetAngle, easeOutQuint(phase));
   }
 
@@ -798,12 +867,10 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
           return;
         }
 
-        const progress = clamp((
-                                 now - start
-                               ) / frameDuration, 0, 1);
+        const progress = clamp((now - start) / frameDuration, 0, 1);
         const angle = mechanical
-                      ? getMechanicalAngle(progress, startAngle, targetAngle)
-                      : lerp(startAngle, targetAngle, easeInOutSine(progress));
+          ? getMechanicalAngle(progress, startAngle, targetAngle)
+          : lerp(startAngle, targetAngle, easeInOutSine(progress));
 
         setNeedleAngle(needle, angle);
 
@@ -855,9 +922,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       const frameDuration = Math.max(220, durationMs);
 
       const frame = (now: number) => {
-        const progress = clamp((
-                                 now - start
-                               ) / frameDuration, 0, 1);
+        const progress = clamp((now - start) / frameDuration, 0, 1);
         const eased = easeOutQuint(progress);
         updateReadout(
           raisedEl,
@@ -1017,7 +1082,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     // without blocking on the live wish fetch. The live animation will update from
     // this position once the fetch resolves.
     const cachedWishRatio =
-      cached && cached.wishRaised > 0 ? getProgressRatio(cached.wishRaised, FALLBACK_GOAL) : 0;
+      cached && cached.wishRaised > 0 ? getProgressRatio(cached.wishRaised, SCALE_MAX) : 0;
 
     if (cachedWishRatio > 0) {
       if (arcWish) {
@@ -1034,23 +1099,20 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       }
     }
 
-    // Giveback-needle cache fast-path: animate to the last-known giveback value immediately
-    // without blocking on the live giveback fetch. The live animation will update from
-    // this position once the fetch resolves.
-    const cachedGivebackRatio =
+    // Cache fast-path: show last-known values immediately before live fetches complete.
+    // cachedOtherRatio = total − wish (other donations); cachedTotalRatio = total.
+    const cachedOtherRatio =
       cached && cached.givebackRaised > 0
-      ? getProgressRatio(cached.givebackRaised, FALLBACK_GOAL)
-      : 0;
+        ? getProgressRatio(Math.max(0, cached.givebackRaised - cached.wishRaised), SCALE_MAX)
+        : 0;
     const cachedTotalRatio =
-      cached && cached.givebackRaised > 0
-      ? getProgressRatio(2 * cached.givebackRaised, FALLBACK_GOAL)
-      : 0;
+      cached && cached.givebackRaised > 0 ? getProgressRatio(cached.givebackRaised, SCALE_MAX) : 0;
 
-    if (cachedGivebackRatio > 0) {
+    if (cachedTotalRatio > 0) {
       if (arcGiveback) {
         arcGiveback.setAttribute(
           "d",
-          buildArcBandPath(cachedGivebackRatio, ARC_BAND_OUTER_2, ARC_BAND_OUTER_3),
+          buildArcBandPath(cachedOtherRatio, ARC_BAND_OUTER_2, ARC_BAND_OUTER_3),
         );
         showArcBand(arcGiveback);
       }
@@ -1062,14 +1124,14 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         showArcBand(arcTotal);
       }
       if (labelGiveback) {
-        setCurrencyText(labelGiveback, cached!.givebackRaised);
+        setCurrencyText(labelGiveback, Math.max(0, cached!.givebackRaised - cached!.wishRaised));
       }
       if (labelTotal) {
-        setCurrencyText(labelTotal, 2 * cached!.givebackRaised);
+        setCurrencyText(labelTotal, cached!.givebackRaised);
       }
       if (givebackNeedle) {
-        animateNeedle(givebackNeedle, 0, cachedGivebackRatio, true).catch(
-          (e: unknown) => console.warn("Giveback needle cache animation failed.", e),
+        animateNeedle(givebackNeedle, 0, cachedOtherRatio, true).catch((e: unknown) =>
+          console.warn("Other donations needle cache animation failed.", e),
         );
       }
     }
@@ -1094,51 +1156,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       }
     }
 
-    // Derived totals. wishRaised is populated after the wish fetch (PRD 004 uses it).
-    const totalRaised = 2 * givebackRaised;
-
-    // Update arc band tooltip labels with live values.
-    if (labelTotal) {
-      setCurrencyText(labelTotal, totalRaised);
-    }
-    if (labelGiveback) {
-      setCurrencyText(labelGiveback, givebackRaised);
-    }
-
-    // Animate giveback needle (needle 2) from cached position to live value.
-    // Fade in the giveback arc band after the needle reaches its position.
-    if (givebackNeedle && givebackRaised > 0) {
-      animateNeedle(
-        givebackNeedle,
-        cachedGivebackRatio,
-        getProgressRatio(givebackRaised, FALLBACK_GOAL),
-        true,
-      )
-        .then(() => showArcBand(arcGiveback))
-        .catch((e: unknown) => console.warn("Giveback needle animation failed.", e));
-    }
-
-    // Arc bands for total and giveback snap to their live values (PRD 005).
-    if (arcTotal) {
-      arcTotal.setAttribute(
-        "d",
-        buildArcBandPath(
-          getProgressRatio(totalRaised, FALLBACK_GOAL),
-          ARC_BAND_OUTER_1,
-          ARC_BAND_OUTER_2,
-        ),
-      );
-    }
-    if (arcGiveback) {
-      arcGiveback.setAttribute(
-        "d",
-        buildArcBandPath(
-          getProgressRatio(givebackRaised, FALLBACK_GOAL),
-          ARC_BAND_OUTER_2,
-          ARC_BAND_OUTER_3,
-        ),
-      );
-    }
+    // Other donations = total − wish; both values needed before animating that band.
+    // Defer other-band updates to after the wish fetch resolves (see try block below).
 
     try {
       let currentAmount = 0;
@@ -1148,7 +1167,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       if (cached && cached.goal > 0) {
         currentAmount = cached.raised;
         currentGoal = cached.goal;
-        currentRatio = getProgressRatio(cached.raised, cached.goal);
+        currentRatio = getProgressRatio(cached.raised, SCALE_MAX);
 
         const cacheDuration = NEEDLE_ANIM_DURATION_MS * Math.max(currentRatio, 0.2);
         await Promise.all([
@@ -1180,9 +1199,55 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         currentRatio = idleSnapshot.ratio;
       }
 
-      // Needle 1 tracks totalRaised (2× giveback matching funds) against the $50k goal.
-      const ratio = getProgressRatio(totalRaised, FALLBACK_GOAL);
-      const isOverload = totalRaised >= FALLBACK_GOAL;
+      // giveback API returns the total; other donations = total − wish.
+      const totalRaised = givebackRaised;
+      const otherRaised = Math.max(0, givebackRaised - wishRaised);
+
+      // Update all labels now that both sources are known.
+      if (labelTotal) {
+        setCurrencyText(labelTotal, totalRaised);
+      }
+      if (labelGiveback) {
+        setCurrencyText(labelGiveback, otherRaised);
+      }
+
+      // Snap arc bands to live values.
+      if (arcTotal) {
+        arcTotal.setAttribute(
+          "d",
+          buildArcBandPath(
+            getProgressRatio(totalRaised, SCALE_MAX),
+            ARC_BAND_OUTER_1,
+            ARC_BAND_OUTER_2,
+          ),
+        );
+      }
+      if (arcGiveback) {
+        arcGiveback.setAttribute(
+          "d",
+          buildArcBandPath(
+            getProgressRatio(otherRaised, SCALE_MAX),
+            ARC_BAND_OUTER_2,
+            ARC_BAND_OUTER_3,
+          ),
+        );
+      }
+
+      // Other donations needle (blue) — fire-and-forget, non-blocking.
+      if (givebackNeedle && otherRaised > 0) {
+        animateNeedle(
+          givebackNeedle,
+          cachedOtherRatio,
+          getProgressRatio(otherRaised, SCALE_MAX),
+          true,
+        )
+          .then(() => showArcBand(arcGiveback))
+          .catch((e: unknown) => console.warn("Other donations needle animation failed.", e));
+      }
+
+      // Needle 1 tracks total donations against the 30k scale.
+      const ratio = getProgressRatio(totalRaised, SCALE_MAX);
+      const isOverload = totalRaised >= SCALE_MAX;
       const liveDuration = NEEDLE_ANIM_DURATION_MS * Math.max(ratio, 0.2);
 
       await Promise.all([
@@ -1203,8 +1268,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       // Total needle reached its position — fade in the total arc band.
       showArcBand(arcTotal);
 
-      // Set wish arc geometry now that wishRaised is known, then fire needle
-      // from the cached position (or 0) to the live value.
+      // Set wish arc geometry and fire needle from cached to live value.
       if (labelWish) {
         setCurrencyText(labelWish, wishRaised);
       }
@@ -1212,21 +1276,16 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         arcWish.setAttribute(
           "d",
           buildArcBandPath(
-            getProgressRatio(wishRaised, FALLBACK_GOAL),
+            getProgressRatio(wishRaised, SCALE_MAX),
             ARC_BAND_OUTER_3,
             ARC_BAND_INNER_3,
           ),
         );
       }
 
-      // Needle 3 (green / Make-a-Wish) — fire-and-forget, non-blocking.
+      // Make-A-Wish needle (green) — fire-and-forget, non-blocking.
       if (wishNeedle) {
-        animateNeedle(
-          wishNeedle,
-          cachedWishRatio,
-          getProgressRatio(wishRaised, FALLBACK_GOAL),
-          true,
-        )
+        animateNeedle(wishNeedle, cachedWishRatio, getProgressRatio(wishRaised, SCALE_MAX), true)
           .then(() => showArcBand(arcWish))
           .catch((e: unknown) => console.warn("Wish needle animation failed.", e));
       }
@@ -1244,15 +1303,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
       if (isWishRequestTimeoutError(error)) {
         if (cached && cached.goal > 0) {
-          setNeedle(needle, getProgressRatio(cached.raised, cached.goal));
-          updateReadout(
-            raisedNode,
-            goalNode,
-            statusNode,
-            cached.raised,
-            cached.goal,
-            palette,
-          );
+          setNeedle(needle, getProgressRatio(cached.raised, SCALE_MAX));
+          updateReadout(raisedNode, goalNode, statusNode, cached.raised, cached.goal, palette);
         } else {
           setNeedle(needle, 0);
           updateReadout(raisedNode, goalNode, statusNode, 0, FALLBACK_GOAL, palette);
@@ -1298,9 +1350,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     root.addEventListener(
       "touchstart",
       (e) => {
-        if (!(
-          e.target as Element
-        ).closest(".donation-meter__arc-band-group")) {
+        if (!(e.target as Element).closest(".donation-meter__arc-band-group")) {
           bandGroups.forEach((g) => delete g.dataset.labelOpen);
         }
       },
@@ -1310,432 +1360,448 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 </script>
 
 <style>
-@media screen and (max-width: 451px) {
-  #frame {
-    --frame-height: calc(188px);
-    --frame-width: calc(300px);
-    --screw-x-offset: 3px;
-    --screw-y-offset: 2px;
-    --screw-size: 36px;
-  }
-  }
-
-@media screen and (min-width: 451px) and (max-width: 850px) {
-  #frame {
-  --frame-height: calc(277px);
-  --frame-width: calc(450px);
-  }
+  @media screen and (max-width: 451px) {
+    #frame {
+      --frame-height: calc(188px);
+      --frame-width: calc(300px);
+      --screw-x-offset: 3px;
+      --screw-y-offset: 2px;
+      --screw-size: 36px;
+    }
   }
 
-.donation-meter {
-  --frame-height: calc(500px);
-  --frame-width: calc(800px);
-  --screw-x-offset: 8px;
-  --screw-y-offset: 3px;
-  --screw-size: 60px;
-
-  --meter-raised-readout: var(--color-meter-readout-muted);
-  --meter-goal-readout: var(--color-meter-readout-goal);
-
-  --noise-data: url("data:image/svg+xml,%3Csvg%20%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20%20xmlns%3Axlink%3D'http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink'%20%20width%3D'300'%20height%3D'300'%3E%3Cfilter%20id%3D'n'%20x%3D'0'%20y%3D'0'%3E%3CfeTurbulence%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3D'fractalNoise'%20%20%20%20%20%20%20%20%20%20%20%20%20%20baseFrequency%3D'0.67'%20%20%20%20%20%20%20%20%20%20%20%20%20%20stitchTiles%3D'stitch'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'300'%20height%3D'300'%20fill%3D'transparent'%2F%3E%3Crect%20width%3D'300'%20height%3D'300'%20filter%3D%22url(%23n)%22%20opacity%3D'0.30'%2F%3E%3C%2Fsvg%3E");
-  --rust-scale: 30%;
-  --rust-scale-x: calc(var(--frame-height) / var(--frame-width) * var(--rust-scale));
-  --rust-scale-y: calc(var(--frame-width) / var(--frame-height) * var(--rust-scale));
-
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
-  margin-inline: auto;
-  display: flex;
-  justify-content: center;
+  @media screen and (min-width: 451px) and (max-width: 850px) {
+    #frame {
+      --frame-height: calc(277px);
+      --frame-width: calc(450px);
+    }
   }
 
-.donation-meter__svg {
-  width: calc(var(--frame-width) * 0.8);
-  margin: calc(var(--frame-height) * 0.1) calc(var(--frame-width) * 0.1);
-  height: calc(var(--frame-height) * 0.8);
-  display: block;
-  position: relative;
-  z-index: 3;
+  .donation-meter {
+    --frame-height: calc(500px);
+    --frame-width: calc(800px);
+    --screw-x-offset: 8px;
+    --screw-y-offset: 3px;
+    --screw-size: 60px;
+
+    --meter-raised-readout: var(--color-meter-readout-muted);
+    --meter-goal-readout: var(--color-meter-readout-goal);
+
+    --noise-data: url("data:image/svg+xml,%3Csvg%20%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20%20xmlns%3Axlink%3D'http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink'%20%20width%3D'300'%20height%3D'300'%3E%3Cfilter%20id%3D'n'%20x%3D'0'%20y%3D'0'%3E%3CfeTurbulence%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3D'fractalNoise'%20%20%20%20%20%20%20%20%20%20%20%20%20%20baseFrequency%3D'0.67'%20%20%20%20%20%20%20%20%20%20%20%20%20%20stitchTiles%3D'stitch'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'300'%20height%3D'300'%20fill%3D'transparent'%2F%3E%3Crect%20width%3D'300'%20height%3D'300'%20filter%3D%22url(%23n)%22%20opacity%3D'0.30'%2F%3E%3C%2Fsvg%3E");
+    --rust-scale: 30%;
+    --rust-scale-x: calc(var(--frame-height) / var(--frame-width) * var(--rust-scale));
+    --rust-scale-y: calc(var(--frame-width) / var(--frame-height) * var(--rust-scale));
+
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin-inline: auto;
+    display: flex;
+    justify-content: center;
   }
 
-.donation-meter__panel {
-  fill: transparent;
-  stroke: none;
-  stroke-width: 1.2;
+  .donation-meter__svg {
+    width: calc(var(--frame-width) * 0.8);
+    margin: calc(var(--frame-height) * 0.1) calc(var(--frame-width) * 0.1);
+    height: calc(var(--frame-height) * 0.8);
+    display: block;
+    position: relative;
+    z-index: 3;
   }
 
-.donation-meter__stop-face-center {
-  stop-color: var(--color-meter-face-center);
+  .donation-meter__panel {
+    fill: transparent;
+    stroke: none;
+    stroke-width: 1.2;
   }
 
-.donation-meter__stop-face-edge {
-  stop-color: var(--color-meter-face-edge);
+  .donation-meter__stop-face-center {
+    stop-color: var(--color-meter-face-center);
   }
 
-.donation-meter__stop-bezel-outer {
-  stop-color: var(--color-meter-bezel-outer);
+  .donation-meter__stop-face-edge {
+    stop-color: var(--color-meter-face-edge);
   }
 
-.donation-meter__stop-bezel-mid {
-  stop-color: var(--color-meter-bezel-mid);
+  .donation-meter__stop-bezel-outer {
+    stop-color: var(--color-meter-bezel-outer);
   }
 
-.donation-meter__stop-bezel-inner {
-  stop-color: var(--color-meter-bezel-inner);
+  .donation-meter__stop-bezel-mid {
+    stop-color: var(--color-meter-bezel-mid);
   }
 
-.donation-meter__stop-pivot-center {
-  stop-color: var(--color-meter-pivot-center);
+  .donation-meter__stop-bezel-inner {
+    stop-color: var(--color-meter-bezel-inner);
   }
 
-.donation-meter__stop-pivot-edge {
-  stop-color: var(--color-meter-pivot-edge);
+  .donation-meter__stop-pivot-center {
+    stop-color: var(--color-meter-pivot-center);
   }
 
-.donation-meter__texture-dot {
-  fill: var(--color-meter-face-texture);
+  .donation-meter__stop-pivot-edge {
+    stop-color: var(--color-meter-pivot-edge);
   }
 
-.donation-meter__bezel-brush-line {
-  stroke: var(--color-meter-brush-line);
-  stroke-width: 0.45;
+  .donation-meter__texture-dot {
+    fill: var(--color-meter-face-texture);
   }
 
-.donation-meter__bezel {
-  fill: url(#meter-bezel-gradient);
-  stroke: var(--color-meter-bezel-stroke);
-  stroke-width: 1.1;
+  .donation-meter__bezel-brush-line {
+    stroke: var(--color-meter-brush-line);
+    stroke-width: 0.45;
   }
 
-.donation-meter__bezel-brush {
-  fill: url(#meter-bezel-brush);
-  opacity: 0.42;
+  .donation-meter__bezel {
+    fill: url(#meter-bezel-gradient);
+    stroke: var(--color-meter-bezel-stroke);
+    stroke-width: 1.1;
   }
 
-.donation-meter__face {
-  fill: url(#meter-face-gradient);
-  stroke: var(--color-meter-face-stroke);
-  stroke-width: 1.25;
+  .donation-meter__bezel-brush {
+    fill: url(#meter-bezel-brush);
+    opacity: 0.42;
   }
 
-.donation-meter__face-texture {
-  fill: url(#meter-face-texture);
-  opacity: 0.34;
+  .donation-meter__face {
+    fill: url(#meter-face-gradient);
+    stroke: var(--color-meter-face-stroke);
+    stroke-width: 1.25;
   }
 
-.donation-meter__arc-band--total {
-  fill: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
-  opacity: 0;
-  transition: opacity 0.6s ease-in;
+  .donation-meter__face-texture {
+    fill: url(#meter-face-texture);
+    opacity: 0.34;
   }
 
-.donation-meter__arc-band--total[data-arc-visible] {
-  opacity: 0.18;
+  .donation-meter__arc-band--total {
+    fill: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
+    opacity: 0;
+    transition: opacity 0.6s ease-in;
   }
 
-.donation-meter__arc-band--giveback {
-  fill: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
-  opacity: 0;
-  transition: opacity 0.6s ease-in;
+  .donation-meter__arc-band--total[data-arc-visible] {
+    opacity: 0.18;
   }
 
-.donation-meter__arc-band--giveback[data-arc-visible] {
-  opacity: 0.22;
+  .donation-meter__arc-band--giveback {
+    fill: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
+    opacity: 0;
+    transition: opacity 0.6s ease-in;
   }
 
-.donation-meter__arc-band--wish {
-  fill: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
-  opacity: 0;
-  transition: opacity 0.6s ease-in;
+  .donation-meter__arc-band--giveback[data-arc-visible] {
+    opacity: 0.22;
   }
 
-.donation-meter__arc-band--wish[data-arc-visible] {
-  opacity: 0.22;
-  }
-
-@media (prefers-reduced-motion: reduce) {
-  .donation-meter__arc-band--total,
-  .donation-meter__arc-band--giveback,
   .donation-meter__arc-band--wish {
-  transition: none,;
-  }
-  }
-
-/* Transparent hit area — catches pointer events for the full 180° band */
-.donation-meter__arc-band-hit {
-  fill: none;
-  pointer-events: all;
-  cursor: pointer;
+    fill: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
+    opacity: 0;
+    transition: opacity 0.6s ease-in;
   }
 
-/* Arc band tooltip labels */
-.donation-meter__arc-label {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease-out;
+  .donation-meter__arc-band--wish[data-arc-visible] {
+    opacity: 0.22;
   }
 
-.donation-meter__arc-band-group[data-has-data]:hover .donation-meter__arc-label,
-.donation-meter__arc-band-group[data-has-data]:focus-visible .donation-meter__arc-label,
-.donation-meter__arc-band-group[data-has-data][data-label-open] .donation-meter__arc-label {
-  opacity: 1;
+  @media (prefers-reduced-motion: reduce) {
+    .donation-meter__arc-band--total,
+    .donation-meter__arc-band--giveback,
+    .donation-meter__arc-band--wish {
+      transition: none;
+    }
   }
 
-.donation-meter__arc-band-group {
-  outline: none;
+  /* Transparent hit area — catches pointer events for the full 180° band */
+  .donation-meter__arc-band-hit {
+    fill: none;
+    pointer-events: all;
+    cursor: pointer;
   }
 
-.donation-meter__arc-band-group:not([data-has-data]) .donation-meter__arc-band-hit {
-  pointer-events: none;
-  cursor: default;
+  /* Arc band tooltip labels */
+  .donation-meter__arc-label {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-out;
   }
 
-.donation-meter__arc-label-bg {
-  fill: rgba(8, 12, 18, 0.88);
+  .donation-meter__arc-band-group[data-has-data]:hover .donation-meter__arc-label,
+  .donation-meter__arc-band-group[data-has-data]:focus-visible .donation-meter__arc-label,
+  .donation-meter__arc-band-group[data-has-data][data-label-open] .donation-meter__arc-label {
+    opacity: 1;
   }
 
-.donation-meter__arc-label-bg--total {
-  stroke: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
-  stroke-width: 0.75;
+  .donation-meter__arc-band-group {
+    outline: none;
   }
 
-.donation-meter__arc-label-bg--giveback {
-  stroke: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
-  stroke-width: 0.75;
+  .donation-meter__arc-band-group:not([data-has-data]) .donation-meter__arc-band-hit {
+    pointer-events: none;
+    cursor: default;
   }
 
-.donation-meter__arc-label-bg--wish {
-  stroke: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
-  stroke-width: 0.75;
+  .donation-meter__arc-label-bg {
+    fill: rgba(8, 12, 18, 0.88);
   }
 
-.donation-meter__arc-label-name {
-  fill: rgba(255, 255, 255, 0.6);
-  font-family: var(--font-display);
-  font-size: 7.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-anchor: middle;
+  .donation-meter__arc-label-bg--total {
+    stroke: var(--color-meter-arc-total, rgba(34, 197, 94, 1));
+    stroke-width: 0.75;
   }
 
-.donation-meter__arc-label-value {
-  fill: rgba(255, 255, 255, 0.95);
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-  text-anchor: middle;
+  .donation-meter__arc-label-bg--giveback {
+    stroke: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
+    stroke-width: 0.75;
   }
 
-.donation-meter__arc {
-  fill: none;
-  stroke: var(--color-meter-arc);
-  stroke-width: 1.15;
-  opacity: 0.82;
+  .donation-meter__arc-label-bg--wish {
+    stroke: var(--color-meter-arc-wish, rgba(234, 179, 8, 1));
+    stroke-width: 0.75;
   }
 
-.donation-meter__danger-zone {
-  fill: var(--color-meter-danger-fill);
+  .donation-meter__arc-label-name {
+    fill: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-display);
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-anchor: middle;
   }
 
-.donation-meter__tick {
-  stroke: var(--color-meter-tick);
-  stroke-width: 0.9;
-  stroke-linecap: round;
-  opacity: 0.95;
+  .donation-meter__arc-label-value {
+    fill: rgba(255, 255, 255, 0.95);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    text-anchor: middle;
   }
 
-.donation-meter__tick--major {
-  stroke: var(--color-meter-tick-major);
-  stroke-width: 1.35;
+  .donation-meter__arc {
+    fill: none;
+    stroke: var(--color-meter-arc);
+    stroke-width: 1.15;
+    opacity: 0.82;
   }
 
-.donation-meter__tick--danger {
-  stroke: var(--color-meter-danger);
+  .donation-meter__danger-zone {
+    fill: var(--color-meter-danger-fill);
   }
 
-.donation-meter__scale-label {
-  fill: var(--color-meter-readout-dim);
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  .donation-meter__tick {
+    stroke: var(--color-meter-tick);
+    stroke-width: 0.9;
+    stroke-linecap: round;
+    opacity: 0.95;
   }
 
-.donation-meter__dial-title {
-  fill: var(--color-meter-readout);
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  .donation-meter__tick--major {
+    stroke: var(--color-meter-tick-major);
+    stroke-width: 1.35;
   }
 
-.donation-meter__dial-range {
-  fill: var(--color-meter-readout-muted);
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  font-variant-numeric: tabular-nums;
-  text-transform: uppercase;
+  .donation-meter__tick--danger {
+    stroke: var(--color-meter-danger);
   }
 
-.donation-meter__dial-value--raised {
-  fill: var(--meter-raised-readout);
+  .donation-meter__scale-label {
+    fill: var(--color-meter-readout-dim);
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
   }
 
-.donation-meter__dial-value--goal {
-  fill: var(--meter-goal-readout);
+  .donation-meter__dial-title {
+    fill: var(--color-meter-readout);
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
   }
 
-.donation-meter__needle,
-.donation-meter__needle-tail {
-  fill: var(--color-meter-needle-total, #ef4444);
-  filter: drop-shadow(
-  0 0.8px 1.2px var(--color-meter-needle-total-shadow, rgba(239, 68, 68, 0.45))
-  );
+  .donation-meter__dial-range {
+    fill: var(--color-meter-readout-muted);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    text-transform: uppercase;
   }
 
-.donation-meter__needle--giveback,
-.donation-meter__needle-tail--giveback {
-  fill: var(--color-meter-needle-giveback, #3b82f6);
-  filter: drop-shadow(
-  0 0.8px 1.2px var(--color-meter-needle-giveback-shadow, rgba(59, 130, 246, 0.45))
-  );
+  .donation-meter__dial-value--raised {
+    fill: var(--meter-raised-readout);
   }
 
-.donation-meter__needle--wish,
-.donation-meter__needle-tail--wish {
-  fill: var(--color-meter-needle-wish, #22c55e);
-  filter: drop-shadow(
-  0 0.8px 1.2px var(--color-meter-needle-wish-shadow, rgba(34, 197, 94, 0.45))
-  );
+  .donation-meter__dial-value--goal {
+    fill: var(--meter-goal-readout);
   }
 
-.donation-meter__giveback-readout {
-  fill: var(--color-meter-readout-dim);
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  font-variant-numeric: tabular-nums;
-  text-transform: uppercase;
+  .donation-meter__needle,
+  .donation-meter__needle-tail {
+    fill: var(--color-meter-needle-total, #ef4444);
+    filter: drop-shadow(
+      0 0.8px 1.2px var(--color-meter-needle-total-shadow, rgba(239, 68, 68, 0.45))
+    );
   }
 
-.donation-meter__dial-value--giveback {
-  fill: var(--color-meter-needle-giveback, #3b82f6);
+  .donation-meter__needle--giveback,
+  .donation-meter__needle-tail--giveback {
+    fill: var(--color-meter-needle-giveback, #3b82f6);
+    filter: drop-shadow(
+      0 0.8px 1.2px var(--color-meter-needle-giveback-shadow, rgba(59, 130, 246, 0.45))
+    );
   }
 
-.donation-meter__pivot-core {
-  fill: url(#meter-pivot-gradient);
-  stroke: var(--color-meter-bezel-stroke);
-  stroke-width: 0.8;
+  .donation-meter__needle--wish,
+  .donation-meter__needle-tail--wish {
+    fill: var(--color-meter-needle-wish, #22c55e);
+    filter: drop-shadow(
+      0 0.8px 1.2px var(--color-meter-needle-wish-shadow, rgba(34, 197, 94, 0.45))
+    );
   }
 
-.donation-meter__pivot-highlight {
-  fill: var(--color-meter-pivot-highlight);
+  .donation-meter__giveback-readout {
+    fill: var(--color-meter-readout-dim);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    text-transform: uppercase;
   }
 
-.donation-meter__bottom-rail {
-  fill: var(--color-meter-bottom-rail);
+  .donation-meter__dial-value--giveback {
+    fill: var(--color-meter-needle-giveback, #3b82f6);
   }
 
-.donation-meter__serial {
-  fill: var(--color-meter-readout-dim);
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  opacity: 0.65;
+  .donation-meter__pivot-core {
+    fill: url(#meter-pivot-gradient);
+    stroke: var(--color-meter-bezel-stroke);
+    stroke-width: 0.8;
   }
 
-.donation-meter[data-state="error"] .donation-meter__dial-range {
-  fill: var(--color-meter-danger);
+  .donation-meter__pivot-highlight {
+    fill: var(--color-meter-pivot-highlight);
   }
 
-.donation-meter[data-state="goal"] .donation-meter__dial-range {
-  fill: var(--color-meter-readout-goal);
+  .donation-meter__bottom-rail {
+    fill: var(--color-meter-bottom-rail);
   }
 
-#frame {
-  position: relative;
-  height: var(--frame-height);
-  width: var(--frame-width);
-  overflow: hidden;
-  border-radius: 1em;
-  background: var(--noise-data), #b7110edd;
-  isolation: isolate;
+  .donation-meter__serial {
+    fill: var(--color-meter-readout-dim);
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0.65;
   }
 
-.noise-wrapper {
-  top: 0; left: 0; right: 0; bottom: 0; position: absolute;
-  transform-origin: top left;
+  .donation-meter[data-state="error"] .donation-meter__dial-range {
+    fill: var(--color-meter-danger);
   }
 
-.noise-wrapper[data-side="right"] {
-  transform: translateX(100%) rotate(90deg);
+  .donation-meter[data-state="goal"] .donation-meter__dial-range {
+    fill: var(--color-meter-readout-goal);
   }
 
-.noise-wrapper[data-side="left"] {
-  transform: translateY(100%) rotate(-90deg);
+  #frame {
+    position: relative;
+    height: var(--frame-height);
+    width: var(--frame-width);
+    overflow: hidden;
+    border-radius: 1em;
+    background: var(--noise-data), #b7110edd;
+    isolation: isolate;
   }
 
-.noise-wrapper[data-side="bottom"] {
-  transform: scale(-1, -1);
-  transform-origin: center;
+  .noise-wrapper {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    transform-origin: top left;
   }
 
-.noise-x, .noise-y {
-  position: absolute;
-  top: 0; left: 0;
-  opacity: 0.25;
-  transform-origin: top left;
-  z-index: 2;
-  aspect-ratio: 400 / 70;
-  overflow: visible;
+  .noise-wrapper[data-side="right"] {
+    transform: translateX(100%) rotate(90deg);
   }
 
-.noise-under {
-  z-index: 1;
-  top: 5px;
-  filter: blur(3px);
+  .noise-wrapper[data-side="left"] {
+    transform: translateY(100%) rotate(-90deg);
   }
 
-.noise-x {
-  width: 100vw;
-  transform: scaleY(var(--rust-scale-x));
+  .noise-wrapper[data-side="bottom"] {
+    transform: scale(-1, -1);
+    transform-origin: center;
   }
 
-.noise-y {
-  width: 100vh;
-  transform: scaleY(var(--rust-scale-y));
+  .noise-x,
+  .noise-y {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.25;
+    transform-origin: top left;
+    z-index: 2;
+    aspect-ratio: 400 / 70;
+    overflow: visible;
   }
 
-.screw-tl, .screw-tr, .screw-br, .screw-bl {
-  position: absolute;
-  width: var(--screw-size);
-  height: var(--screw-size);
-  z-index: 0;
+  .noise-under {
+    z-index: 1;
+    top: 5px;
+    filter: blur(3px);
   }
 
-.screw-tl {
-  top: var(--screw-y-offset); left: var(--screw-x-offset); transform: rotate(10deg);
+  .noise-x {
+    width: 100vw;
+    transform: scaleY(var(--rust-scale-x));
   }
 
-.screw-tr {
-  top: var(--screw-y-offset); right: var(--screw-x-offset); transform: rotate(50deg);
+  .noise-y {
+    width: 100vh;
+    transform: scaleY(var(--rust-scale-y));
   }
 
-.screw-bl {
-  bottom: var(--screw-y-offset); left: var(--screw-x-offset); transform: rotate(-40deg);
+  .screw-tl,
+  .screw-tr,
+  .screw-br,
+  .screw-bl {
+    position: absolute;
+    width: var(--screw-size);
+    height: var(--screw-size);
+    z-index: 0;
   }
 
-.screw-br {
-  bottom: var(--screw-y-offset); right: var(--screw-x-offset); transform: rotate(15deg);
+  .screw-tl {
+    top: var(--screw-y-offset);
+    left: var(--screw-x-offset);
+    transform: rotate(10deg);
   }
 
+  .screw-tr {
+    top: var(--screw-y-offset);
+    right: var(--screw-x-offset);
+    transform: rotate(50deg);
+  }
+
+  .screw-bl {
+    bottom: var(--screw-y-offset);
+    left: var(--screw-x-offset);
+    transform: rotate(-40deg);
+  }
+
+  .screw-br {
+    bottom: var(--screw-y-offset);
+    right: var(--screw-x-offset);
+    transform: rotate(15deg);
+  }
 </style>

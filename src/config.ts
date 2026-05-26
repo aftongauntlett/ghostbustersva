@@ -5,8 +5,7 @@
 
 export const siteConfig = {
   title: "Ghostbusters Virginia",
-  description:
-    "",
+  description: "",
   copyright: `© ${new Date().getFullYear()} Ghostbusters Virginia. All rights reserved.`,
 
   /** Navigation links shown in the header (and optionally the footer). */
