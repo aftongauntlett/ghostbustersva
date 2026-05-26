@@ -322,7 +322,66 @@ async function initContactForm() {
   } catch (err) {
     console.warn("date clear button init failed:", err);
   }
+
+  const form = document.querySelector(".contact-form");
+  if (!form) return;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const submitBtn = form.querySelector('[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    const timingField = form.querySelector("[data-timing-field]");
+    if (timingField) timingField.value = String(_loadTime);
+
+    const data = {};
+    for (const [key, value] of new FormData(form)) {
+      data[key] = value;
+    }
+    data._t = String(_loadTime);
+
+    const turnstileInput = document.querySelector("#cf-turnstile-response");
+    if (turnstileInput) data["cf-turnstile-response"] = turnstileInput.value;
+
+    const existingAlert = form.querySelector("[data-submit-alert]");
+    if (existingAlert) existingAlert.remove();
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json().catch(() => ({}));
+
+      if (res.ok && result.ok) {
+        form.innerHTML = "<p>Thanks! We’ll be in touch.</p>";
+      } else {
+        const errMsg =
+          result.error === "rate_limited"
+            ? "Too many submissions. Please wait a few minutes and try again."
+            : "Something went wrong. Please try again.";
+        const alert = document.createElement("p");
+        alert.setAttribute("role", "alert");
+        alert.setAttribute("data-submit-alert", "");
+        alert.textContent = errMsg;
+        form.appendChild(alert);
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    } catch {
+      const alert = document.createElement("p");
+      alert.setAttribute("role", "alert");
+      alert.setAttribute("data-submit-alert", "");
+      alert.textContent = "A network error occurred. Please check your connection and try again.";
+      form.appendChild(alert);
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
 }
+
+let _loadTime = Date.now();
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initContactForm);

@@ -6,7 +6,7 @@
  * Helper/utility functions live in helpers.ts.
  * Static labels/copy live in constants.ts. Types live in types.ts.
  */
-import type { ComponentType } from "react";
+import { type ComponentType, useMemo } from "react";
 import { useEffect } from "react";
 import "./AppearanceRequestForm.css";
 import { AppearanceRequestProvider, useAppearanceRequest } from "./AppearanceRequestContext";
@@ -62,6 +62,8 @@ function FormContent() {
     effectiveTotalSteps,
   } = useAppearanceRequest();
 
+  const startDate = useMemo(() => Date.now(), []);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [step]);
@@ -109,6 +111,14 @@ function FormContent() {
         onNodeClick={handleNodeClick}
       />
       <form noValidate onSubmit={onSubmit}>
+        <input type="hidden" name="_t" value={startDate} />
+        <input
+          type="text"
+          name="_hp"
+          tabIndex={-1}
+          autoComplete="off"
+          className="__honeypot"
+        />
         <StepComponent />
         {submitError && (
           <div className="arf__submit-error" role="alert">
