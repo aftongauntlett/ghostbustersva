@@ -37,7 +37,9 @@ export async function handleContactRequest(request: Request): Promise<Response> 
   const expectedOrigin = getExpectedOrigin();
   const isLocalhost =
     origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1");
-  if (expectedOrigin && !isLocalhost && origin !== expectedOrigin) {
+  const isVercel = origin.startsWith("https://gbva-site-git") && origin.endsWith(".vercel.app");
+
+  if (expectedOrigin && !isVercel && !isLocalhost && origin !== expectedOrigin) {
     return jsonRes({ ok: false, error: "invalid_origin" }, 400);
   }
 

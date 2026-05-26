@@ -132,8 +132,6 @@ export function validateStep(
 export function buildPayload(formData: FormData): Record<string, string> {
   return {
     ...formData,
-    _hp: "",
-    _t: String(Date.now()),
   };
 }
 
