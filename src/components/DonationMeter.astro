@@ -97,8 +97,8 @@ function buildFullArcBandPath(outerR: number, innerR: number): string {
 }
 
 const arcHitTotal = buildFullArcBandPath(ARC_BAND_OUTER_1, ARC_BAND_OUTER_2);
-const arcHitGiveback = buildFullArcBandPath(ARC_BAND_OUTER_2, ARC_BAND_OUTER_3);
-const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
+const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_2, ARC_BAND_OUTER_3);
+const arcHitOther = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 ---
 
 <div class:list={["donation-meter", className]} data-donation-meter data-state="loading">
@@ -345,30 +345,26 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       </g>
 
       <g
-        class="donation-meter__arc-band-group donation-meter__arc-band-group--giveback"
+        class="donation-meter__arc-band-group donation-meter__arc-band-group--other"
         tabindex="0"
         role="img"
         aria-label="Other Donations arc band"
       >
-        <path d={arcHitGiveback} class="donation-meter__arc-band-hit"></path>
+        <path d={arcHitOther} class="donation-meter__arc-band-hit"></path>
         <path
-          data-meter-arc-giveback
+          data-meter-arc-other
           d=""
-          class="donation-meter__arc-band donation-meter__arc-band--giveback"></path>
-        <g class="donation-meter__arc-label donation-meter__arc-label--giveback" aria-hidden="true">
+          class="donation-meter__arc-band donation-meter__arc-band--other"></path>
+        <g class="donation-meter__arc-label donation-meter__arc-label--other" aria-hidden="true">
           <rect
-            x="166"
-            y="145"
+            x="196"
+            y="175"
             width="90"
             height="28"
             rx="3"
-            class="donation-meter__arc-label-bg donation-meter__arc-label-bg--giveback"></rect>
-          <text x="211" y="155" class="donation-meter__arc-label-name">OTHER DONATIONS</text>
-          <text
-            x="211"
-            y="167"
-            class="donation-meter__arc-label-value"
-            data-meter-arc-label-giveback
+            class="donation-meter__arc-label-bg donation-meter__arc-label-bg--other"></rect>
+          <text x="241" y="185" class="donation-meter__arc-label-name">OTHER DONATIONS</text>
+          <text x="241" y="197" class="donation-meter__arc-label-value" data-meter-arc-label-other
             >—
           </text>
         </g>
@@ -387,14 +383,14 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
           class="donation-meter__arc-band donation-meter__arc-band--wish"></path>
         <g class="donation-meter__arc-label donation-meter__arc-label--wish" aria-hidden="true">
           <rect
-            x="196"
-            y="175"
+            x="166"
+            y="145"
             width="90"
             height="28"
             rx="3"
             class="donation-meter__arc-label-bg donation-meter__arc-label-bg--wish"></rect>
-          <text x="241" y="185" class="donation-meter__arc-label-name">MAKE-A-WISH</text>
-          <text x="241" y="197" class="donation-meter__arc-label-value" data-meter-arc-label-wish
+          <text x="211" y="155" class="donation-meter__arc-label-name">MAKE-A-WISH</text>
+          <text x="211" y="167" class="donation-meter__arc-label-value" data-meter-arc-label-wish
             >—
           </text>
         </g>
@@ -439,7 +435,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         y="304"
         class="donation-meter__dial-title"
         text-anchor="middle"
-        >VA GIGA-GIVERES
+        >VA GIVABUCKS
       </text>
       <text x={CENTER_X} y="328" class="donation-meter__dial-range" text-anchor="middle">
         <tspan
@@ -461,20 +457,20 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
       <g data-meter-needle-wish transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
         <path
-          d="M 299.1 248 L 300.9 248 L 301.5 158 L 300 138 L 298.5 158 Z"
+          d="M 299.1 248 L 300.9 248 L 301.5 116 L 300 96 L 298.5 116 Z"
           class="donation-meter__needle--wish"></path>
         <path
           d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
           class="donation-meter__needle-tail--wish"></path>
       </g>
 
-      <g data-meter-needle-giveback transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
+      <g data-meter-needle-other transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
         <path
-          d="M 299.1 248 L 300.9 248 L 301.5 116 L 300 96 L 298.5 116 Z"
-          class="donation-meter__needle--giveback"></path>
+          d="M 299.1 248 L 300.9 248 L 301.5 158 L 300 138 L 298.5 158 Z"
+          class="donation-meter__needle--other"></path>
         <path
           d="M 299.4 248 L 300.6 248 L 300.4 266 L 299.6 266 Z"
-          class="donation-meter__needle-tail--giveback"></path>
+          class="donation-meter__needle-tail--other"></path>
       </g>
 
       <g data-meter-needle transform={`rotate(${ARC_START_DEG} ${CENTER_X} ${CENTER_Y})`}>
@@ -506,9 +502,9 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
   const NEEDLE_ANIM_DURATION_MS = 5000;
   const NEEDLE_START_DELAY_MS = 500;
   const ARC_BAND_OUTER_1 = 189; // green / total  (flush with inner edge of major ticks)
-  const ARC_BAND_OUTER_2 = 147; // orange / giveback  (189 − 42)
-  const ARC_BAND_OUTER_3 = 105; // yellow / wish      (147 − 42)
-  const ARC_BAND_INNER_3 = 63; // yellow / wish (innermost, 105 − 42)
+  const ARC_BAND_OUTER_2 = 147; // yellow / wish  (189 − 42)
+  const ARC_BAND_OUTER_3 = 105; // orange / other (147 − 42)
+  const ARC_BAND_INNER_3 = 63; // orange / other (innermost, 105 − 42)
 
   const motionTokens = new WeakMap<SVGGElement, number>();
   const overloadTimers = new WeakMap<SVGGElement, number>();
@@ -1043,16 +1039,16 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
   async function hydrateMeter(root: HTMLElement): Promise<void> {
     const needle = root.querySelector<SVGGElement>("[data-meter-needle]");
-    const givebackNeedle = root.querySelector<SVGGElement>("[data-meter-needle-giveback]");
+    const otherNeedle = root.querySelector<SVGGElement>("[data-meter-needle-other]");
     const wishNeedle = root.querySelector<SVGGElement>("[data-meter-needle-wish]");
     const raisedNode = root.querySelector<SVGTSpanElement>("[data-meter-raised]");
     const goalNode = root.querySelector<SVGTSpanElement>("[data-meter-goal]");
     const statusNode = root.querySelector<HTMLElement>("[data-meter-status]");
     const arcTotal = root.querySelector<SVGPathElement>("[data-meter-arc-total]");
-    const arcGiveback = root.querySelector<SVGPathElement>("[data-meter-arc-giveback]");
+    const arcOther = root.querySelector<SVGPathElement>("[data-meter-arc-other]");
     const arcWish = root.querySelector<SVGPathElement>("[data-meter-arc-wish]");
     const labelTotal = root.querySelector<SVGTextElement>("[data-meter-arc-label-total]");
-    const labelGiveback = root.querySelector<SVGTextElement>("[data-meter-arc-label-giveback]");
+    const labelOther = root.querySelector<SVGTextElement>("[data-meter-arc-label-other]");
     const labelWish = root.querySelector<SVGTextElement>("[data-meter-arc-label-wish]");
 
     if (!needle || !raisedNode || !goalNode || !statusNode) {
@@ -1061,8 +1057,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
     const palette = getRaisedPalette();
     setNeedle(needle, 0);
-    if (givebackNeedle) {
-      setNeedle(givebackNeedle, 0);
+    if (otherNeedle) {
+      setNeedle(otherNeedle, 0);
     }
     if (wishNeedle) {
       setNeedle(wishNeedle, 0);
@@ -1088,7 +1084,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       if (arcWish) {
         arcWish.setAttribute(
           "d",
-          buildArcBandPath(cachedWishRatio, ARC_BAND_OUTER_3, ARC_BAND_INNER_3),
+          buildArcBandPath(cachedWishRatio, ARC_BAND_OUTER_2, ARC_BAND_OUTER_3),
         );
         showArcBand(arcWish);
       }
@@ -1109,12 +1105,12 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       cached && cached.givebackRaised > 0 ? getProgressRatio(cached.givebackRaised, SCALE_MAX) : 0;
 
     if (cachedTotalRatio > 0) {
-      if (arcGiveback) {
-        arcGiveback.setAttribute(
+      if (arcOther) {
+        arcOther.setAttribute(
           "d",
-          buildArcBandPath(cachedOtherRatio, ARC_BAND_OUTER_2, ARC_BAND_OUTER_3),
+          buildArcBandPath(cachedOtherRatio, ARC_BAND_OUTER_3, ARC_BAND_INNER_3),
         );
-        showArcBand(arcGiveback);
+        showArcBand(arcOther);
       }
       if (arcTotal) {
         arcTotal.setAttribute(
@@ -1123,14 +1119,14 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         );
         showArcBand(arcTotal);
       }
-      if (labelGiveback) {
-        setCurrencyText(labelGiveback, Math.max(0, cached!.givebackRaised - cached!.wishRaised));
+      if (labelOther) {
+        setCurrencyText(labelOther, Math.max(0, cached!.givebackRaised - cached!.wishRaised));
       }
       if (labelTotal) {
         setCurrencyText(labelTotal, cached!.givebackRaised);
       }
-      if (givebackNeedle) {
-        animateNeedle(givebackNeedle, 0, cachedOtherRatio, true).catch((e: unknown) =>
+      if (otherNeedle) {
+        animateNeedle(otherNeedle, 0, cachedOtherRatio, true).catch((e: unknown) =>
           console.warn("Other donations needle cache animation failed.", e),
         );
       }
@@ -1207,8 +1203,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
       if (labelTotal) {
         setCurrencyText(labelTotal, totalRaised);
       }
-      if (labelGiveback) {
-        setCurrencyText(labelGiveback, otherRaised);
+      if (labelOther) {
+        setCurrencyText(labelOther, otherRaised);
       }
 
       // Snap arc bands to live values.
@@ -1222,26 +1218,21 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
           ),
         );
       }
-      if (arcGiveback) {
-        arcGiveback.setAttribute(
+      if (arcOther) {
+        arcOther.setAttribute(
           "d",
           buildArcBandPath(
             getProgressRatio(otherRaised, SCALE_MAX),
-            ARC_BAND_OUTER_2,
             ARC_BAND_OUTER_3,
+            ARC_BAND_INNER_3,
           ),
         );
       }
 
       // Other donations needle (blue) — fire-and-forget, non-blocking.
-      if (givebackNeedle && otherRaised > 0) {
-        animateNeedle(
-          givebackNeedle,
-          cachedOtherRatio,
-          getProgressRatio(otherRaised, SCALE_MAX),
-          true,
-        )
-          .then(() => showArcBand(arcGiveback))
+      if (otherNeedle && otherRaised > 0) {
+        animateNeedle(otherNeedle, cachedOtherRatio, getProgressRatio(otherRaised, SCALE_MAX), true)
+          .then(() => showArcBand(arcOther))
           .catch((e: unknown) => console.warn("Other donations needle animation failed.", e));
       }
 
@@ -1277,8 +1268,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
           "d",
           buildArcBandPath(
             getProgressRatio(wishRaised, SCALE_MAX),
+            ARC_BAND_OUTER_2,
             ARC_BAND_OUTER_3,
-            ARC_BAND_INNER_3,
           ),
         );
       }
@@ -1486,13 +1477,13 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     opacity: 0.18;
   }
 
-  .donation-meter__arc-band--giveback {
-    fill: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
+  .donation-meter__arc-band--other {
+    fill: var(--color-meter-arc-other, rgba(249, 115, 22, 1));
     opacity: 0;
     transition: opacity 0.6s ease-in;
   }
 
-  .donation-meter__arc-band--giveback[data-arc-visible] {
+  .donation-meter__arc-band--other[data-arc-visible] {
     opacity: 0.22;
   }
 
@@ -1508,7 +1499,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
 
   @media (prefers-reduced-motion: reduce) {
     .donation-meter__arc-band--total,
-    .donation-meter__arc-band--giveback,
+    .donation-meter__arc-band--other,
     .donation-meter__arc-band--wish {
       transition: none;
     }
@@ -1552,8 +1543,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     stroke-width: 0.75;
   }
 
-  .donation-meter__arc-label-bg--giveback {
-    stroke: var(--color-meter-arc-giveback, rgba(249, 115, 22, 1));
+  .donation-meter__arc-label-bg--other {
+    stroke: var(--color-meter-arc-other, rgba(249, 115, 22, 1));
     stroke-width: 0.75;
   }
 
@@ -1650,11 +1641,11 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     );
   }
 
-  .donation-meter__needle--giveback,
-  .donation-meter__needle-tail--giveback {
-    fill: var(--color-meter-needle-giveback, #3b82f6);
+  .donation-meter__needle--other,
+  .donation-meter__needle-tail--other {
+    fill: var(--color-meter-needle-other, #3b82f6);
     filter: drop-shadow(
-      0 0.8px 1.2px var(--color-meter-needle-giveback-shadow, rgba(59, 130, 246, 0.45))
+      0 0.8px 1.2px var(--color-meter-needle-other-shadow, rgba(59, 130, 246, 0.45))
     );
   }
 
@@ -1666,7 +1657,7 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     );
   }
 
-  .donation-meter__giveback-readout {
+  .donation-meter__other-readout {
     fill: var(--color-meter-readout-dim);
     font-family: var(--font-display);
     font-size: 10px;
@@ -1676,8 +1667,8 @@ const arcHitWish = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     text-transform: uppercase;
   }
 
-  .donation-meter__dial-value--giveback {
-    fill: var(--color-meter-needle-giveback, #3b82f6);
+  .donation-meter__dial-value--other {
+    fill: var(--color-meter-needle-other, #3b82f6);
   }
 
   .donation-meter__pivot-core {

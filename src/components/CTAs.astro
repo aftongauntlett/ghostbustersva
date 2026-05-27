@@ -18,8 +18,8 @@ const {
   secondaryCtaHref,
   secondaryCtaExternal = false,
 } = Astro.props;
-
 ---
+
 <Button
   variant="primary"
   class="btn--lg btn--donate-hero"
@@ -30,13 +30,13 @@ const {
 </Button>
 {
   secondaryCtaLabel && secondaryCtaHref ? (
-  <Button
-    variant="secondary"
-    class="btn--lg"
-    href={secondaryCtaHref}
-    external={secondaryCtaExternal}
-  >
-    {secondaryCtaLabel}
-  </Button>
-    ) : null
+    <Button
+      variant="secondary"
+      class="btn--lg"
+      href={secondaryCtaHref}
+      external={secondaryCtaExternal}
+    >
+      {secondaryCtaLabel}
+    </Button>
+  ) : null
 }
