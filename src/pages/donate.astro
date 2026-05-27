@@ -27,12 +27,11 @@ const defaultPaypalDonateUrl = "https://www.paypal.com/US/fundraiser/charity/443
 const defaultMakeAWishDonateUrl =
   "https://secure2.wish.org/site/TR;jsessionid=00000000.app20002b?team_id=58435&fr_id=7464&pg=team&NONCE_TOKEN=16AE47C509ECB858ECB963CD3D174802";
 const safePrimaryCtaHref = isSafeExternalUrl(settings.paypalUrl)
-                               ? settings.paypalUrl
-                               : defaultPaypalDonateUrl;
+  ? settings.paypalUrl
+  : defaultPaypalDonateUrl;
 const safeSecondaryCtaHref = isSafeExternalUrl(settings.donateUrl)
-                                 ? settings.donateUrl
-                                 : defaultMakeAWishDonateUrl;
-
+  ? settings.donateUrl
+  : defaultMakeAWishDonateUrl;
 
 const pageTitle = copy.pageTitle || "Support Our Mission";
 const pageIntro =
@@ -151,7 +150,9 @@ const mtftfLogo = await getResponsiveImageAttrs({
         <div class="meter-top">
           <DonationMeter />
         </div>
-        <h3 class="meter-caption">We support many charities, including the following groups &amp; programs...</h3>
+        <h3 class="meter-caption">
+          We support many charities, including the following groups &amp; programs...
+        </h3>
         <div class="impact-stats">
           <div class="impact-stat">
             <span class="impact-stat__value">Make-A-Wish VA</span>
@@ -164,22 +165,18 @@ const mtftfLogo = await getResponsiveImageAttrs({
           <div class="impact-stat">
             <span class="impact-stat__value">Toys for Tots</span>
             <span class="impact-stat__label"
-              >Created by the Marine Corps Reserve, Toys for Tots collects
-              gifts during the holidays and beyond, helping
-              disadvantaged children.  Reinforcing the belief that every child
+              >Created by the Marine Corps Reserve, Toys for Tots collects gifts during the holidays
+              and beyond, helping disadvantaged children. Reinforcing the belief that every child
               deserves moments of happiness and a brighter future.
-            </span
-            >
+            </span>
           </div>
           <div class="impact-stat">
             <span class="impact-stat__value">Proton Pets</span>
-            <span class="impact-stat__label"
-              >
-              Proton Pets, created by GBVA, is a worldwide initiative supporting pets and animal welfare.
-              The program works to make a real difference for both pets and their owners while
-              raising awareness about the importance of community pet pantries.
-            </span
-            >
+            <span class="impact-stat__label">
+              Proton Pets, created by GBVA, is a worldwide initiative supporting pets and animal
+              welfare. The program works to make a real difference for both pets and their owners
+              while raising awareness about the importance of community pet pantries.
+            </span>
           </div>
         </div>
         <div class="donate-section">
@@ -190,7 +187,7 @@ const mtftfLogo = await getResponsiveImageAttrs({
             secondaryCtaLabel={secondaryDonateCtaLabel}
             secondaryCtaHref={safeSecondaryCtaHref}
             secondaryCtaExternal
-            />
+          />
         </div>
       </div>
     </div>

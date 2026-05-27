@@ -146,7 +146,6 @@ class SoundQueue {
   }
 }
 
-
 function playSound(src: string): void {
   try {
     new Audio(src).play().catch(() => {
@@ -474,7 +473,6 @@ export default function ZenerGame() {
                 </button>
               );
             })}
-
           </div>
 
           {/*/!* Prediction result feedback *!/*/}
@@ -490,11 +488,11 @@ export default function ZenerGame() {
                   Correct! {calcScore(prediction!, deck.slice(currentIndex))} pts
                 </>
               ) : (
-                 <>
-                   <span className="zener-feedback__icon">⚡</span>
-                   Incorrect — it was <strong>{SYMBOL_LABELS[deck[currentIndex]]}</strong>
-                 </>
-               )}
+                <>
+                  <span className="zener-feedback__icon">⚡</span>
+                  Incorrect — it was <strong>{SYMBOL_LABELS[deck[currentIndex]]}</strong>
+                </>
+              )}
             </div>
           )}
         </div>

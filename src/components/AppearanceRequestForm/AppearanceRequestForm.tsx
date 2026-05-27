@@ -112,13 +112,7 @@ function FormContent() {
       />
       <form noValidate onSubmit={onSubmit}>
         <input type="hidden" name="_t" value={startDate} />
-        <input
-          type="text"
-          name="_hp"
-          tabIndex={-1}
-          autoComplete="off"
-          className="__honeypot"
-        />
+        <input type="text" name="_hp" tabIndex={-1} autoComplete="off" className="__honeypot" />
         <StepComponent />
         {submitError && (
           <div className="arf__submit-error" role="alert">

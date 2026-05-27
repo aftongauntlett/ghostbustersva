@@ -7,9 +7,7 @@ export default function ParkingInfo() {
 
   return (
     <div className="arf__group">
-      <FormLabel htmlFor="memberParkingInfo">
-        {copy.memberParkingInfoLabel}
-      </FormLabel>
+      <FormLabel htmlFor="memberParkingInfo">{copy.memberParkingInfoLabel}</FormLabel>
       <textarea
         id="memberParkingInfo"
         className="arf__textarea"
