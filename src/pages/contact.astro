@@ -19,39 +19,39 @@ const copy = await getPageCopy("contact");
 const settings = await getSiteSettings();
 
 const socialLinks = (settings.socialLinks ?? []).filter((link) => isSafeExternalUrl(link.url));
-const contactEmail = settings.contactEmail || "info@whoyagonnacall.org";
-const contactPhone = settings.contactPhone || "(804) 482-1217";
+const contactEmail = settings.contactEmail || `info@whoyagonnacall.org`;
+const contactPhone = settings.contactPhone || `(804) 482-1217`;
 const ledScrollbarText = settings.ledScrollbarText || undefined;
-const ledColor = "var(--color-led-alert)";
-const ledGlow = "var(--color-led-alert-glow)";
+const ledColor = `var(--color-led-alert)`;
+const ledGlow = `var(--color-led-alert-glow)`;
 const showLedScrollbar = copy.showLedScrollbar ?? true;
-const ledPlacement = copy.ledPlacement || "after-social";
+const ledPlacement = copy.ledPlacement || `after-social`;
 
-const pageTitle = copy.pageTitle || "Contact Us";
+const pageTitle = copy.pageTitle || `Contact Us`;
 const pageIntro =
   copy.pageIntro ||
-  "Interested in having Ghostbusters Virginia appear at your event, convention, or community gathering? We love supporting charitable and community causes across the Commonwealth. Contact us today to learn more.";
-const bookingHeading = copy.bookingHeading || "You know who to Call";
-const bookingSectionHeading = copy.bookingSectionHeading || "Event Bookings & Appearances";
+  `Interested in having Ghostbusters Virginia appear at your event, convention, or community gathering? We love supporting charitable and community causes across the Commonwealth. Contact us today to learn more.`;
+const bookingHeading = copy.bookingHeading || `You know who to Call`;
+const bookingSectionHeading = copy.bookingSectionHeading || `Event Bookings & Appearances`;
 const contactFormDescription =
   copy.contactFormDescription ||
-  "Got a ghost problem? A media inquiry? Just want to say Hi? We're Ready To Believe You.";
-const contactFormSubmitLabel = copy.contactFormSubmitLabel || "Send Message";
+  `Got a ghost problem? A media inquiry? Just want to say Hi? We're Ready To Believe You.`;
+const contactFormSubmitLabel = copy.contactFormSubmitLabel || `Send Message`;
 const inquiryOptions = inquiryTypeOptions.map((value) => ({ value, label: value }));
 const eventInquiryAllowlistJson = serializeEventInquiryAllowlist();
-const metaTitle = copy.metaTitle || "Contact";
+const metaTitle = copy.metaTitle || `Contact`;
 const metaDescription =
   copy.metaDescription ||
-  "Get in touch with Ghostbusters Virginia \u2014 reach us via email, social media, or smoke signal.";
-const ogTitleVal = copy.ogTitle || "Contact Ghostbusters Virginia";
+  `Get in touch with Ghostbusters Virginia \u2014 reach us via email, social media, or smoke signal.`;
+const ogTitleVal = copy.ogTitle || `Contact Ghostbusters Virginia`;
 const ogDescriptionVal =
   copy.ogDescription ||
-  "Reach Ghostbusters Virginia for event bookings, media inquiries, or just to say hey.";
-const ogImage = copy.ogImage || "/images/ghostbusters-virginia-full-team-photo.jpg";
+  `Reach Ghostbusters Virginia for event bookings, media inquiries, or just to say hey.`;
+const ogImage = copy.ogImage || `/images/ghostbusters-virginia-full-team-photo.jpg`;
 
-const bookingImageSrc = copy.bookingImage || "/images/ghostbusters-virginia-two-gbva-members.jpg";
+const bookingImageSrc = copy.bookingImage || `/images/ghostbusters-virginia-two-gbva-members.jpg`;
 const bookingImageAlt =
-  copy.bookingImageAlt || "Two Ghostbusters Virginia members posing together at a community event";
+  copy.bookingImageAlt || `Two Ghostbusters Virginia members posing together at a community event`;
 const bookingImage = await getResponsiveImageAttrs({
   src: bookingImageSrc,
   widths: [640, 960, 1200],
