@@ -1,0 +1,44 @@
+---
+import PageHeader from "../components/ui/PageHeader.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+---
+<BaseLayout
+  title="P.K.E. Atari 2600 Game"
+  description="Play GBVA's P.K.E. Atari 2600 Game by Matthew Younce"
+  canonical="/pke"
+  ogTitle="P.K.E. Atari 2600 Game"
+  ogDescription="Play GBVA's P.K.E. Atari 2600 Game by Matthew Younce"
+  ogImage="/images/games/P.K.E.-Startup-Title-Screen.jpg"
+>
+  <section class="page" aria-labelledby="press-title">
+    <div class="page-band page-band--white">
+      <div class="container container--mid">
+        <PageHeader id="press-title" title="P.K.E. Atari 2600 Game" subtitle="Arrow keys to move.  X key to fire" />
+        <div id="pke"></div>
+      </div>
+    </div>
+
+    <!--{/* ── Press kit / charity kit ── */}-->
+    <!--<div class="page-band page-band&#45;&#45;alt">-->
+    <!--  <div class="container container&#45;&#45;mid">-->
+    <!--  </div>-->
+    <!--</div>-->
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  window.EJS_player = "#pke";
+  window.EJS_core = "atari2600";
+  window.EJS_gameName = "GBVA P.K.E.";
+  window.EJS_color = "#0064ff";
+  window.EJS_startOnLoaded = true;
+  window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+  window.EJS_gameUrl = "/games/P.K.E..bin";
+</script>
+<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+
+<style>
+  #pke {
+  }
+</style>
