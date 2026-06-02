@@ -15,7 +15,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="page-band page-band--white">
       <div class="container container--mid">
         <PageHeader id="press-title" title="P.K.E. Atari 2600 Game" subtitle="Arrow keys to move.  X key to fire" />
-        <div id="pke"></div>
+        <div id="monitor-container">
+          <div id="monitor-top"></div>
+          <div id="monitor-right"></div>
+          <div id="monitor-bottom"></div>
+          <div id="monitor-left"></div>
+
+          <div id="pke"></div>
+          </div>
       </div>
     </div>
 
@@ -31,14 +38,70 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   window.EJS_player = "#pke";
   window.EJS_core = "atari2600";
   window.EJS_gameName = "GBVA P.K.E.";
-  window.EJS_color = "#0064ff";
+  window.EJS_backgroundColor = "#000000";
   window.EJS_startOnLoaded = true;
   window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
   window.EJS_gameUrl = "/games/P.K.E..bin";
+  window.EJS_defaultOptions = {
+    shader: 'crt-lottes',
+  };
 </script>
 <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 <style>
+  #monitor-container {
+    width: 889px;
+    height: 813px;
+    margin: auto;
+    position: relative;
+  }
+
+  #monitor-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 889px;
+    height: 153px;
+    z-index: 2;
+    background-image: url("/images/franklin-monitor-top.png");
+  }
+  #monitor-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 131px;
+    height: 813px;
+    z-index: 2;
+    background-image: url("/images/franklin-monitor-right.png");
+  }
+  #monitor-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 889px;
+    height: 183px;
+    z-index: 2;
+    background-image: url("/images/franklin-monitor-bottom.png");
+  }
+  #monitor-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 135px;
+    height: 813px;
+    z-index: 2;
+    background-image: url("/images/franklin-monitor-left.png");
+  }
+
   #pke {
+    position: relative;
+    z-index: 1;
+    width: 680px;
+    height: 560px;
+    top: 100px;
+    padding: 50px 30px 30px;
+    margin: auto;
+    background-color: black;
+    aspect-ratio: 1.33;
   }
 </style>
