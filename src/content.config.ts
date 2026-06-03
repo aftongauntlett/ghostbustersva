@@ -79,6 +79,18 @@ const gallery = defineCollection({
     }),
 });
 
+const screenshots = defineCollection({
+  type: "content",
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      /** Local content image (Astro image() schema) */
+      image: image(),
+      alt: z.string(),
+      rel: z.string(),
+    }),
+});
+
 /** Site settings singleton stored as JSON at src/content/settings/site.json. */
 const settings = defineCollection({
   loader: glob({ pattern: "site.json", base: "src/content/settings" }),
@@ -408,4 +420,4 @@ const pageCopy = defineCollection({
   ]),
 });
 
-export const collections = { events, gallery, videos, news, settings, pageCopy };
+export const collections = { events, gallery, screenshots, videos, news, settings, pageCopy };

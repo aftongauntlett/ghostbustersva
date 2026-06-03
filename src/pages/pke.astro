@@ -1,6 +1,28 @@
 ---
+import { getCollection } from "astro:content";
+import Lightbox from "../components/ui/Lightbox.astro";
 import PageHeader from "../components/ui/PageHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getResponsiveImageAttrs } from "../lib/images.ts";
+
+const screenshots = await getCollection("screenshots");
+const screenshotImages = await Promise.all(
+  screenshots.map(async (item) => {
+    if (item.data.rel !== "pke") {
+      return Promise.resolve(undefined);
+    }
+    return {
+        ...item,
+        responsive: await getResponsiveImageAttrs({
+        src: item.data.image,
+        widths: [320, 640, 960],
+        sizes: "(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw",
+        width: 640,
+        height: 480,
+      }),
+    };
+  }).filter(async item => (await item)),
+);
 
 ---
 <BaseLayout
@@ -14,7 +36,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <section class="page" aria-labelledby="press-title">
     <div class="page-band page-band--white">
       <div class="container container--mid">
-        <PageHeader id="press-title" title="P.K.E. Atari 2600 Game" subtitle="Arrow keys to move.  X key to fire" />
+        <PageHeader id="press-title" title="P.K.E." subtitle="An Original Atari 2600 Game" />
         <div id="monitor-container">
           <div id="monitor-top"></div>
           <div id="monitor-right"></div>
@@ -22,16 +44,90 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <div id="monitor-left"></div>
 
           <div id="pke"></div>
-          </div>
+        </div>
+
+        <div class="controls">
+          <h4>Controls:</h4>
+          <dl>
+            <dt>X</dt>
+            <dd>Fire</dd>
+            <dt>&uarr;</dt>
+            <dd>Up</dd>
+            <dt>&darr;</dt>
+            <dd>Down</dd>
+            <dt>&larr;</dt>
+            <dd>Left</dd>
+            <dt>&rarr;</dt>
+            <dd>Right</dd>
+            <dt>V</dt>
+            <dd>Change Variation (01-16)</dd>
+          </dl>
+        </div>
       </div>
     </div>
 
-    <!--{/* ── Press kit / charity kit ── */}-->
-    <!--<div class="page-band page-band&#45;&#45;alt">-->
-    <!--  <div class="container container&#45;&#45;mid">-->
-    <!--  </div>-->
-    <!--</div>-->
+    <div class="page-band page-band--alt">
+      <div class="container container--mid">
+        <p><a class="link" href="/games/PKE-Manual.pdf" target="_blank">P.K.E. Manual</a></p>
+        <p>
+          <strong>P.K.E.</strong> was developed by Ghostbusters, Virginia member Matthew Younce for
+          the Atari 2600 VCS and emulators.
+        </p>
+        <p>You can download the latest version of the ROM and manual from his{' '}
+          <a class="link" href="https://github.com/mwy912/P.K.E.">GitHub repository</a>.</p>
+      </div>
+    </div>
+
+    <div class="page-band">
+       <div class="container container--mid">
+         <div class="gallery-grid" id="gallery-grid">
+           {screenshotImages.map((item, index) => (
+             <button
+               class="gallery-thumb"
+               type="button"
+               data-lightbox-group="pke-screenshots"
+               data-lightbox-src={item?.data.image.src}
+               data-lightbox-alt={item?.data.alt}
+               data-lightbox-caption={item?.data.title}
+               aria-label={`View: ${item?.data.title}`}
+             >
+               <img
+                 {...item?.responsive}
+                 alt={item?.data.alt}
+                 loading={index < 6 ? "eager" : "lazy"}
+                 decoding="async"
+               />
+               <span class="gallery-thumb__expand" aria-hidden="true">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline points="15 3 21 3 21 9" />
+                      <polyline points="9 21 3 21 3 15" />
+                      <line x1="21" y1="3" x2="14" y2="10" />
+                      <line x1="3" y1="21" x2="10" y2="14" />
+                    </svg>
+                  </span>
+             </button>
+           ))}
+         </div>
+       </div>
+    </div>
   </section>
+
+  <Lightbox
+    id="gallery-lightbox"
+    hasNav
+    label="P.K.E. screenshot image viewer"
+    lightboxGroup="pke-screenshots"
+  />
 </BaseLayout>
 
 <script is:inline>
@@ -49,6 +145,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 <style>
+  .link {
+    text-decoration: underline;
+  }
+
+  .controls {
+    padding-top: 20px;
+  }
+  .controls h4 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .controls dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    justify-content: center;
+    align-items: center;
+  }
+  .controls dt {
+    border: solid 0.05em #333333;
+    background-color: #dedede;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 26px;
+  }
+  .controls dd {
+    margin-right: 4px;
+  }
+
   #monitor-container {
     width: 889px;
     height: 813px;
@@ -98,10 +226,92 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     z-index: 1;
     width: 680px;
     height: 560px;
-    top: 100px;
     padding: 50px 30px 30px;
+    top: 100px;
     margin: auto;
     background-color: black;
     aspect-ratio: 1.33;
   }
+
+  .gallery-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (max-width: 889px) {
+    #monitor-container {
+      scale: 0.5;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gallery-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .gallery-item {
+    margin: 0;
+  }
+
+  /* Slide content */
+  .gallery-slide {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    padding: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    width: 100%;
+    display: block;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+  .gallery-slide:hover {
+    border-color: var(--color-hover-border);
+    box-shadow: var(--shadow-elevated-media);
+  }
+  .gallery-slide__img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .gallery-slide:hover .gallery-slide__img {
+    transform: scale(1.03);
+  }
+  .gallery-slide__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-overlay-dark-soft);
+    color: var(--color-text-inverse);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .gallery-slide:hover .gallery-slide__overlay,
+  .gallery-slide:focus-visible .gallery-slide__overlay {
+    opacity: 1;
+  }
+
 </style>

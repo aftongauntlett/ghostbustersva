@@ -46,7 +46,7 @@ If rules conflict, follow the highest item in this list and note the conflict in
 
 - Content lives in Astro content collections under `src/content/`.
 - Respect current collection formats:
-  - events/gallery/pages: markdown
+  - events/gallery/pages/screenshots: markdown
   - settings/news/videos: json
 - Any schema change in `src/content.config.ts` must include updates to relevant docs and usage points.
 
