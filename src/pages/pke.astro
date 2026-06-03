@@ -250,6 +250,20 @@ const screenshotImages = await Promise.all(
     padding: 0;
   }
 
+  .gallery-thumb__expand {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-overlay-dark-soft);
+    color: var(--color-text-inverse);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 1;
+  }
+
   @media (max-width: 889px) {
     #monitor-container {
       scale: 0.3;
