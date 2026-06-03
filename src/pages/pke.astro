@@ -37,6 +37,7 @@ const screenshotImages = await Promise.all(
     <div class="page-band page-band--white">
       <div class="container container--mid">
         <PageHeader id="press-title" title="P.K.E." subtitle="An Original Atari 2600 Game" />
+
         <div id="monitor-container">
           <div id="monitor-top"></div>
           <div id="monitor-right"></div>
@@ -180,7 +181,6 @@ const screenshotImages = await Promise.all(
   #monitor-container {
     width: 889px;
     height: 813px;
-    margin: auto;
     position: relative;
   }
 
@@ -244,7 +244,8 @@ const screenshotImages = await Promise.all(
 
   @media (max-width: 889px) {
     #monitor-container {
-      scale: 0.5;
+      scale: 0.3;
+      margin: -275px;
     }
   }
 
