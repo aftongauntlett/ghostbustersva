@@ -405,7 +405,9 @@ export default function ZenerGame() {
             ))}
           </div>
           <p className="zener-intro__prompt">
-            Can you sense what&apos;s on each card? Test your ESP with 25 Zener cards.
+            Can you sense what&apos;s on each card?<br/>
+            Study the effects of negative reinforcement on
+            your own ESP ability with our 25 card Zener test.
           </p>
           <button className="zener-btn zener-btn--primary" onClick={handleBegin}>
             Begin

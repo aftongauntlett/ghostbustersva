@@ -17,6 +17,7 @@ export const siteConfig = {
     { label: "Press", href: "/press" },
     { label: "Contact", href: "/contact" },
     { label: "Donate", href: "/donate" },
+    { label: "Games", href: "/games" },
   ],
 
   /** Footer logo images — paths relative to /images */
