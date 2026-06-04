@@ -1,0 +1,205 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Lightbox from "../components/ui/Lightbox.astro";
+import LightboxImageTrigger from "../components/ui/LightboxImageTrigger.astro";
+import PageHeader from "../components/ui/PageHeader.astro";
+import { getResponsiveImageAttrs } from "../lib/images";
+
+const pageTitle = "Fun & Games";
+const pageIntro = "Play games created by the members of Ghostbusters Virginia.";
+
+const games = [
+  {
+    id: "pke",
+    title: "P.K.E.",
+    body: "Investigate the Library with the help of your trusty P.K.E. meter",
+    href: "/pke",
+    imageSrc: "/images/screenshots/01-startup-screen.jpg",
+    imageAlt: "P.K.E. Atari 2600 game startup screen",
+  },
+  {
+    id: "zener-test",
+    title: "Zener Test",
+    body: "Study the effects of negative reinforcement on your own ESP ability",
+    href: "/zener-test",
+    imageSrc: "/images/screenshots/zener-test.jpg",
+    imageAlt: "Zener Test game screenshot",
+  },
+] as const;
+
+const gameImages = await Promise.all(
+  games.map((game) =>
+    getResponsiveImageAttrs({
+      src: game.imageSrc,
+      widths: [320, 480, 640],
+      sizes: "(max-width: 640px) 100vw, 480px",
+      width: 640,
+      height: 480,
+      quality: 80,
+    }),
+  ),
+);
+---
+
+<BaseLayout
+  title="Fun & Games"
+  description="Play games created by Ghostbusters Virginia members, including the original P.K.E. Atari 2600 game and the Zener Test."
+  canonical="/games"
+  ogTitle="Fun & Games | Ghostbusters Virginia"
+  ogDescription="Play P.K.E. and Zener Test games created by Ghostbusters Virginia members."
+>
+  <section class="page" aria-labelledby="games-title">
+    <div class="page-band page-band--white">
+      <div class="container container--mid">
+        <PageHeader id="games-title" title={pageTitle} subtitle={pageIntro} />
+      </div>
+    </div>
+
+    <div class="page-band page-band--alt">
+      <div class="container container--wide">
+        <div class="games-grid">
+          {
+            games.map((game, i) => (
+              <article class="game-card" aria-label={game.title}>
+                <div class="game-card__media">
+                  <LightboxImageTrigger
+                    group="games-gallery"
+                    src={gameImages[i].src}
+                    alt={game.imageAlt}
+                    buttonClass="page-image-lightbox"
+                    overlayClass="page-image-lightbox__overlay"
+                  >
+                    <img
+                      {...gameImages[i]}
+                      alt={game.imageAlt}
+                      class="game-card__img"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </LightboxImageTrigger>
+                </div>
+                <div class="game-card__body">
+                  <h2 class="game-card__title">
+                    <a class="game-card__link" href={game.href}>
+                      {game.title}
+                    </a>
+                  </h2>
+                  <p class="game-card__desc">{game.body}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Lightbox
+    id="games-lightbox"
+    hasNav
+    label="Games image viewer"
+    lightboxGroup="games-gallery"
+  />
+</BaseLayout>
+
+<style>
+  .games-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  @media (min-width: 640px) {
+    .games-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .game-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .game-card__media {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .game-card__trigger {
+    display: block;
+    width: 100%;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .game-card__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .game-card__trigger:hover .game-card__img,
+  .game-card__trigger:focus-visible .game-card__img {
+    transform: scale(1.03);
+  }
+
+  .game-card__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-overlay-dark-soft);
+    color: var(--color-text-inverse);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 1;
+  }
+
+  .game-card__trigger:hover .game-card__overlay,
+  .game-card__trigger:focus-visible .game-card__overlay {
+    opacity: 1;
+  }
+
+  .game-card__body {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .game-card__title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    margin: 0;
+  }
+
+  .game-card__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .game-card__link:hover {
+    text-decoration: underline;
+  }
+
+  .game-card__desc {
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-loose);
+    margin: 0;
+  }
+</style>

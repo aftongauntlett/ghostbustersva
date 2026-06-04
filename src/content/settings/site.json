@@ -26,7 +26,8 @@
     { "label": "Events", "href": "/events", "external": false, "group": "primary" },
     { "label": "Contact", "href": "/contact", "external": false, "group": "primary" },
     { "label": "About", "href": "/about", "external": false, "group": "more" },
-    { "label": "Press", "href": "/press", "external": false, "group": "primary" }
+    { "label": "Press", "href": "/press", "external": false, "group": "primary" },
+    { "label": "Games", "href":  "/games", "external":  false, "group": "more" }
   ],
   "footerCopyrightText": "",
   "codeOfConductUrl": "/code-of-conduct",
