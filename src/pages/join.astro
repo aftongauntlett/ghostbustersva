@@ -14,44 +14,23 @@ import { getPageCopy } from "../lib/page-copy";
 
 const copy = await getPageCopy("join");
 
-const pageTitle = copy.pageTitle || "Join Ghostbusters Virginia";
-const pageIntro =
-  copy.pageIntro || "Think you have what it takes? Here's how to suit up and join our franchise.";
+const pageTitle = "Join Ghostbusters Virginia";
+const pageIntro = "Yes, we're hiring! Here's how to suit up and volunteer with our franchise.";
 const quoteLineOne =
-  copy.quoteLineOne ||
-  "Do you believe in UFOs, astral projections, mental telepathy, ESP, clairvoyance, spirit photography, telekinetic movement, full trance mediums, the Loch Ness monster and the theory of Atlantis?";
+  "Are you troubled by hauntingly quiet weekends? Do you experience feelings of wanting\n"+
+  "to serve your community? Have you or your family been waiting for a chance to\n"+
+  "successfully field-test your ghostbusting equipment?";
 const quoteLineTwo =
-  copy.quoteLineTwo ||
-  "Ready to get out there and start busting some ghosts? Excellent news rookie, we have openings!";
-const whatWeLookForText =
-  copy.whatWeLookForText ||
-  "To apply for membership in Ghostbusters, Virginia we simply ask that you review our" +
-    " Charter & Code of Conduct, and have at least one Ghostbusters canon costume. To meet these" +
-    " requirements, a canon costume needs to include the following:";
-const requiredGear = copy.requiredGearItems || [
-  "A flight suit",
-  "Black boots",
-  "White web belt",
-  "Elbow pads",
-  "At least one belt accessory",
+  "If the answer is yes, then don't wait another minute — we’re ready to hire you!";
+
+const requiredGearHeading = `Appropriate Event Attire Examples`
+
+const requiredGear = [
+  "Traditional Ghostbusters uniforms and equipment",
+  "Original Ghostbusters-inspired uniforms and character concepts",
+  "Costumes based on characters from the films, animated series, comics, or video games",
+  "Ghostbusters-themed apparel suitable for volunteer and community events",
 ];
-const beltGizmos = copy.beltGizmoItems || [
-  "MT500 Motorola Walkie Talkie",
-  "Belt Gizmo (circuit board + daughter board)",
-  "Leather belt fobs with clips",
-  "LifeGard 2",
-  "PKE Meter",
-];
-const showBeltGizmoSublist = copy.showBeltGizmoSublist ?? true;
-const beltGizmoParentIndex = requiredGear.findIndex((item) => /belt gizmo/i.test(item));
-const beltGizmoNestIndex =
-  beltGizmoParentIndex >= 0 ? beltGizmoParentIndex : requiredGear.length - 1;
-const notePrefix = copy.notePrefix || "Please Note:";
-const noteText =
-  copy.noteText ||
-  "We ask all applicants be able to pass a high-level background check to verify no felonies are on their record; this includes a verification with no results found on the national sex offender registry.";
-const whatWeLookForHeading = copy.whatWeLookForHeading || "What We Look For";
-const requiredGearHeading = copy.requiredGearHeading || "Required Gear";
 const metaTitle = copy.metaTitle || "Join";
 const metaDescription =
   copy.metaDescription ||
@@ -59,8 +38,14 @@ const metaDescription =
 const ogTitleVal = copy.ogTitle || "Join Ghostbusters Virginia";
 const ogDescriptionVal =
   copy.ogDescription ||
-  "Suit up with Ghostbusters Virginia and become part of our statewide nonprofit franchise.";
+  "Yes, we're hiring! Here's how to suit up and volunteer with our franchise.";
 const ogImage = copy.ogImage || "/images/ghostbusters-virginia-movie-premiere.jpg";
+
+const whatWeLookForHeading = `Opportunities Await`;
+const whatWeLookForText = `Ghostbusters, Virginia is an all-volunteer organization, which means while there isn’t a
+steady paycheck, you will be compensated in the overwhelming sense of pride and
+purpose that comes from giving back to your community! So pick up your proton pack,
+join the professionals, and help us save the Commonwealth.`;
 
 const whatWeLookForImageSrc = copy.whatWeLookForImage || "/images/gbv-community-photo.jpg";
 const whatWeLookForImageAlt =
@@ -73,6 +58,21 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
   height: 675,
   quality: 75,
 });
+
+const letsTalkHeading = `Let's Get to Work`;
+
+const costumeGuidelinesHeading = `Costume Guidelines`;
+const costumeIntro = `At Ghostbusters, Virginia, we want to cultivate an inclusive environment where all Ghostbusters fans are welcome to participate in our charity goals. We certainly welcome all canon Ghostbusters uniforms and equipment but we do not make this a requirement to join. The typical flight suit isn't for everyone and we believe it shouldn't act as an exclusion factor for those that are interested in attending events and working at our table to help raise funds for the different charities we work with.`;
+const costumeAdvice = `With that in mind, we do suggest for those that do not wish to wear the standard Ghostbusters uniform to get creative and put together a costume or outfit that features Ghostbusters-related logos, artwork, or something you think might exist in the Ghostbusters universe. Another idea is to choose a different character from the films or animated series. We're also happy to help bring your costume or uniform to life, so feel free to ask for advice or ideas!`;
+const costumeRequirements = [
+  "Appropriate for family-friendly public events",
+  "Free of offensive, discriminatory, or explicit content",
+  "Safe for both the wearer and those around them",
+  "Consistent with the professional image and values of the organization",
+];
+
+const backgroundHeading = `Background Screening`;
+const backgroundText = `Because members regularly interact with the public, community organizations, and charitable partners, all applicants must successfully complete a background screening with no felonies and do not appear on the National Sex Offender Registry.`;
 ---
 
 <BaseLayout
@@ -105,6 +105,31 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
         <p class="prose-text">
           {whatWeLookForText}
         </p>
+
+        <SectionHeading>{letsTalkHeading}</SectionHeading>
+        <p class="prose-text">
+          To apply for membership with Ghostbusters, Virginia, please start by reviewing our
+          <a href="https://bit.ly/gbva-charter" target="_blank">Charter</a> and
+          <a href="https://bit.ly/gbva-code-of-conduct" target="_blank">Code of Conduct</a>.
+          These documents describe our mission as a charity organization and what we expect from our members.
+        </p>
+        <p class="prose-text">
+          By joining Ghostbusters, Virginia, you agree to uphold these standards and contribute to a
+          positive, inclusive environment for members and the communities we serve.
+        </p>
+        <p class="prose-text">
+          Once you've reviewed these documents, complete our membership application at the link below
+          to begin the process.
+        </p>
+        <div class="join-cta-wrapper">
+          <Button
+            variant="secondary-alt"
+            href="https://m.me/Ghostbusters.Virginia.757?text=Hello!+I'm+interested+in+joining!&ref=GBVA+Site+Join+Page"
+          >Join Today</Button>
+        </div>
+
+        <SectionHeading>{costumeGuidelinesHeading}</SectionHeading>
+        <p class="prose-text">{costumeIntro}</p>
         <div class="gear-layout">
           <LightboxImageTrigger
             group="join-gallery"
@@ -124,36 +149,38 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
           <div class="gear-card-column">
             <CardListPanel title={requiredGearHeading} listClass="card-list-panel__list--gear">
               {
-                requiredGear.map((item, index) => (
+                requiredGear.map((item) => (
                   <li>
                     {item}
-                    {showBeltGizmoSublist && index === beltGizmoNestIndex && (
-                      <ul class="sub-list" role="list">
-                        {beltGizmos.map((gizmo) => (
-                          <li>{gizmo}</li>
-                        ))}
-                      </ul>
-                    )}
                   </li>
                 ))
               }
             </CardListPanel>
-            <div class="join-docs-wrapper">
-              <a href="https://bit.ly/gbva-charter" target="_blank">Charter</a> &amp;
-              <a href="https://bit.ly/gbva-code-of-conduct" target="_blank">Code of Conduct</a>
-            </div>
-            <div class="join-cta-wrapper">
-              <Button variant="secondary-alt"
-                      href="https://m.me/Ghostbusters.Virginia.757?text=Hello!+I'm+interested+in+joining!&ref=GBVA+Site+Join+Page"
-              >Join Today</Button>
-            </div>
+
+            <CardListPanel title="Requirements" listClass="card-list-panel__list--gear">
+              {
+                costumeRequirements.map((item) => (
+                  <li>
+                    {item}
+                  </li>
+                ))
+              }
+            </CardListPanel>
           </div>
         </div>
+        <p class="prose-text">{costumeAdvice}</p>
+        <p class="prose-text costume-note">
+          To ensure a positive experience for the public and our charity partners, all costumes,
+          props, and attire worn while representing Ghostbusters, Virginia must meet the requirements listed above.
+        </p>
+        <p class="prose-text reservation-note">
+          Ghostbusters, Virginia reserves the right to restrict or prohibit any costume, prop, or
+          attire that does not meet these standards during official activities.
+        </p>
+
         <div class="callout" style="margin-top: var(--space-3xl);">
-          <p>
-            <strong>{notePrefix}</strong>
-            {noteText}
-          </p>
+          <h3 class="callout__heading">{backgroundHeading}</h3>
+          <p>{backgroundText}</p>
         </div>
       </div>
     </div>
@@ -192,6 +219,7 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
 
   .join-cta-wrapper {
     margin-top: var(--space-xl);
+    margin-bottom: var(--space-2xl);
     text-align: center;
   }
 
@@ -225,14 +253,10 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
     text-transform: capitalize;
   }
 
-  :global(.card-list-panel__list--gear > li:last-child) {
-    margin-top: var(--space-md);
-    padding-top: var(--space-md);
-    border-top: 1px solid var(--color-border);
-  }
-
-  :global(.card-list-panel__list--gear > li:last-child::before) {
-    top: var(--space-md);
+  .gear-card-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
   }
 
   /* ---- Sub-list (belt gizmo examples) ---- */
@@ -276,6 +300,45 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
     transform: scale(1.4);
   }
 
+  .prose-text + .prose-text {
+    margin-top: var(--space-md);
+  }
+
+  .costume-note {
+    margin-top: var(--space-xl);
+  }
+
+  .requirements-list {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .requirements-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+  }
+
+  .requirements-list li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: var(--color-gb-green);
+    font-size: 0.6em;
+    top: 0.35em;
+  }
+
+  .reservation-note {
+    margin-top: var(--space-md);
+    font-style: italic;
+  }
+
   .callout {
     margin-top: var(--space-2xl);
     background: var(--color-surface);
@@ -283,6 +346,14 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
     border-radius: var(--radius-md);
     padding: var(--space-lg) var(--space-xl);
     box-shadow: var(--shadow-panel);
+  }
+
+  .callout__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
   }
 
   .callout p {
