@@ -16,42 +16,24 @@ const copy = await getPageCopy("join");
 
 const pageTitle = copy.pageTitle || "Join Ghostbusters Virginia";
 const pageIntro =
-  copy.pageIntro || "Think you have what it takes? Here's how to suit up and join our franchise.";
+  copy.pageIntro || "Yes, we're hiring! Here's how to suit up and volunteer with our franchise.";
 const quoteLineOne =
   copy.quoteLineOne ||
-  "Do you believe in UFOs, astral projections, mental telepathy, ESP, clairvoyance, spirit photography, telekinetic movement, full trance mediums, the Loch Ness monster and the theory of Atlantis?";
+  "Are you troubled by hauntingly quiet weekends? Do you experience feelings of wanting\n"+
+  "to serve your community? Have you or your family been waiting for a chance to\n"+
+  "successfully field-test your ghostbusting equipment?";
 const quoteLineTwo =
   copy.quoteLineTwo ||
-  "Ready to get out there and start busting some ghosts? Excellent news rookie, we have openings!";
-const whatWeLookForText =
-  copy.whatWeLookForText ||
-  "To apply for membership in Ghostbusters, Virginia we simply ask that you review our" +
-    " Charter & Code of Conduct, and have at least one Ghostbusters canon costume. To meet these" +
-    " requirements, a canon costume needs to include the following:";
-const requiredGear = copy.requiredGearItems || [
-  "A flight suit",
-  "Black boots",
-  "White web belt",
-  "Elbow pads",
-  "At least one belt accessory",
+  "If the answer is yes, then don't wait another minute — we’re ready to hire you!";
+
+const requiredGearHeading = `Appropriate Event Attire Examples`
+
+const requiredGear = [
+  "Traditional Ghostbusters uniforms and equipment",
+  "Original Ghostbusters-inspired uniforms and character concepts",
+  "Costumes based on characters from the films, animated series, comics, or video games",
+  "Ghostbusters-themed apparel suitable for volunteer and community events",
 ];
-const beltGizmos = copy.beltGizmoItems || [
-  "MT500 Motorola Walkie Talkie",
-  "Belt Gizmo (circuit board + daughter board)",
-  "Leather belt fobs with clips",
-  "LifeGard 2",
-  "PKE Meter",
-];
-const showBeltGizmoSublist = copy.showBeltGizmoSublist ?? true;
-const beltGizmoParentIndex = requiredGear.findIndex((item) => /belt gizmo/i.test(item));
-const beltGizmoNestIndex =
-  beltGizmoParentIndex >= 0 ? beltGizmoParentIndex : requiredGear.length - 1;
-const notePrefix = copy.notePrefix || "Please Note:";
-const noteText =
-  copy.noteText ||
-  "We ask all applicants be able to pass a high-level background check to verify no felonies are on their record; this includes a verification with no results found on the national sex offender registry.";
-const whatWeLookForHeading = copy.whatWeLookForHeading || "What We Look For";
-const requiredGearHeading = copy.requiredGearHeading || "Required Gear";
 const metaTitle = copy.metaTitle || "Join";
 const metaDescription =
   copy.metaDescription ||
@@ -59,8 +41,14 @@ const metaDescription =
 const ogTitleVal = copy.ogTitle || "Join Ghostbusters Virginia";
 const ogDescriptionVal =
   copy.ogDescription ||
-  "Suit up with Ghostbusters Virginia and become part of our statewide nonprofit franchise.";
+  "Yes, we're hiring! Here's how to suit up and volunteer with our franchise.";
 const ogImage = copy.ogImage || "/images/ghostbusters-virginia-movie-premiere.jpg";
+
+const whatWeLookForHeading = `Opportunities Await`;
+const whatWeLookForText = `Ghostbusters, Virginia is an all-volunteer organization, which means while there isn’t a
+steady paycheck, you will be compensated in the overwhelming sense of pride and
+purpose that comes from giving back to your community! So pick up your proton pack,
+join the professionals, and help us save the Commonwealth.`;
 
 const whatWeLookForImageSrc = copy.whatWeLookForImage || "/images/gbv-community-photo.jpg";
 const whatWeLookForImageAlt =
@@ -124,16 +112,9 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
           <div class="gear-card-column">
             <CardListPanel title={requiredGearHeading} listClass="card-list-panel__list--gear">
               {
-                requiredGear.map((item, index) => (
+                requiredGear.map((item) => (
                   <li>
                     {item}
-                    {showBeltGizmoSublist && index === beltGizmoNestIndex && (
-                      <ul class="sub-list" role="list">
-                        {beltGizmos.map((gizmo) => (
-                          <li>{gizmo}</li>
-                        ))}
-                      </ul>
-                    )}
                   </li>
                 ))
               }
@@ -151,8 +132,7 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
         </div>
         <div class="callout" style="margin-top: var(--space-3xl);">
           <p>
-            <strong>{notePrefix}</strong>
-            {noteText}
+            BACKGROUND CHECK
           </p>
         </div>
       </div>
