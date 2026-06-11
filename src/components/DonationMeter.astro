@@ -178,7 +178,7 @@ const arcHitOther = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
         style="color-interpolation-filters: sRGB"
         ><feTurbulence
           baseFrequency=".03"
-          numOctaves="5"
+          numOctaves="3"
           result="result8"
           seed="8"
           type="fractalNoise"></feTurbulence><feColorMatrix
@@ -1744,6 +1744,11 @@ const arcHitOther = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     z-index: 2;
     aspect-ratio: 400 / 70;
     overflow: visible;
+    /* These elements run a heavy SVG filter (feTurbulence/feDisplacementMap/
+       feDiffuseLighting). Promote to their own compositing layer so the
+       filtered result is rasterized once and reused on scroll instead of
+       being recomputed per-tile. */
+    will-change: transform;
   }
 
   .noise-under {
@@ -1770,6 +1775,10 @@ const arcHitOther = buildFullArcBandPath(ARC_BAND_OUTER_3, ARC_BAND_INNER_3);
     width: var(--screw-size);
     height: var(--screw-size);
     z-index: 0;
+    /* Promote to its own compositing layer so the heavy SVG filter
+       (feTurbulence/feDisplacementMap/feSpecularLighting) on the screw head
+       is rasterized once and reused on scroll. */
+    will-change: transform;
   }
 
   .screw-tl {
