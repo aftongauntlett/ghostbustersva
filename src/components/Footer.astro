@@ -133,6 +133,13 @@ const socialLinks = settings.socialLinks
 
     <p class="copyright">{footerCopyright}</p>
     <p class="footer-disclaimer">{footerDisclaimerText}</p>
+    <p class="footer-credit">
+      Built with <span aria-hidden="true">💚</span>{" "}
+      <a href="https://www.prettyprettyprettygood.org/" target="_blank" rel="noopener noreferrer">
+        prettyprettyprettygood
+        <span class="sr-only"> (opens in new tab)</span>
+      </a>
+    </p>
 
     <button
       type="button"
@@ -312,6 +319,25 @@ const socialLinks = settings.socialLinks
     font-size: 0.6875rem;
     line-height: 1.45;
     color: var(--color-text-inverse-faint);
+  }
+
+  .footer-credit {
+    margin: 0;
+    text-align: center;
+    font-size: 0.6875rem;
+    color: var(--color-text-inverse-faint);
+  }
+
+  .footer-credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color var(--transition-fast);
+  }
+
+  .footer-credit a:hover,
+  .footer-credit a:focus-visible {
+    color: var(--color-gb-caution);
   }
 
   @media (min-width: 768px) {
