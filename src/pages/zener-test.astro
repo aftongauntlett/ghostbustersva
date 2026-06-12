@@ -4,6 +4,7 @@
  * PRD 001: Zener Card Deck
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/ui/PageHeader.astro";
 import ZenerGame from "../components/ZenerGame";
 ---
 
@@ -12,7 +13,22 @@ import ZenerGame from "../components/ZenerGame";
   description={`Study the effects of negative reinforcement on your own ESP ability with our 25 Zener Card test`}
   canonical={`/zener-test`}
 >
-  <ZenerGame client:load />
+  <section class="page" aria-labelledby="zener-title">
+    <div class="page-band page-band--white">
+      <div class="container container--mid">
+        <PageHeader
+          id="zener-title"
+          title="Zener Test"
+          subtitle="An ESP Card Test"
+          backHref="/games"
+        />
+      </div>
+    </div>
+
+    <div class="page-band page-band--alt page-band--game">
+      <ZenerGame client:load />
+    </div>
+  </section>
 </BaseLayout>
 
 <style is:global>
@@ -20,28 +36,46 @@ import ZenerGame from "../components/ZenerGame";
      Zener Card Game — styles & animations
      ================================================================ */
 
+  .page-band--game {
+    padding-block: 0;
+  }
+
+  .page > .page-band--game:last-child {
+    padding-bottom: 0;
+  }
+
+  .zener-rules {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: var(--space-3xl) var(--space-lg) var(--space-4xl);
+    background: var(--color-surface);
+    text-align: center;
+  }
+
   /* ---- Container / layout ---- */
   .zener-game {
-    --zener-card-width: clamp(120px, 60vmin, 432px);
-    --zener-card-height: clamp(177px, 88.39vmin, 636px);
+    --zener-card-width: clamp(120px, 40vmin, 258px);
+    --zener-card-height: clamp(177px, 58.93vmin, 380px);
 
     position: relative;
-    min-height: calc(100vh - 120px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: var(--space-xl) var(--space-lg);
+    gap: 0;
+    padding: 0;
+    background: var(--color-surface-alt);
     overflow: hidden;
   }
 
   /* ---- Background darkening overlay ---- */
   .zener-bg-overlay {
-    position: fixed;
+    position: absolute;
     inset: 0;
     background: #000;
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
     transition: opacity 0.8s ease;
   }
 
@@ -85,6 +119,56 @@ import ZenerGame from "../components/ZenerGame";
     }
   }
 
+  /* ---- Mute toggle ---- */
+  .zener-mute-btn {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    box-shadow: var(--shadow-panel);
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .zener-mute-btn:hover,
+  .zener-mute-btn:focus-visible {
+    color: var(--color-text);
+    border-color: var(--color-hover-border);
+  }
+
+  .zener-mute-btn:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .zener-mute-btn[aria-pressed="true"] {
+    color: var(--color-gb-caution);
+    border-color: var(--color-gb-caution);
+  }
+
+  .zener-mute-btn__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .zener-mute-btn__icon svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
   /* ---- HUD ---- */
   .zener-hud {
     position: relative;
@@ -93,9 +177,7 @@ import ZenerGame from "../components/ZenerGame";
     gap: var(--space-lg);
     align-items: center;
     justify-content: center;
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: var(--space-xl);
+    width: fit-content;
     padding: var(--space-md) var(--space-xl);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -127,15 +209,40 @@ import ZenerGame from "../components/ZenerGame";
     line-height: 1;
   }
 
-  /* ---- Intro / idle state ---- */
-  .zener-intro {
+  /* ---- Card stage (full-width band behind the deck/cards) ---- */
+  .zener-card-stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xl);
+    width: 100%;
+    padding: 2.5rem var(--space-lg);
+    background: var(--color-surface-alt);
+  }
+
+  .zener-card-stage:has(.zener-deck-stack) {
+    padding-block: var(--space-3xl);
+  }
+
+  /* ---- Try it out (idle prompt + Begin button) ---- */
+  .zener-try-it {
     position: relative;
     z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--space-lg);
+    width: 100%;
+    padding: var(--space-3xl) var(--space-lg) var(--space-5xl);
+    background: var(--color-surface);
     text-align: center;
+  }
+
+  .zener-try-it .section-heading {
+    margin-bottom: 0;
   }
 
   .zener-intro__prompt {
@@ -339,29 +446,6 @@ import ZenerGame from "../components/ZenerGame";
     height: auto;
   }
 
-  /* ---- Result badge (✓ / ✗) ---- */
-  .zener-result-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--radius-full);
-    font-size: var(--text-base);
-    font-weight: var(--weight-bold);
-    line-height: 1;
-  }
-
-  .zener-result-badge--correct {
-    background: var(--color-gb-green);
-    color: #fff;
-  }
-
-  .zener-result-badge--incorrect {
-    background: var(--color-gb-red);
-    color: #fff;
-  }
-
   /* ---- Feedback strip ---- */
   .zener-feedback {
     display: flex;
@@ -372,8 +456,17 @@ import ZenerGame from "../components/ZenerGame";
     border-radius: var(--radius-md);
     font-size: var(--text-base);
     font-weight: var(--weight-semibold);
-    min-height: 44px;
+    min-height: 3rem;
+    max-width: min(100%, 34rem);
+    text-align: center;
+    flex-wrap: wrap;
     animation: zener-feedback-in 0.2s ease;
+  }
+
+  .zener-feedback--empty {
+    visibility: hidden;
+    border: 1px solid transparent;
+    animation: none;
   }
 
   @keyframes zener-feedback-in {
@@ -388,15 +481,15 @@ import ZenerGame from "../components/ZenerGame";
   }
 
   .zener-feedback--correct {
-    background: rgba(61, 134, 61, 0.1);
-    color: var(--color-gb-green);
-    border: 1px solid rgba(61, 134, 61, 0.3);
+    background: rgba(61, 134, 61, 0.28);
+    color: #1f6f1f;
+    border: 1px solid rgba(61, 134, 61, 0.62);
   }
 
   .zener-feedback--incorrect {
-    background: rgba(232, 60, 59, 0.08);
-    color: var(--color-gb-red);
-    border: 1px solid rgba(232, 60, 59, 0.25);
+    background: rgba(232, 60, 59, 0.26);
+    color: #c91f1e;
+    border: 1px solid rgba(232, 60, 59, 0.62);
   }
 
   .zener-feedback__icon {
@@ -613,6 +706,11 @@ import ZenerGame from "../components/ZenerGame";
 
   /* ---- Responsive ---- */
   @media (max-width: 480px) {
+    .zener-game {
+      --zener-card-width: clamp(210px, 58vw, 238px);
+      --zener-card-height: calc(var(--zener-card-width) * 1.473);
+    }
+
     .zener-symbols {
       gap: var(--space-sm);
     }

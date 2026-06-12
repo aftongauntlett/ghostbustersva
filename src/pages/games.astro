@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/ui/Button.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
 import LightboxImageTrigger from "../components/ui/LightboxImageTrigger.astro";
 import PageHeader from "../components/ui/PageHeader.astro";
@@ -79,12 +80,13 @@ const gameImages = await Promise.all(
                   </LightboxImageTrigger>
                 </div>
                 <div class="game-card__body">
-                  <h2 class="game-card__title">
-                    <a class="game-card__link" href={game.href}>
-                      {game.title}
-                    </a>
-                  </h2>
+                  <h2 class="game-card__title">{game.title}</h2>
                   <p class="game-card__desc">{game.body}</p>
+                  <div class="game-card__actions">
+                    <Button href={game.href} variant="secondary" icon="arrow-right">
+                      Play
+                    </Button>
+                  </div>
                 </div>
               </article>
             ))
@@ -94,12 +96,7 @@ const gameImages = await Promise.all(
     </div>
   </section>
 
-  <Lightbox
-    id="games-lightbox"
-    hasNav
-    label="Games image viewer"
-    lightboxGroup="games-gallery"
-  />
+  <Lightbox id="games-lightbox" hasNav label="Games image viewer" lightboxGroup="games-gallery" />
 </BaseLayout>
 
 <style>
@@ -118,7 +115,6 @@ const gameImages = await Promise.all(
   .game-card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -128,6 +124,10 @@ const gameImages = await Promise.all(
   .game-card__media {
     position: relative;
     overflow: hidden;
+  }
+
+  .game-card__media :global(.page-image-lightbox) {
+    border-radius: 0;
   }
 
   .game-card__trigger {
@@ -173,26 +173,20 @@ const gameImages = await Promise.all(
   }
 
   .game-card__body {
+    flex: 1;
     padding: var(--space-lg);
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    border-top: 1px solid var(--color-border);
   }
 
   .game-card__title {
     font-family: var(--font-display);
     font-size: var(--text-xl);
     font-weight: var(--weight-bold);
-    margin: 0;
-  }
-
-  .game-card__link {
     color: var(--color-text);
-    text-decoration: none;
-  }
-
-  .game-card__link:hover {
-    text-decoration: underline;
+    margin: 0;
   }
 
   .game-card__desc {
@@ -201,5 +195,12 @@ const gameImages = await Promise.all(
     font-size: var(--text-base);
     line-height: var(--leading-loose);
     margin: 0;
+  }
+
+  .game-card__actions {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    display: flex;
+    justify-content: flex-end;
   }
 </style>

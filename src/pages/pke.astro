@@ -1,7 +1,9 @@
 ---
 import { getCollection } from "astro:content";
+import Button from "../components/ui/Button.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
 import PageHeader from "../components/ui/PageHeader.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getResponsiveImageAttrs } from "../lib/images.ts";
 
@@ -37,9 +39,18 @@ const screenshotImages = await Promise.all(
 >
   <section class="page" aria-labelledby="pke-title">
     <div class="page-band page-band--white">
-      <div class="container container--mid game-container">
-        <PageHeader id="pke-title" title="P.K.E." subtitle="An Original Atari 2600 Game" />
+      <div class="container container--mid">
+        <PageHeader
+          id="pke-title"
+          title="P.K.E."
+          subtitle="An Original Atari 2600 Game"
+          backHref="/games"
+        />
+      </div>
+    </div>
 
+    <div class="page-band page-band--alt">
+      <div class="container container--mid game-container">
         <div id="monitor-container">
           <div id="monitor-top"></div>
           <div id="monitor-right"></div>
@@ -52,9 +63,13 @@ const screenshotImages = await Promise.all(
         <div class="mobile-warning" aria-hidden="true">
           This game is not intended for mobile browsers or small screens.
         </div>
+      </div>
+    </div>
 
+    <div class="page-band page-band--white">
+      <div class="container container--mid">
         <div class="controls">
-          <h4>Controls:</h4>
+          <SectionHeading>Controls</SectionHeading>
           <dl>
             <dt>X</dt>
             <dd>Fire</dd>
@@ -209,20 +224,23 @@ const screenshotImages = await Promise.all(
 
     <div class="page-band page-band--alt">
       <div class="container container--mid">
-        <p><a class="link" href="/games/PKE-Manual.pdf" target="_blank">P.K.E. Manual</a></p>
-        <p>
+        <SectionHeading>About P.K.E.</SectionHeading>
+        <p class="section-subtitle">
           <strong>P.K.E.</strong> was developed by Ghostbusters, Virginia member Matthew Younce for the
-          Atari 2600 VCS and emulators.
+          Atari 2600 VCS and emulators. Download the manual or grab the latest ROM from his GitHub repository.
         </p>
-        <p>
-          You can download the latest version of the ROM and manual from his{" "}
-          <a class="link" href="https://github.com/mwy912/P.K.E.">GitHub repository</a>.
-        </p>
+        <div class="section-cta">
+          <Button variant="secondary" href="/games/PKE-Manual.pdf" external>P.K.E. Manual</Button>
+          <Button variant="secondary" href="https://github.com/mwy912/P.K.E." external>
+            GitHub Repository
+          </Button>
+        </div>
       </div>
     </div>
 
-    <div class="page-band page-band--alt">
+    <div class="page-band page-band--white">
       <div class="container container--mid">
+        <SectionHeading>Gallery</SectionHeading>
         <div class="gallery-grid" id="gallery-grid">
           {
             screenshotImages.map((item, index) => (
@@ -296,16 +314,10 @@ const screenshotImages = await Promise.all(
     align-items: center;
   }
 
-  .link {
-    text-decoration: underline;
-  }
-
   .controls {
-    padding-top: 20px;
-  }
-  .controls h4 {
-    text-align: center;
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .controls dl {
     display: flex;
@@ -395,6 +407,14 @@ const screenshotImages = await Promise.all(
     position: relative;
   }
 
+  #monitor-top,
+  #monitor-right,
+  #monitor-bottom,
+  #monitor-left {
+    /* Decorative bezel overlays sit above the emulator (z-index: 2) but must not
+       intercept clicks on the EmulatorJS controls underneath. */
+    pointer-events: none;
+  }
   #monitor-top {
     position: absolute;
     top: 0;

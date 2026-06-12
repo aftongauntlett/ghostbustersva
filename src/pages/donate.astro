@@ -229,7 +229,7 @@ const mtftfLogo = await getResponsiveImageAttrs({
     <!--  </div>-->
     <!--</div>-->
 
-    <div class="page-band page-band--alt">
+    <div class="page-band page-band--white">
       <div class="container container--wide">
         <SectionHeading>{communityHeading}</SectionHeading>
         <div class="zigzag">
@@ -283,10 +283,23 @@ const mtftfLogo = await getResponsiveImageAttrs({
 
   .donate-section {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-lg);
     align-items: center;
     justify-content: center;
-    margin-top: var(--space-md);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (max-width: 640px) {
+    .donate-section {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .donate-section :global(.btn) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   .donate-cta {
@@ -415,7 +428,7 @@ const mtftfLogo = await getResponsiveImageAttrs({
   .zigzag__text {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .zigzag__copy {
