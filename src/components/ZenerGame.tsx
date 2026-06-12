@@ -592,8 +592,9 @@ export default function ZenerGame() {
         <div className="zener-rules">
           <h2 className="section-heading">Rules</h2>
           <p className="section-subtitle">
-            Can you sense what&apos;s on each card? Study the effects of negative reinforcement on
-            your own ESP ability here.
+            Make your prediction by clicking on the symbol.  We'll reveal the card and record your
+            accuracy.  You'll receive points according to how likely it is that you would guess that
+            symbol randomly.  The results may shock you!
           </p>
         </div>
       )}

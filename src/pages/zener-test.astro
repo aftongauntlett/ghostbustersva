@@ -19,7 +19,7 @@ import ZenerGame from "../components/ZenerGame";
         <PageHeader
           id="zener-title"
           title="Zener Test"
-          subtitle="An ESP Card Test"
+          subtitle="An ESP Card Game"
           backHref="/games"
         />
       </div>
@@ -716,8 +716,12 @@ import ZenerGame from "../components/ZenerGame";
     }
 
     .zener-symbol-btn {
-      min-width: 60px;
+      min-width: 55px;
       padding: var(--space-sm) var(--space-md);
+    }
+
+    .zener-symbol-btn__label {
+      display: none;
     }
 
     .zener-hud {
