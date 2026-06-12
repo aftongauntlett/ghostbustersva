@@ -80,8 +80,18 @@ const SYMBOL_LABELS: Record<ZenerSymbol, string> = {
 };
 
 /* ------------------------------------------------------------------ */
+/* Mute toggle icons                                                    */
+/* ------------------------------------------------------------------ */
+
+const VOLUME_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+
+const VOLUME_OFF_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>`;
+
+/* ------------------------------------------------------------------ */
 /* Sound files                                                          */
 /* ------------------------------------------------------------------ */
+
+const MUTE_STORAGE_KEY = "gbva-zener-muted";
 
 const SHOCK_FILES = ["/sounds/shock/shock-1.mp3", "/sounds/shock/shock-2.mp3"];
 
@@ -171,6 +181,16 @@ function SymbolIcon({ symbol, className = "" }: { symbol: ZenerSymbol; className
   );
 }
 
+function VolumeIcon({ muted }: { muted: boolean }) {
+  return (
+    <span
+      className="zener-mute-btn__icon"
+      // SVG content is a static local asset — not user-supplied
+      dangerouslySetInnerHTML={{ __html: muted ? VOLUME_OFF_ICON_SVG : VOLUME_ICON_SVG }}
+    />
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* Main component                                                       */
 /* ------------------------------------------------------------------ */
@@ -187,11 +207,13 @@ export default function ZenerGame() {
   const [cardSlide, setCardSlide] = useState<"slide-in" | "slide-out" | "center" | "none">("none");
   const [isFlipped, setIsFlipped] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [muted, setMuted] = useState(false);
 
   const shockQueueRef = useRef(new SoundQueue(SHOCK_FILES));
   const beforeQueueRef = useRef(new SoundQueue(BEFORE_FILES));
   const wrongQueueRef = useRef(new SoundQueue(WRONG_FILES));
   const rightQueueRef = useRef(new SoundQueue(RIGHT_FILES));
+  const mutedRef = useRef(false);
 
   /* Detect reduced motion preference */
   useEffect(() => {
@@ -202,16 +224,44 @@ export default function ZenerGame() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
+  /* Restore saved mute preference */
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(MUTE_STORAGE_KEY) === "true";
+      mutedRef.current = saved;
+      setMuted(saved);
+    } catch {
+      /* localStorage unavailable */
+    }
+  }, []);
+
+  const handleToggleMute = useCallback(() => {
+    setMuted((prev) => {
+      const next = !prev;
+      mutedRef.current = next;
+      try {
+        window.localStorage.setItem(MUTE_STORAGE_KEY, String(next));
+      } catch {
+        /* localStorage unavailable */
+      }
+      return next;
+    });
+  }, []);
+
+  const maybePlaySound = useCallback((src: string) => {
+    if (!mutedRef.current) playSound(src);
+  }, []);
+
   /* Play a random "before" prompt 2–5 s after each card appears.
      The effect cleanup cancels the timer if the user predicts first. */
   useEffect(() => {
     if (phase !== "waiting") return;
     const delay = 2000 + Math.random() * 3000; // 2000–5000 ms
     const timer = setTimeout(() => {
-      playSound(beforeQueueRef.current.next());
+      maybePlaySound(beforeQueueRef.current.next());
     }, delay);
     return () => clearTimeout(timer);
-  }, [phase]);
+  }, [phase, maybePlaySound]);
 
   /* Trigger a brief screen effect (cleared after animation) */
   const triggerEffect = useCallback(
@@ -269,15 +319,15 @@ export default function ZenerGame() {
           triggerEffect("flash");
           // Play a random right-answer quip 0.7–1.5 s later
           const rightDelay = 700 + Math.random() * 800;
-          setTimeout(() => playSound(rightQueueRef.current.next()), rightDelay);
+          setTimeout(() => maybePlaySound(rightQueueRef.current.next()), rightDelay);
         } else {
           setIncorrectCount((n) => n + 1);
           triggerEffect("shake");
           // Play a random shock sound immediately
-          playSound(shockQueueRef.current.next());
+          maybePlaySound(shockQueueRef.current.next());
           // Play a random wrong-answer quip 0.7–1.5 s later
           const wrongDelay = 700 + Math.random() * 800;
-          setTimeout(() => playSound(wrongQueueRef.current.next()), wrongDelay);
+          setTimeout(() => maybePlaySound(wrongQueueRef.current.next()), wrongDelay);
         }
 
         setPhase("revealed");
@@ -307,7 +357,7 @@ export default function ZenerGame() {
         }, pauseMs);
       }, flipMs);
     },
-    [phase, deck, currentIndex, reducedMotion, triggerEffect],
+    [phase, deck, currentIndex, reducedMotion, triggerEffect, maybePlaySound],
   );
 
   /* Play again */
@@ -333,12 +383,6 @@ export default function ZenerGame() {
   // Dark overlay opacity: 5% per wrong answer, max 50% at 10
   const overlayOpacity = Math.min(incorrectCount * 0.05, 0.5);
 
-  // Score preview while waiting
-  const scorePreviewFor = (sym: ZenerSymbol): number => {
-    const rem = deck.slice(currentIndex);
-    return calcScore(sym, rem);
-  };
-
   /* ---------------------------------------------------------------- */
   /* CSS class helpers                                                  */
   /* ---------------------------------------------------------------- */
@@ -363,35 +407,49 @@ export default function ZenerGame() {
 
   return (
     <div className={gameClasses} role="main" aria-label="Zener card ESP test">
-      {/* Dark overlay that grows with incorrect answers */}
-      <div className="zener-bg-overlay" style={{ opacity: overlayOpacity }} aria-hidden="true" />
-
       {/* Flash overlay */}
       {screenEffect === "flash" && <div className="zener-flash-overlay" aria-hidden="true" />}
 
-      {/* ---- HUD ---- */}
-      <div className="zener-hud" aria-live="polite" aria-atomic="true">
-        <div className="zener-hud__score">
-          <span className="zener-hud__label">Score</span>
-          <span className="zener-hud__value">{totalScore}</span>
-        </div>
-        {phase !== "idle" && phase !== "shuffling" && phase !== "complete" && (
-          <div className="zener-hud__cards">
-            <span className="zener-hud__label">Cards left</span>
-            <span className="zener-hud__value">{cardsRemaining}</span>
-          </div>
-        )}
-        {phase !== "idle" && (
-          <div className="zener-hud__wrong">
-            <span className="zener-hud__label">Wrong</span>
-            <span className="zener-hud__value">{incorrectCount}</span>
-          </div>
-        )}
-      </div>
+      {/* Mute toggle */}
+      {phase !== "idle" && (
+        <button
+          type="button"
+          className="zener-mute-btn"
+          onClick={handleToggleMute}
+          aria-pressed={muted}
+          aria-label={muted ? "Unmute sound effects" : "Mute sound effects"}
+          title={muted ? "Unmute sound effects" : "Mute sound effects"}
+        >
+          <VolumeIcon muted={muted} />
+        </button>
+      )}
 
-      {/* ---- Idle: deck + Begin button ---- */}
-      {phase === "idle" && (
-        <div className="zener-intro">
+      <div className="zener-card-stage">
+        {/* Dark overlay that grows with incorrect answers */}
+        <div className="zener-bg-overlay" style={{ opacity: overlayOpacity }} aria-hidden="true" />
+
+        {/* ---- HUD ---- */}
+        {phase !== "idle" && phase !== "shuffling" && (
+          <div className="zener-hud" aria-live="polite" aria-atomic="true">
+            <div className="zener-hud__score">
+              <span className="zener-hud__label">Score</span>
+              <span className="zener-hud__value">{totalScore}</span>
+            </div>
+            {phase !== "complete" && (
+              <div className="zener-hud__cards">
+                <span className="zener-hud__label">Cards left</span>
+                <span className="zener-hud__value">{cardsRemaining}</span>
+              </div>
+            )}
+            <div className="zener-hud__wrong">
+              <span className="zener-hud__label">Wrong</span>
+              <span className="zener-hud__value">{incorrectCount}</span>
+            </div>
+          </div>
+        )}
+
+        {/* ---- Idle: deck stack ---- */}
+        {phase === "idle" && (
           <div className="zener-deck-stack" aria-hidden="true">
             {[4, 3, 2, 1, 0].map((i) => (
               <div
@@ -404,9 +462,124 @@ export default function ZenerGame() {
               />
             ))}
           </div>
+        )}
+
+        {/* ---- Shuffling animation ---- */}
+        {phase === "shuffling" && (
+          <div className="zener-shuffle" aria-label="Shuffling cards…" aria-busy="true">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="zener-shuffle__card"
+                style={{ animationDelay: `${i * 0.12}s` }}
+                aria-hidden="true"
+              />
+            ))}
+          </div>
+        )}
+
+        {/* ---- Active game: card + controls ---- */}
+        {(phase === "waiting" || phase === "flipping" || phase === "revealed") && (
+          <div className="zener-stage">
+            {/* Card */}
+            <div className="zener-card-wrapper" aria-label={`Card ${currentIndex + 1} of 25`}>
+              <div className={cardClasses}>
+                <div className="zener-card__face zener-card__face--back" aria-hidden="true"></div>
+                <div className="zener-card__face zener-card__face--front">
+                  {prediction && (
+                    <div className="zener-card__revealed">
+                      <SymbolIcon symbol={deck[currentIndex]} className="zener-card__symbol" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Symbol buttons */}
+            <div className="zener-symbols" role="group" aria-label="Choose the symbol you predict">
+              {SYMBOLS.map((sym) => {
+                return (
+                  <button
+                    key={sym}
+                    className={[
+                      "zener-symbol-btn",
+                      prediction === sym ? "zener-symbol-btn--selected" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => handlePredict(sym)}
+                    disabled={phase !== "waiting"}
+                    aria-pressed={prediction === sym}
+                  >
+                    <SymbolIcon symbol={sym} />
+                    <span className="zener-symbol-btn__label">{SYMBOL_LABELS[sym]}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {phase === "revealed" && lastResult ? (
+              <div
+                className={`zener-feedback zener-feedback--${lastResult}`}
+                aria-live="assertive"
+                role="status"
+              >
+                {lastResult === "correct" ? (
+                  <>
+                    <span className="zener-feedback__icon">⚡</span>
+                    Correct! {calcScore(prediction!, deck.slice(currentIndex))} pts
+                  </>
+                ) : (
+                  <>
+                    <span className="zener-feedback__icon">⚡</span>
+                    Incorrect — it was <strong>{SYMBOL_LABELS[deck[currentIndex]]}</strong>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className="zener-feedback zener-feedback--empty" aria-hidden="true" />
+            )}
+          </div>
+        )}
+
+        {/* ---- Complete ---- */}
+        {phase === "complete" && (
+          <div className="zener-complete" role="region" aria-label="Game complete">
+            <h2 className="zener-complete__heading">Test Complete!</h2>
+            <div className="zener-complete__score-wrap" aria-label={`Final score: ${totalScore}`}>
+              <span className="zener-complete__score-label">Final Score</span>
+              <span className="zener-complete__score-value">{totalScore}</span>
+            </div>
+            <p className="zener-complete__summary">
+              {incorrectCount === 0
+                ? "Perfect score! Are you really psychic?"
+                : incorrectCount <= 5
+                  ? "Strong performance — your ESP is showing!"
+                  : incorrectCount <= 15
+                    ? "Not bad — keep practicing your focus."
+                    : "The spirits were not cooperative today."}
+            </p>
+            <div className="zener-complete__stats">
+              <span>
+                Correct: <strong>{25 - incorrectCount}</strong>
+              </span>
+              <span>
+                Incorrect: <strong>{incorrectCount}</strong>
+              </span>
+            </div>
+            <button className="zener-btn zener-btn--primary" onClick={handleRestart}>
+              Try Again
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ---- Try it out ---- */}
+      {phase === "idle" && (
+        <div className="zener-try-it">
+          <h2 className="section-heading">Try it out</h2>
           <p className="zener-intro__prompt">
-            Can you sense what&apos;s on each card?<br/>
-            Study the effects of negative reinforcement on
+            Can you sense what&apos;s on each card? Study the effects of negative reinforcement on
             your own ESP ability with our 25 card Zener test.
           </p>
           <button className="zener-btn zener-btn--primary" onClick={handleBegin}>
@@ -415,119 +588,14 @@ export default function ZenerGame() {
         </div>
       )}
 
-      {/* ---- Shuffling animation ---- */}
-      {phase === "shuffling" && (
-        <div className="zener-shuffle" aria-label="Shuffling cards…" aria-busy="true">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="zener-shuffle__card"
-              style={{ animationDelay: `${i * 0.12}s` }}
-              aria-hidden="true"
-            />
-          ))}
-        </div>
-      )}
-
-      {/* ---- Active game: card + controls ---- */}
-      {(phase === "waiting" || phase === "flipping" || phase === "revealed") && (
-        <div className="zener-stage">
-          {/* Card */}
-          <div className="zener-card-wrapper" aria-label={`Card ${currentIndex + 1} of 25`}>
-            <div className={cardClasses}>
-              <div className="zener-card__face zener-card__face--back" aria-hidden="true"></div>
-              <div className="zener-card__face zener-card__face--front">
-                {prediction && (
-                  <div className="zener-card__revealed">
-                    <SymbolIcon symbol={deck[currentIndex]} className="zener-card__symbol" />
-                    {/*{lastResult && (*/}
-                    {/*  <span*/}
-                    {/*    className={`zener-result-badge zener-result-badge--${lastResult}`}*/}
-                    {/*    aria-label={lastResult === "correct" ? "Correct!" : "Incorrect"}*/}
-                    {/*  >*/}
-                    {/*    {lastResult === "correct" ? "✓" : "✗"}*/}
-                    {/*  </span>*/}
-                    {/*)}*/}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Symbol buttons */}
-          <div className="zener-symbols" role="group" aria-label="Choose the symbol you predict">
-            {SYMBOLS.map((sym) => {
-              return (
-                <button
-                  key={sym}
-                  className={[
-                    "zener-symbol-btn",
-                    prediction === sym ? "zener-symbol-btn--selected" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => handlePredict(sym)}
-                  disabled={phase !== "waiting"}
-                  aria-pressed={prediction === sym}
-                >
-                  <SymbolIcon symbol={sym} />
-                  <span className="zener-symbol-btn__label">{SYMBOL_LABELS[sym]}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/*/!* Prediction result feedback *!/*/}
-          {phase === "revealed" && lastResult && (
-            <div
-              className={`zener-feedback zener-feedback--${lastResult}`}
-              aria-live="assertive"
-              role="status"
-            >
-              {lastResult === "correct" ? (
-                <>
-                  <span className="zener-feedback__icon">⚡</span>
-                  Correct! {calcScore(prediction!, deck.slice(currentIndex))} pts
-                </>
-              ) : (
-                <>
-                  <span className="zener-feedback__icon">⚡</span>
-                  Incorrect — it was <strong>{SYMBOL_LABELS[deck[currentIndex]]}</strong>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ---- Complete ---- */}
-      {phase === "complete" && (
-        <div className="zener-complete" role="region" aria-label="Game complete">
-          <h2 className="zener-complete__heading">Test Complete!</h2>
-          <div className="zener-complete__score-wrap" aria-label={`Final score: ${totalScore}`}>
-            <span className="zener-complete__score-label">Final Score</span>
-            <span className="zener-complete__score-value">{totalScore}</span>
-          </div>
-          <p className="zener-complete__summary">
-            {incorrectCount === 0
-              ? "Perfect score! Are you really psychic?"
-              : incorrectCount <= 5
-                ? "Strong performance — your ESP is showing!"
-                : incorrectCount <= 15
-                  ? "Not bad — keep practicing your focus."
-                  : "The spirits were not cooperative today."}
+      {phase !== "idle" && (
+        <div className="zener-rules">
+          <h2 className="section-heading">Rules</h2>
+          <p className="section-subtitle">
+            Make your prediction by clicking on the symbol.  We'll reveal the card and record your
+            accuracy.  You'll receive points according to how likely it is that you would guess that
+            symbol randomly.  The results may shock you!
           </p>
-          <div className="zener-complete__stats">
-            <span>
-              Correct: <strong>{25 - incorrectCount}</strong>
-            </span>
-            <span>
-              Incorrect: <strong>{incorrectCount}</strong>
-            </span>
-          </div>
-          <button className="zener-btn zener-btn--primary" onClick={handleRestart}>
-            Try Again
-          </button>
         </div>
       )}
     </div>

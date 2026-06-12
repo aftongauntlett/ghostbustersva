@@ -8,6 +8,14 @@ export type GivebackData = {
   goal: number;
 };
 
+// TEMPORARY: the Giveback API is currently down. Until it's fixed, fall back
+// to this hand-entered total so the donation meter still shows real progress.
+// Remove this once the live API is restored.
+const FALLBACK_GIVEBACK_DATA: GivebackData = {
+  raised: 30273.46,
+  goal: GIVEBACK_GOAL,
+};
+
 export class GivebackRequestTimeoutError extends Error {
   constructor(timeoutMs: number) {
     super(`Giveback request timed out after ${timeoutMs}ms.`);
@@ -74,7 +82,7 @@ function parseMarkup(markup: string): GivebackData {
   return { raised: parseDollars(rawValue), goal: GIVEBACK_GOAL };
 }
 
-export async function getGivebackData(): Promise<GivebackData> {
+async function fetchGivebackData(): Promise<GivebackData> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     controller.abort();
@@ -101,4 +109,23 @@ export async function getGivebackData(): Promise<GivebackData> {
 
   const markup = await response.text();
   return parseMarkup(markup);
+}
+
+export async function getGivebackData(): Promise<GivebackData> {
+  try {
+    const data = await fetchGivebackData();
+
+    // The API currently responds with HTTP 200 and a placeholder "$0" amount
+    // for our team instead of erroring, so a non-positive total is treated
+    // as broken too. See FALLBACK_GIVEBACK_DATA above.
+    if (data.raised <= 0) {
+      throw new Error(`Giveback API returned a non-positive raised amount: ${data.raised}`);
+    }
+
+    return data;
+  } catch (error) {
+    // TEMPORARY: see FALLBACK_GIVEBACK_DATA above.
+    console.warn("Giveback API unavailable, using fallback donation total.", error);
+    return FALLBACK_GIVEBACK_DATA;
+  }
 }

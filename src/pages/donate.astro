@@ -4,7 +4,6 @@
  */
 
 import CTAs from "../components/CTAs.astro";
-import HeroSection from "../components/HeroSection.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
@@ -12,7 +11,6 @@ import LightboxImageTrigger from "../components/ui/LightboxImageTrigger.astro";
 import PageHeader from "../components/ui/PageHeader.astro";
 import SectionHeading from "../components/ui/SectionHeading.astro";
 import DonationMeter from "../components/DonationMeter.astro";
-import CardListPanel from "../components/ui/CardListPanel.astro";
 import { getResponsiveImageAttrs } from "../lib/images";
 import { getSafeHref, isSafeExternalUrl } from "../lib/links";
 import { getSiteSettings } from "../lib/settings";
@@ -37,25 +35,6 @@ const pageTitle = copy.pageTitle || "Support Our Mission";
 const pageIntro =
   copy.pageIntro ||
   "Every dollar helps us keep busting ghosts and supporting communities across Virginia.";
-const donationHeading = copy.donationHeading || "Make a Donation";
-const donationText =
-  copy.donationText ||
-  "Ghostbusters Virginia is a volunteer-run, community-focused franchise. Your generous donations help us fund charitable events, maintain the Ecto, purchase supplies for community outreach, and keep the franchise running strong.";
-const donationCardHeading = copy.donationCardHeading || "Often Donated to Toys for Tots";
-const donationItems = copy.donationItems || [
-  "New, unwrapped toys",
-  "Board games and puzzles",
-  "Action figures and dolls",
-  "Building sets and STEM kits",
-  "Books and educational toys",
-  "Sports balls and outdoor play items",
-];
-const donationImageSrc =
-  copy.donationImage || "/images/ghostbusters-virginia-toys-for-tots-drive.jpg";
-const donationImageAlt =
-  copy.donationImageAlt ||
-  "Ghostbusters Virginia members supporting a Toys for Tots donation drive";
-const donationCtaLabel = copy.donationCtaLabel || "Donate to Make-A-Wish";
 const communityHeading = copy.communityHeading || "Community Partners";
 const communityText =
   copy.communityText ||
@@ -64,28 +43,13 @@ const communityParagraphs = String(communityText)
   .split(/\n\s*\n+/)
   .map((paragraph) => paragraph.trim())
   .filter(Boolean);
-const volunteerHeading = copy.volunteerHeading || "Volunteer With Us";
-const volunteerText =
-  copy.volunteerText ||
-  "Volunteers help Ghostbusters Virginia deliver welcoming, community-first events that raise awareness and support local causes.";
-const volunteerParagraphs = String(volunteerText)
-  .split(/\n\s*\n+/)
-  .map((paragraph) => paragraph.trim())
-  .filter(Boolean);
-const volunteerCtaLabel = copy.volunteerCtaLabel || "Join the Team";
-const volunteerCtaHref = copy.volunteerCtaHref || "/join";
 const communityCtaLabel = copy.communityCtaLabel || "Contact Us";
 const communityCtaHref = copy.communityCtaHref || "/contact";
 const safeCommunityCtaHref = getSafeHref(communityCtaHref) || "/contact";
-const safeVolunteerCtaHref = getSafeHref(volunteerCtaHref) || "/join";
 const communityImageSrc =
   copy.communityImage || "/images/ghostbusters-virginia-toys-for-tots-drive.jpg";
 const communityImageAlt =
   copy.communityImageAlt || "Ghostbusters Virginia members at a Toys for Tots charity drive";
-const volunteerImageSrc =
-  copy.volunteerImage || "/images/ghostbusters-virginia-firefighters-visit.jpg";
-const volunteerImageAlt =
-  copy.volunteerImageAlt || "Ghostbusters Virginia members visiting a local fire station";
 const metaTitle = copy.metaTitle || "Donate";
 const metaDescription =
   copy.metaDescription ||
@@ -103,30 +67,6 @@ const communityImage = await getResponsiveImageAttrs({
   width: 1200,
   height: 675,
   quality: 75,
-});
-const volunteerImage = await getResponsiveImageAttrs({
-  src: volunteerImageSrc,
-  widths: [640, 960, 1200],
-  sizes: "(max-width: 768px) 100vw, 864px",
-  width: 1200,
-  height: 675,
-  quality: 75,
-});
-const donationImage = await getResponsiveImageAttrs({
-  src: donationImageSrc,
-  widths: [640, 960, 1200],
-  sizes: "(max-width: 768px) 100vw, 440px",
-  width: 1200,
-  height: 1200,
-  quality: 75,
-});
-const mtftfLogo = await getResponsiveImageAttrs({
-  src: "/images/MTFTF-Official-Logo-Transparent-background.png",
-  widths: [360, 560, 760],
-  sizes: "(max-width: 768px) 75vw, 420px",
-  width: 760,
-  height: 760,
-  quality: 90,
 });
 ---
 
@@ -192,44 +132,7 @@ const mtftfLogo = await getResponsiveImageAttrs({
       </div>
     </div>
 
-    <!--<div class="page-band page-band&#45;&#45;white">-->
-    <!--  <div class="container container&#45;&#45;mid">-->
-    <!--    <SectionHeading>{donationHeading}</SectionHeading>-->
-    <!--    <p class="prose-text prose-text&#45;&#45;centered-mobile">{donationText}</p>-->
-    <!--    <div class="donation-layout">-->
-    <!--      <div class="donation-layout__image-col">-->
-    <!--        <img-->
-    <!--          {...donationImage}-->
-    <!--          alt={donationImageAlt}-->
-    <!--          class="donation-layout__image"-->
-    <!--          loading="lazy"-->
-    <!--          decoding="async"-->
-    <!--        />-->
-    <!--      </div>-->
-
-    <!--      <div class="donation-support-block">-->
-    <!--        <CardListPanel title={donationCardHeading}>-->
-    <!--          {donationItems.map((item) => <li>{item}</li>)}-->
-    <!--          <div slot="footer" class="donate-cta donate-cta&#45;&#45;card">-->
-    <!--            <Button variant="secondary" href={safeDonateUrl} external>-->
-    <!--              {donationCtaLabel}-->
-    <!--            </Button>-->
-    <!--          </div>-->
-    <!--        </CardListPanel>-->
-
-    <!--        <img-->
-    <!--          {...mtftfLogo}-->
-    <!--          class="donation-support-block__logo"-->
-    <!--          alt="MTFTF official logo"-->
-    <!--          loading="lazy"-->
-    <!--          decoding="async"-->
-    <!--        />-->
-    <!--      </div>-->
-    <!--    </div>-->
-    <!--  </div>-->
-    <!--</div>-->
-
-    <div class="page-band page-band--alt">
+    <div class="page-band page-band--white">
       <div class="container container--wide">
         <SectionHeading>{communityHeading}</SectionHeading>
         <div class="zigzag">
@@ -283,20 +186,29 @@ const mtftfLogo = await getResponsiveImageAttrs({
 
   .donate-section {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-lg);
     align-items: center;
     justify-content: center;
-    margin-top: var(--space-md);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (max-width: 640px) {
+    .donate-section {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .donate-section :global(.btn) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   .donate-cta {
     display: flex;
     justify-content: center;
     margin-top: var(--space-xl);
-  }
-
-  .donate-cta--card {
-    margin-top: var(--space-lg);
   }
 
   .meter-caption {
@@ -361,42 +273,6 @@ const mtftfLogo = await getResponsiveImageAttrs({
     line-height: var(--leading-normal);
   }
 
-  .donation-layout {
-    margin-top: var(--space-xl);
-    display: grid;
-    gap: var(--space-xl);
-    align-items: start;
-  }
-
-  .donation-layout__image-col {
-    overflow: hidden;
-    border-radius: var(--radius-md);
-  }
-
-  .donation-layout__image {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-    object-position: top;
-  }
-
-  .donation-support-block {
-    max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-lg);
-    margin-inline: auto;
-  }
-
-  .donation-support-block__logo {
-    width: min(100%, 420px);
-    height: auto;
-    object-fit: contain;
-    display: block;
-  }
-
   .zigzag {
     display: grid;
     grid-template-columns: 1fr;
@@ -415,7 +291,7 @@ const mtftfLogo = await getResponsiveImageAttrs({
   .zigzag__text {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .zigzag__copy {
@@ -447,27 +323,6 @@ const mtftfLogo = await getResponsiveImageAttrs({
       gap: var(--space-lg);
     }
 
-    .donation-layout {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
-      gap: var(--space-2xl);
-      align-items: start;
-    }
-
-    .donation-layout__image-col {
-      align-self: stretch;
-      position: relative;
-      min-height: 200px;
-    }
-
-    .donation-layout__image-col .donation-layout__image {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-    }
-
     .zigzag {
       grid-template-columns: 1fr 1fr;
       gap: var(--space-3xl);
@@ -493,10 +348,6 @@ const mtftfLogo = await getResponsiveImageAttrs({
 
     .zigzag__text .donate-cta {
       justify-content: center;
-    }
-
-    .donation-layout__image-col {
-      max-height: 300px;
     }
   }
 </style>

@@ -5,6 +5,14 @@ export type WishData = {
   goal: number;
 };
 
+// TEMPORARY: fallback in case the Wish API stops responding. The donation
+// meter will use this hand-entered total instead of failing. Remove once
+// the live API has proven reliable and this is no longer needed.
+const FALLBACK_WISH_DATA: WishData = {
+  raised: 27399,
+  goal: 27399,
+};
+
 type WishTeam = {
   fundraisingGoal?: number | string;
   totalAmountRaised?: number | string;
@@ -63,7 +71,7 @@ function centsToDollars(value: unknown): number {
   return Math.max(0, cents / 100);
 }
 
-export async function getWishData(): Promise<WishData> {
+async function fetchWishData(): Promise<WishData> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     controller.abort();
@@ -107,4 +115,14 @@ export async function getWishData(): Promise<WishData> {
     raised: centsToDollars(team.totalAmountRaised ?? team.amountRaised),
     goal: centsToDollars(team.fundraisingGoal ?? team.goal),
   };
+}
+
+export async function getWishData(): Promise<WishData> {
+  try {
+    return await fetchWishData();
+  } catch (error) {
+    // TEMPORARY: see FALLBACK_WISH_DATA above.
+    console.warn("Wish API unavailable, using fallback donation total.", error);
+    return FALLBACK_WISH_DATA;
+  }
 }
