@@ -134,7 +134,7 @@ const socialLinks = settings.socialLinks
     <p class="copyright">{footerCopyright}</p>
     <p class="footer-disclaimer">{footerDisclaimerText}</p>
     <p class="footer-credit">
-      Built with <span aria-hidden="true">💚</span>{" "}
+      Built with <span class="footer-credit-heart" aria-hidden="true">♥</span>{" "}
       <a href="https://www.prettyprettyprettygood.org/" target="_blank" rel="noopener noreferrer">
         prettyprettyprettygood
         <span class="sr-only"> (opens in new tab)</span>
@@ -326,6 +326,10 @@ const socialLinks = settings.socialLinks
     text-align: center;
     font-size: 0.6875rem;
     color: var(--color-text-inverse-faint);
+  }
+
+  .footer-credit-heart {
+    color: #39ff14;
   }
 
   .footer-credit a {

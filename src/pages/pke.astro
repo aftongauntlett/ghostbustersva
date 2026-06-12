@@ -49,7 +49,39 @@ const screenshotImages = await Promise.all(
       </div>
     </div>
 
-    <div class="page-band page-band--alt">
+    <div class="page-band page-band--alt page-band--pke-game">
+      <button type="button" class="pke-mute-btn" aria-label="Mute P.K.E. game" aria-pressed="false">
+        <span class="pke-mute-btn__icon pke-mute-btn__icon--volume" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+        </span>
+        <span class="pke-mute-btn__icon pke-mute-btn__icon--muted" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="22" y1="9" x2="16" y2="15"></line>
+            <line x1="16" y1="9" x2="22" y2="15"></line>
+          </svg>
+        </span>
+      </button>
       <div class="container container--mid game-container">
         <div id="monitor-container">
           <div id="monitor-top"></div>
@@ -57,8 +89,10 @@ const screenshotImages = await Promise.all(
           <div id="monitor-bottom"></div>
           <div id="monitor-left"></div>
 
-          <div id="pke"></div>
+          <div id="pke" tabindex="-1"></div>
         </div>
+
+        <p class="game-hint">Click the monitor, press X to start, then use arrows and X.</p>
 
         <div class="mobile-warning" aria-hidden="true">
           This game is not intended for mobile browsers or small screens.
@@ -72,7 +106,9 @@ const screenshotImages = await Promise.all(
           <SectionHeading>Controls</SectionHeading>
           <dl>
             <dt>X</dt>
-            <dd>Fire</dd>
+            <dd>Fire / Start selected game</dd>
+            <dt>Enter</dt>
+            <dd>Fire alias</dd>
             <dt>&uarr;</dt>
             <dd>Up</dd>
             <dt>&darr;</dt>
@@ -294,24 +330,169 @@ const screenshotImages = await Promise.all(
 </BaseLayout>
 
 <script is:inline>
+  const PKE_MUTE_STORAGE_KEY = "gbva-pke-muted";
+  const PKE_DEFAULT_VOLUME = 0.5;
+  const pkeStoredMuted = localStorage.getItem(PKE_MUTE_STORAGE_KEY) === "true";
+
   window.EJS_player = "#pke";
   window.EJS_core = "atari2600";
   window.EJS_gameName = "GBVA P.K.E.";
   window.EJS_backgroundColor = "#000000";
   window.EJS_startOnLoaded = true;
+  window.EJS_volume = pkeStoredMuted ? 0 : PKE_DEFAULT_VOLUME;
   window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
   window.EJS_gameUrl = "/games/P.K.E..bin";
   window.EJS_defaultOptions = {
     shader: "crt-lottes",
   };
+  window.EJS_onGameStart = () => {
+    if (window.EJS_emulator && typeof window.EJS_emulator.setVolume === "function") {
+      const muted = localStorage.getItem(PKE_MUTE_STORAGE_KEY) === "true";
+      window.EJS_emulator.setVolume(muted ? 0 : PKE_DEFAULT_VOLUME);
+    }
+  };
+
+  const pkeMuteButton = document.querySelector(".pke-mute-btn");
+  const pkeFocusTarget = document.querySelector("#pke");
+  const pkeMonitor = document.querySelector("#monitor-container");
+
+  const setPkeMuted = (muted) => {
+    localStorage.setItem(PKE_MUTE_STORAGE_KEY, String(muted));
+    pkeMuteButton?.setAttribute("aria-pressed", String(muted));
+    pkeMuteButton?.setAttribute("aria-label", muted ? "Unmute P.K.E. game" : "Mute P.K.E. game");
+
+    if (window.EJS_emulator && typeof window.EJS_emulator.setVolume === "function") {
+      window.EJS_emulator.setVolume(muted ? 0 : PKE_DEFAULT_VOLUME);
+    }
+  };
+
+  setPkeMuted(pkeStoredMuted);
+
+  pkeMuteButton?.addEventListener("click", () => {
+    setPkeMuted(pkeMuteButton.getAttribute("aria-pressed") !== "true");
+    pkeFocusTarget?.focus();
+  });
+
+  pkeMonitor?.addEventListener("pointerdown", () => {
+    pkeFocusTarget?.focus();
+  });
+
+  const pkeHasKeyboardFocus = () => {
+    const activeElement = document.activeElement;
+    return (
+      !!activeElement &&
+      (activeElement === pkeFocusTarget || pkeFocusTarget?.contains(activeElement))
+    );
+  };
+
+  const pressPkeFire = (pressed) => {
+    if (window.EJS_emulator?.gameManager?.simulateInput) {
+      window.EJS_emulator.gameManager.simulateInput(0, 0, pressed ? 1 : 0);
+    }
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || event.repeat || !pkeHasKeyboardFocus()) {
+      return;
+    }
+
+    event.preventDefault();
+    pressPkeFire(true);
+  });
+
+  document.addEventListener("keyup", (event) => {
+    if (event.key !== "Enter" || !pkeHasKeyboardFocus()) {
+      return;
+    }
+
+    event.preventDefault();
+    pressPkeFire(false);
+  });
 </script>
 <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 <style>
+  .page-band--pke-game {
+    position: relative;
+  }
+
+  .pke-mute-btn {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    box-shadow: var(--shadow-panel);
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .pke-mute-btn:hover,
+  .pke-mute-btn:focus-visible {
+    color: var(--color-text);
+    border-color: var(--color-hover-border);
+  }
+
+  .pke-mute-btn:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .pke-mute-btn[aria-pressed="true"] {
+    color: var(--color-gb-caution);
+    border-color: var(--color-gb-caution);
+  }
+
+  .pke-mute-btn__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pke-mute-btn__icon svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .pke-mute-btn__icon--muted,
+  .pke-mute-btn[aria-pressed="true"] .pke-mute-btn__icon--volume {
+    display: none;
+  }
+
+  .pke-mute-btn[aria-pressed="true"] .pke-mute-btn__icon--muted {
+    display: flex;
+  }
+
   .game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .game-hint {
+    margin: var(--space-xl) 0 0;
+    padding: var(--space-sm) var(--space-xl);
+    color: var(--color-gb-caution);
+    background-color: var(--color-meter-panel-bg);
+    border: 2px solid var(--color-gb-caution);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-panel);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    text-align: center;
   }
 
   .controls {
@@ -462,6 +643,26 @@ const screenshotImages = await Promise.all(
     margin: auto;
     background-color: black;
     aspect-ratio: 1.33;
+  }
+
+  :global(#pke.ejs_big_screen .ejs_menu_bar) {
+    right: 2rem;
+    bottom: 1.75rem;
+    left: 2rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  :global(#pke.ejs_big_screen .ejs_menu_bar_hidden) {
+    transform: translateY(calc(100% + 1.75rem));
+  }
+
+  :global(#pke.ejs_small_screen .ejs_menu_bar) {
+    bottom: 1.75rem;
+  }
+
+  :global(#pke.ejs_small_screen .ejs_menu_bar_hidden) {
+    transform: translate(-50%, calc(100% + 1.75rem));
   }
 
   .gallery-grid {
