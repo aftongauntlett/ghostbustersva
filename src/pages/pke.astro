@@ -92,11 +92,24 @@ const screenshotImages = await Promise.all(
           <div id="pke" tabindex="-1"></div>
         </div>
 
-        <p class="game-hint">Click the monitor, press X to start, then use arrows and X.</p>
+        <p class="game-hint">
+          Click the monitor, press <kbd class="key">X</kbd> to start, then use arrows and
+          <kbd class="key">X</kbd>.
+        </p>
 
-        <div class="mobile-warning" aria-hidden="true">
-          This game is not intended for mobile browsers or small screens.
-        </div>
+        <img
+          src="/images/screenshots/pke-demo.png"
+          alt="Screenshot of the P.K.E. Atari 2600 game in progress"
+          width="1000"
+          height="862"
+          class="game-screenshot"
+          loading="lazy"
+          decoding="async"
+        />
+
+        <p class="larger-screen-note game-mobile-note">
+          This game is best played on a larger screen.
+        </p>
       </div>
     </div>
 
@@ -104,156 +117,172 @@ const screenshotImages = await Promise.all(
       <div class="container container--mid">
         <div class="controls">
           <SectionHeading>Controls</SectionHeading>
-          <dl>
-            <dt>X</dt>
-            <dd>Fire / Start selected game</dd>
-            <dt>Enter</dt>
-            <dd>Fire alias</dd>
-            <dt>&uarr;</dt>
-            <dd>Up</dd>
-            <dt>&darr;</dt>
-            <dd>Down</dd>
-            <dt>&larr;</dt>
-            <dd>Left</dd>
-            <dt>&rarr;</dt>
-            <dd>Right</dd>
-            <dt>V</dt>
-            <dd>Change Variation (01-16)</dd>
-          </dl>
-          <p>
-            <img alt="Game Matrix" src="/games/gamematrix-title.jpg" class="gamematrix-title" />
+          <ul class="controls-list">
+            <li class="control-chip">
+              <kbd class="key">X</kbd><span>Fire / Start selected game</span>
+            </li>
+            <li class="control-chip"><kbd class="key">Enter</kbd><span>Fire alias</span></li>
+            <li class="control-chip">
+              <kbd class="key">V</kbd><span>Change Variation (01-16)</span>
+            </li>
+            <li class="controls-list__group">
+              <span class="control-chip"><kbd class="key">&uarr;</kbd><span>Up</span></span>
+              <span class="control-chip"><kbd class="key">&darr;</kbd><span>Down</span></span>
+              <span class="control-chip"><kbd class="key">&larr;</kbd><span>Left</span></span>
+              <span class="control-chip"><kbd class="key">&rarr;</kbd><span>Right</span></span>
+            </li>
+          </ul>
+          <img
+            alt="Game Matrix"
+            src="/games/gamematrix-title.jpg"
+            width="381"
+            height="62"
+            class="gamematrix-title"
+          />
+          <p class="section-subtitle gamematrix-intro">
+            Each of the 16 game variations mixes a different combination of settings &mdash; layout
+            complexity, the locator map, random bonus item placement, and the PKE direction arrow.
+            Press <kbd class="key">V</kbd> to cycle through variations 01&ndash;16, then <kbd
+              class="key">X</kbd
+            > to start.
           </p>
 
-          <table class="gamematrix-table">
-            <thead>
-              <tr>
-                <th>Game No.</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>8</th>
-                <th>9</th>
-                <th>10</th>
-                <th>11</th>
-                <th>12</th>
-                <th>13</th>
-                <th>14</th>
-                <th>15</th>
-                <th>16</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>Easy Layout</th>
-                <td class="easy"></td>
-                <td class="easy"></td>
-                <td class="easy"></td>
-                <td class="easy"></td>
-                <td class="easy"></td>
-                <td class="easy"></td>
-                <td class="easy"></td>
-                <td class="easy"></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
+          <div class="gamematrix-wrap">
+            <table class="gamematrix-table">
+              <thead>
+                <tr>
+                  <th>Game No.</th>
+                  <th>1</th>
+                  <th>2</th>
+                  <th>3</th>
+                  <th>4</th>
+                  <th>5</th>
+                  <th>6</th>
+                  <th>7</th>
+                  <th>8</th>
+                  <th>9</th>
+                  <th>10</th>
+                  <th>11</th>
+                  <th>12</th>
+                  <th>13</th>
+                  <th>14</th>
+                  <th>15</th>
+                  <th>16</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Easy Layout</th>
+                  <td class="easy"></td>
+                  <td class="easy"></td>
+                  <td class="easy"></td>
+                  <td class="easy"></td>
+                  <td class="easy"></td>
+                  <td class="easy"></td>
+                  <td class="easy"></td>
+                  <td class="easy"></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
 
-              <tr>
-                <th>Complex Layout</th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="complex"></td>
-                <td class="complex"></td>
-                <td class="complex"></td>
-                <td class="complex"></td>
-                <td class="complex"></td>
-                <td class="complex"></td>
-                <td class="complex"></td>
-                <td class="complex"></td>
-              </tr>
+                <tr>
+                  <th>Complex Layout</th>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td class="complex"></td>
+                  <td class="complex"></td>
+                  <td class="complex"></td>
+                  <td class="complex"></td>
+                  <td class="complex"></td>
+                  <td class="complex"></td>
+                  <td class="complex"></td>
+                  <td class="complex"></td>
+                </tr>
 
-              <tr>
-                <th>Locator Map</th>
-                <td class="locator"></td>
-                <td class="locator"></td>
-                <td class="locator"></td>
-                <td class="locator"></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="locator"></td>
-                <td class="locator"></td>
-                <td class="locator"></td>
-                <td class="locator"></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
+                <tr>
+                  <th>Locator Map</th>
+                  <td class="locator"></td>
+                  <td class="locator"></td>
+                  <td class="locator"></td>
+                  <td class="locator"></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td class="locator"></td>
+                  <td class="locator"></td>
+                  <td class="locator"></td>
+                  <td class="locator"></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
 
-              <tr>
-                <th>Random Bonus Item Placement</th>
-                <td></td>
-                <td></td>
-                <td class="bonus"></td>
-                <td class="bonus"></td>
-                <td></td>
-                <td></td>
-                <td class="bonus"></td>
-                <td class="bonus"></td>
-                <td></td>
-                <td></td>
-                <td class="bonus"></td>
-                <td class="bonus"></td>
-                <td></td>
-                <td></td>
-                <td class="bonus"></td>
-                <td class="bonus"></td>
-              </tr>
+                <tr>
+                  <th>Random Bonus Item Placement</th>
+                  <td></td>
+                  <td></td>
+                  <td class="bonus"></td>
+                  <td class="bonus"></td>
+                  <td></td>
+                  <td></td>
+                  <td class="bonus"></td>
+                  <td class="bonus"></td>
+                  <td></td>
+                  <td></td>
+                  <td class="bonus"></td>
+                  <td class="bonus"></td>
+                  <td></td>
+                  <td></td>
+                  <td class="bonus"></td>
+                  <td class="bonus"></td>
+                </tr>
 
-              <tr>
-                <th>PKE Direction Arrow<sup>*</sup></th>
-                <td class="direction"></td>
-                <td></td>
-                <td class="direction"></td>
-                <td></td>
-                <td class="direction"></td>
-                <td></td>
-                <td class="direction"></td>
-                <td></td>
-                <td class="direction"></td>
-                <td></td>
-                <td class="direction"></td>
-                <td></td>
-                <td class="direction"></td>
-                <td></td>
-                <td class="direction"></td>
-                <td></td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td></td>
-                <td colspan="16"><sup>*</sup> After locating Tobin's Spirit Guide</td>
-              </tr>
-            </tfoot>
-          </table>
+                <tr>
+                  <th>PKE Direction Arrow<sup>*</sup></th>
+                  <td class="direction"></td>
+                  <td></td>
+                  <td class="direction"></td>
+                  <td></td>
+                  <td class="direction"></td>
+                  <td></td>
+                  <td class="direction"></td>
+                  <td></td>
+                  <td class="direction"></td>
+                  <td></td>
+                  <td class="direction"></td>
+                  <td></td>
+                  <td class="direction"></td>
+                  <td></td>
+                  <td class="direction"></td>
+                  <td></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td colspan="16"><sup>*</sup> After locating Tobin's Spirit Guide</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <p class="larger-screen-note gamematrix-note">
+            The game matrix is best viewed on a larger screen.
+          </p>
         </div>
       </div>
     </div>
@@ -483,10 +512,15 @@ const screenshotImages = await Promise.all(
   .game-hint {
     margin: var(--space-xl) 0 0;
     padding: var(--space-sm) var(--space-xl);
-    color: var(--color-gb-caution);
-    background-color: var(--color-meter-panel-bg);
-    border: 2px solid var(--color-gb-caution);
-    border-radius: var(--radius-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    color: var(--color-text);
+    background-color: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     box-shadow: var(--shadow-panel);
     font-size: var(--text-sm);
     font-weight: var(--weight-bold);
@@ -500,86 +534,161 @@ const screenshotImages = await Promise.all(
     flex-direction: column;
     align-items: center;
   }
-  .controls dl {
+
+  .controls-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 3px;
     justify-content: center;
-    align-items: center;
-  }
-  .controls dt {
-    border: solid 0.05em #333333;
-    background-color: #dedede;
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 24px;
-    height: 26px;
-  }
-  .controls dd {
-    margin-right: 4px;
-  }
-  .controls p {
-    margin-top: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    gap: var(--space-sm) var(--space-md);
+    max-width: 38rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .mobile-warning {
+  .controls-list__group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm) var(--space-md);
+  }
+
+  .control-chip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-xs);
+    background-color: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .key {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding: 0 var(--space-sm);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-accent);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-panel);
+    vertical-align: middle;
+  }
+
+  .game-screenshot {
     display: none;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    margin-top: var(--space-xl);
+    border-radius: var(--radius-md);
+  }
+
+  .larger-screen-note {
+    display: none;
+    margin-top: var(--space-lg);
+    padding: var(--space-sm) var(--space-xl);
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-panel);
+    font-size: var(--text-sm);
+    font-style: italic;
+    text-align: center;
   }
 
   .gamematrix-title {
-    width: 360px;
-    max-width: 80dvw;
+    display: block;
+    width: 280px;
+    max-width: 70dvw;
+    height: auto;
+    margin-top: var(--space-2xl);
   }
+
+  .gamematrix-intro {
+    margin-top: var(--space-md);
+  }
+
+  .gamematrix-wrap {
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+    background-color: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-panel);
+  }
+
   .gamematrix-table {
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: var(--space-xs);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-text);
   }
   .gamematrix-table th {
-    border: 0;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 16px;
+    font-weight: var(--weight-normal);
     text-align: right;
-    padding-right: 5px;
+    padding-right: var(--space-sm);
   }
   .gamematrix-table thead th {
     text-align: center;
     padding-right: 0;
-    padding-bottom: 5px;
+    padding-bottom: var(--space-sm);
+    color: var(--color-text-muted);
+    font-weight: var(--weight-semibold);
   }
   .gamematrix-table thead th:first-of-type {
     text-align: right;
-    padding-right: 5px;
+    padding-right: var(--space-sm);
   }
   .gamematrix-table td {
-    border: 1px solid #222222;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
   }
   .gamematrix-table td.easy {
     background-color: #0476b9;
+    border-color: #0476b9;
   }
   .gamematrix-table td.complex {
     background-color: #ed220d;
+    border-color: #ed220d;
   }
   .gamematrix-table td.locator {
     background-color: #60d938;
+    border-color: #60d938;
   }
   .gamematrix-table td.bonus {
     background-color: #fef156;
+    border-color: #fef156;
   }
   .gamematrix-table td.direction {
     background-color: #ac3a8c;
+    border-color: #ac3a8c;
   }
   .gamematrix-table tfoot td {
+    width: auto;
+    height: auto;
+    background: none;
     border: 0;
+    border-radius: 0;
+    padding-top: var(--space-sm);
     font-style: italic;
-    font-size: 12px;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-align: right;
   }
 
   #monitor-container {
@@ -674,6 +783,40 @@ const screenshotImages = await Promise.all(
     padding: 0;
   }
 
+  .gallery-thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .gallery-thumb:hover,
+  .gallery-thumb:focus-visible {
+    border-color: var(--color-hover-border);
+    box-shadow: var(--shadow-elevated-media);
+  }
+
+  .gallery-thumb img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery-thumb:hover img,
+  .gallery-thumb:focus-visible img {
+    transform: scale(1.03);
+  }
+
   .gallery-thumb__expand {
     position: absolute;
     inset: 0;
@@ -688,15 +831,33 @@ const screenshotImages = await Promise.all(
     z-index: 1;
   }
 
+  .gallery-thumb:hover .gallery-thumb__expand,
+  .gallery-thumb:focus-visible .gallery-thumb__expand {
+    opacity: 1;
+  }
+
   @media (max-width: 889px) {
-    #monitor-container {
-      scale: 0.3;
-      margin: -275px;
+    #monitor-container,
+    .game-hint,
+    .pke-mute-btn {
+      display: none;
+    }
+    .game-screenshot {
+      display: block;
+    }
+    .game-mobile-note {
+      display: block;
     }
     .gamematrix-table {
       scale: 0.8;
     }
-    .mobile-warning {
+  }
+
+  @media (max-width: 640px) {
+    .gamematrix-wrap {
+      display: none;
+    }
+    .gamematrix-note {
       display: block;
     }
   }
@@ -711,59 +872,5 @@ const screenshotImages = await Promise.all(
     .gallery-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-  }
-
-  .gallery-item {
-    margin: 0;
-  }
-
-  /* Slide content */
-  .gallery-slide {
-    position: relative;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-    padding: 0;
-    background: none;
-    font: inherit;
-    color: inherit;
-    text-align: left;
-    width: 100%;
-    display: block;
-    transition:
-      border-color var(--transition-base),
-      box-shadow var(--transition-base);
-  }
-  .gallery-slide:hover {
-    border-color: var(--color-hover-border);
-    box-shadow: var(--shadow-elevated-media);
-  }
-  .gallery-slide__img {
-    width: 100%;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
-  }
-  .gallery-slide:hover .gallery-slide__img {
-    transform: scale(1.03);
-  }
-  .gallery-slide__overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-overlay-dark-soft);
-    color: var(--color-text-inverse);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
-    z-index: 1;
-  }
-  .gallery-slide:hover .gallery-slide__overlay,
-  .gallery-slide:focus-visible .gallery-slide__overlay {
-    opacity: 1;
   }
 </style>
