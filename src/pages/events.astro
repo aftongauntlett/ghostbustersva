@@ -30,6 +30,7 @@ const noUpcomingEventsContactText =
   copy.noUpcomingEventsContactText ||
   "Want the team at your next event? Reach out and tell us what you have in mind.";
 const noUpcomingEventsContactHref = copy.noUpcomingEventsContactHref || "/contact";
+const eventCtaHeading = copy.eventCtaHeading || "Want Us At Your Event?";
 const eventCtaText =
   copy.eventCtaText ||
   "Interested in having Ghostbusters Virginia appear at your event, convention, or community gathering? We love supporting charitable and community causes across the Commonwealth. Contact us today to learn more.";
@@ -128,8 +129,9 @@ const safeEventCtaHref = getSafeHref(eventCtaHref) || "/contact";
 
     <div class="page-band page-band--alt">
       <div class="container container--mid">
-        <div class="event-cta-card">
-          <p class="prose-text event-cta-text">{eventCtaText}</p>
+        <SectionHeading>{eventCtaHeading}</SectionHeading>
+        <p class="section-subtitle">{eventCtaText}</p>
+        <div class="section-cta">
           <Button href={safeEventCtaHref} variant="primary">{eventCtaLabel}</Button>
         </div>
       </div>
@@ -201,7 +203,7 @@ const safeEventCtaHref = getSafeHref(eventCtaHref) || "/contact";
     text-decoration: underline;
   }
 
-  .past-hidden {
+  :global(.past-hidden) {
     display: none;
   }
 
@@ -212,24 +214,6 @@ const safeEventCtaHref = getSafeHref(eventCtaHref) || "/contact";
   }
 
   .page-band--past-compact {
-    padding-top: 0;
-  }
-
-  .event-cta-card {
-    max-width: var(--content-width-mid);
-    margin: 0 auto;
-    padding: var(--space-2xl);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-panel);
-    display: grid;
-    justify-items: center;
-    gap: var(--space-lg);
-    text-align: center;
-  }
-
-  .event-cta-text {
-    margin-bottom: 0;
+    padding-top: var(--space-2xl);
   }
 </style>

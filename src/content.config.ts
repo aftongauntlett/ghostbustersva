@@ -294,6 +294,7 @@ const eventsPageCopy = z.object({
   emptyText: z.string().optional(),
   noUpcomingEventsContactText: z.string().optional(),
   noUpcomingEventsContactHref: safeInternalPath.optional(),
+  eventCtaHeading: z.string().optional(),
   eventCtaText: z.string().optional(),
   eventCtaLabel: z.string().optional(),
   eventCtaHref: safeInternalPath.optional(),

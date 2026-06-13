@@ -118,18 +118,44 @@ const screenshotImages = await Promise.all(
         <div class="controls">
           <SectionHeading>Controls</SectionHeading>
           <ul class="controls-list">
-            <li class="control-chip">
-              <kbd class="key">X</kbd><span>Fire / Start selected game</span>
-            </li>
-            <li class="control-chip"><kbd class="key">Enter</kbd><span>Fire alias</span></li>
-            <li class="control-chip">
-              <kbd class="key">V</kbd><span>Change Variation (01-16)</span>
+            <li class="controls-list__group">
+              <span class="control-chip">
+                <kbd class="key">X</kbd><span>Fire / Start selected game</span>
+              </span>
+              <span class="control-chip"><kbd class="key">Enter</kbd><span>Fire alias</span></span>
+              <span class="control-chip">
+                <kbd class="key">V</kbd><span>Change Variation (01-16)</span>
+              </span>
             </li>
             <li class="controls-list__group">
-              <span class="control-chip"><kbd class="key">&uarr;</kbd><span>Up</span></span>
-              <span class="control-chip"><kbd class="key">&darr;</kbd><span>Down</span></span>
-              <span class="control-chip"><kbd class="key">&larr;</kbd><span>Left</span></span>
-              <span class="control-chip"><kbd class="key">&rarr;</kbd><span>Right</span></span>
+              <span class="control-chip">
+                <kbd class="key">
+                  <svg class="key-icon" viewBox="0 0 24 24" aria-hidden="true"
+                    ><path d="M12 3L21 19H3Z"></path></svg
+                  >
+                </kbd><span>Up</span>
+              </span>
+              <span class="control-chip">
+                <kbd class="key">
+                  <svg class="key-icon key-icon--down" viewBox="0 0 24 24" aria-hidden="true"
+                    ><path d="M12 3L21 19H3Z"></path></svg
+                  >
+                </kbd><span>Down</span>
+              </span>
+              <span class="control-chip">
+                <kbd class="key">
+                  <svg class="key-icon key-icon--left" viewBox="0 0 24 24" aria-hidden="true"
+                    ><path d="M12 3L21 19H3Z"></path></svg
+                  >
+                </kbd><span>Left</span>
+              </span>
+              <span class="control-chip">
+                <kbd class="key">
+                  <svg class="key-icon key-icon--right" viewBox="0 0 24 24" aria-hidden="true"
+                    ><path d="M12 3L21 19H3Z"></path></svg
+                  >
+                </kbd><span>Right</span>
+              </span>
             </li>
           </ul>
           <img
@@ -271,14 +297,10 @@ const screenshotImages = await Promise.all(
                   <td></td>
                 </tr>
               </tbody>
-              <tfoot>
-                <tr>
-                  <td></td>
-                  <td colspan="16"><sup>*</sup> After locating Tobin's Spirit Guide</td>
-                </tr>
-              </tfoot>
             </table>
           </div>
+
+          <p class="gamematrix-footnote">* After locating Tobin's Spirit Guide</p>
 
           <p class="larger-screen-note gamematrix-note">
             The game matrix is best viewed on a larger screen.
@@ -362,24 +384,33 @@ const screenshotImages = await Promise.all(
   const PKE_MUTE_STORAGE_KEY = "gbva-pke-muted";
   const PKE_DEFAULT_VOLUME = 0.5;
   const pkeStoredMuted = localStorage.getItem(PKE_MUTE_STORAGE_KEY) === "true";
+  // Below this width the game is replaced by a "best viewed on desktop"
+  // screenshot with no mute control, so skip the emulator (and its audio).
+  const pkeIsMobile = window.matchMedia("(max-width: 889px)").matches;
 
-  window.EJS_player = "#pke";
-  window.EJS_core = "atari2600";
-  window.EJS_gameName = "GBVA P.K.E.";
-  window.EJS_backgroundColor = "#000000";
-  window.EJS_startOnLoaded = true;
-  window.EJS_volume = pkeStoredMuted ? 0 : PKE_DEFAULT_VOLUME;
-  window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-  window.EJS_gameUrl = "/games/P.K.E..bin";
-  window.EJS_defaultOptions = {
-    shader: "crt-lottes",
-  };
-  window.EJS_onGameStart = () => {
-    if (window.EJS_emulator && typeof window.EJS_emulator.setVolume === "function") {
-      const muted = localStorage.getItem(PKE_MUTE_STORAGE_KEY) === "true";
-      window.EJS_emulator.setVolume(muted ? 0 : PKE_DEFAULT_VOLUME);
-    }
-  };
+  if (!pkeIsMobile) {
+    window.EJS_player = "#pke";
+    window.EJS_core = "atari2600";
+    window.EJS_gameName = "GBVA P.K.E.";
+    window.EJS_backgroundColor = "#000000";
+    window.EJS_startOnLoaded = true;
+    window.EJS_volume = pkeStoredMuted ? 0 : PKE_DEFAULT_VOLUME;
+    window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+    window.EJS_gameUrl = "/games/P.K.E..bin";
+    window.EJS_defaultOptions = {
+      shader: "crt-lottes",
+    };
+    window.EJS_onGameStart = () => {
+      if (window.EJS_emulator && typeof window.EJS_emulator.setVolume === "function") {
+        const muted = localStorage.getItem(PKE_MUTE_STORAGE_KEY) === "true";
+        window.EJS_emulator.setVolume(muted ? 0 : PKE_DEFAULT_VOLUME);
+      }
+    };
+
+    const loaderScript = document.createElement("script");
+    loaderScript.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+    document.body.appendChild(loaderScript);
+  }
 
   const pkeMuteButton = document.querySelector(".pke-mute-btn");
   const pkeFocusTarget = document.querySelector("#pke");
@@ -438,9 +469,18 @@ const screenshotImages = await Promise.all(
     pressPkeFire(false);
   });
 </script>
-<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 <style>
+  /* Press Start 2P (latin) — OFL licensed, self-hosted from Google Fonts for the
+     control keys and game matrix headings to give them an arcade/Atari feel. */
+  @font-face {
+    font-family: "Press Start 2P";
+    src: url("/fonts/press-start-2p.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
   .page-band--pke-game {
     position: relative;
   }
@@ -540,7 +580,6 @@ const screenshotImages = await Promise.all(
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--space-sm) var(--space-md);
-    max-width: 38rem;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -560,7 +599,7 @@ const screenshotImages = await Promise.all(
     padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-xs);
     background-color: var(--color-surface-alt);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border-radius: 0;
     font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
@@ -573,15 +612,33 @@ const screenshotImages = await Promise.all(
     min-width: 1.75rem;
     height: 1.75rem;
     padding: 0 var(--space-sm);
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
+    font-family: "Press Start 2P", var(--font-body);
+    font-size: 0.65rem;
     font-weight: var(--weight-bold);
     color: var(--color-accent);
     background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
-    box-shadow: var(--shadow-panel);
+    border: 2px solid var(--color-text);
+    border-radius: 0;
+    box-shadow: 2px 2px 0 var(--color-text);
     vertical-align: middle;
+  }
+
+  .key-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    fill: currentColor;
+  }
+
+  .key-icon--down {
+    transform: rotate(180deg);
+  }
+
+  .key-icon--left {
+    transform: rotate(-90deg);
+  }
+
+  .key-icon--right {
+    transform: rotate(90deg);
   }
 
   .game-screenshot {
@@ -621,31 +678,34 @@ const screenshotImages = await Promise.all(
 
   .gamematrix-wrap {
     margin-top: var(--space-xl);
-    padding: var(--space-lg);
-    background-color: var(--color-surface-alt);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
     box-shadow: var(--shadow-panel);
   }
 
   .gamematrix-table {
-    border-collapse: separate;
-    border-spacing: var(--space-xs);
+    border-collapse: collapse;
+    border: 2px solid var(--color-text);
     font-family: var(--font-body);
     font-size: var(--text-xs);
     color: var(--color-text);
   }
+  .gamematrix-table th,
+  .gamematrix-table td {
+    border: 1px solid var(--color-text);
+  }
   .gamematrix-table th {
-    font-weight: var(--weight-normal);
+    font-weight: var(--weight-bold);
     text-align: right;
-    padding-right: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    background-color: var(--color-surface-alt);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
   }
   .gamematrix-table thead th {
     text-align: center;
-    padding-right: 0;
-    padding-bottom: var(--space-sm);
-    color: var(--color-text-muted);
-    font-weight: var(--weight-semibold);
+    padding: var(--space-xs);
+    font-family: "Press Start 2P", var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0;
   }
   .gamematrix-table thead th:first-of-type {
     text-align: right;
@@ -655,40 +715,29 @@ const screenshotImages = await Promise.all(
     width: 36px;
     height: 36px;
     background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
   }
   .gamematrix-table td.easy {
     background-color: #0476b9;
-    border-color: #0476b9;
   }
   .gamematrix-table td.complex {
     background-color: #ed220d;
-    border-color: #ed220d;
   }
   .gamematrix-table td.locator {
     background-color: #60d938;
-    border-color: #60d938;
   }
   .gamematrix-table td.bonus {
     background-color: #fef156;
-    border-color: #fef156;
   }
   .gamematrix-table td.direction {
     background-color: #ac3a8c;
-    border-color: #ac3a8c;
   }
-  .gamematrix-table tfoot td {
-    width: auto;
-    height: auto;
-    background: none;
-    border: 0;
-    border-radius: 0;
-    padding-top: var(--space-sm);
+
+  .gamematrix-footnote {
+    margin-top: var(--space-sm);
     font-style: italic;
     font-size: var(--text-xs);
     color: var(--color-text-muted);
-    text-align: right;
+    text-align: center;
   }
 
   #monitor-container {
@@ -854,7 +903,8 @@ const screenshotImages = await Promise.all(
   }
 
   @media (max-width: 640px) {
-    .gamematrix-wrap {
+    .gamematrix-wrap,
+    .gamematrix-footnote {
       display: none;
     }
     .gamematrix-note {

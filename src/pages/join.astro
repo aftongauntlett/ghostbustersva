@@ -58,6 +58,17 @@ const whatWeLookForImage = await getResponsiveImageAttrs({
   quality: 75,
 });
 
+const letsTalkImageSrc = "/images/ghostbusters-virginia-ecto-1-cruising.jpg";
+const letsTalkImageAlt = "Ghostbusters Virginia members posing with a fan at a comic convention";
+const letsTalkImage = await getResponsiveImageAttrs({
+  src: letsTalkImageSrc,
+  widths: [380, 560, 760],
+  sizes: "(max-width: 768px) 100vw, 380px",
+  width: 1120,
+  height: 2000,
+  quality: 75,
+});
+
 const letsTalkHeading = `Let's Get to Work`;
 
 const costumeGuidelinesHeading = `Costume Guidelines`;
@@ -104,29 +115,56 @@ const backgroundText = `Because members regularly interact with the public, comm
         <p class="prose-text">
           {whatWeLookForText}
         </p>
+      </div>
+    </div>
 
-        <SectionHeading>{letsTalkHeading}</SectionHeading>
-        <p class="prose-text">
-          To apply for membership with Ghostbusters, Virginia, please start by reviewing our
-          <a href="https://bit.ly/gbva-charter-link" target="_blank">Charter</a> and
-          <a href="https://bit.ly/gbva-code-of-conduct" target="_blank">Code of Conduct</a>.
-          These documents describe our mission as a charity organization and what we expect from our members.
-        </p>
-        <p class="prose-text">
-          By joining Ghostbusters, Virginia, you agree to uphold these standards and contribute to a
-          positive, inclusive environment for members and the communities we serve.
-        </p>
-        <p class="prose-text">
-          Once you've reviewed these documents, complete our membership application at the link below
-          to begin the process.
-        </p>
-        <div class="join-cta-wrapper">
-          <Button
-            variant="secondary-alt"
-            href="https://m.me/Ghostbusters.Virginia.757?text=Hello!+I'm+interested+in+joining!&ref=GBVA+Site+Join+Page"
-          >Join Today</Button>
+    <div class="page-band page-band--alt">
+      <div class="container container--mid">
+        <div class="work-layout">
+          <div class="work-layout__text">
+            <h2 class="work-layout__heading">{letsTalkHeading}</h2>
+            <p class="prose-text">
+              To apply for membership with Ghostbusters, Virginia, please start by reviewing our
+              <a href="https://bit.ly/gbva-charter-link" target="_blank">Charter</a> and
+              <a href="https://bit.ly/gbva-code-of-conduct" target="_blank">Code of Conduct</a>.
+              These documents describe our mission as a charity organization and what we expect from our members.
+            </p>
+            <p class="prose-text">
+              By joining Ghostbusters, Virginia, you agree to uphold these standards and contribute to a
+              positive, inclusive environment for members and the communities we serve.
+            </p>
+            <p class="prose-text">
+              Once you've reviewed these documents, complete our membership application at the link below
+              to begin the process.
+            </p>
+            <div class="join-cta-wrapper">
+              <Button
+                variant="secondary-alt"
+                href="https://m.me/Ghostbusters.Virginia.757?text=Hello!+I'm+interested+in+joining!&ref=GBVA+Site+Join+Page"
+              >Join Today</Button>
+            </div>
+          </div>
+          <LightboxImageTrigger
+            group="join-gallery"
+            src={letsTalkImage.src}
+            alt={letsTalkImageAlt}
+            buttonClass="page-image-lightbox"
+            overlayClass="page-image-lightbox__overlay"
+          >
+            <img
+              {...letsTalkImage}
+              alt={letsTalkImageAlt}
+              class="work-layout__image"
+              loading="lazy"
+              decoding="async"
+            />
+          </LightboxImageTrigger>
         </div>
+      </div>
+    </div>
 
+    <div class="page-band page-band--white">
+      <div class="container container--mid">
         <SectionHeading>{costumeGuidelinesHeading}</SectionHeading>
         <p class="prose-text">{costumeIntro}</p>
         <div class="gear-layout">
@@ -208,6 +246,10 @@ const backgroundText = `Because members regularly interact with the public, comm
     margin-inline: auto;
   }
 
+  .quote-block p {
+    font-size: var(--text-base);
+  }
+
   .join-docs-wrapper {
     margin-top: var(--space-sm);
     display: flex;
@@ -219,11 +261,77 @@ const backgroundText = `Because members regularly interact with the public, comm
   .join-cta-wrapper {
     margin-top: var(--space-xl);
     margin-bottom: var(--space-2xl);
-    text-align: center;
+    text-align: left;
+  }
+
+  @media (max-width: 767px) {
+    .join-cta-wrapper {
+      text-align: center;
+    }
   }
 
   .join-cta-wrapper .btn {
     min-width: 200px;
+  }
+
+  .work-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+    margin-top: var(--space-xl);
+    align-items: start;
+  }
+
+  @media (min-width: 768px) {
+    .work-layout {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .work-layout__heading {
+    font-family: var(--font-brand-title);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-heading-section);
+    text-transform: uppercase;
+    margin-top: 0;
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-xl);
+    position: relative;
+    text-align: left;
+  }
+
+  .work-layout__heading::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 112px;
+    height: 3px;
+    background: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  @media (max-width: 767px) {
+    .work-layout__heading {
+      text-align: center;
+    }
+
+    .work-layout__heading::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .work-layout__image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    max-height: 480px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--radius-md);
+    display: block;
   }
 
   .gear-layout {
@@ -232,7 +340,6 @@ const backgroundText = `Because members regularly interact with the public, comm
     gap: var(--space-2xl);
     margin-top: var(--space-xl);
     margin-bottom: var(--space-2xl);
-    align-items: start;
   }
 
   @media (min-width: 768px) {
@@ -256,7 +363,7 @@ const backgroundText = `Because members regularly interact with the public, comm
   .gear-card-column {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2xl);
+    gap: var(--space-xl);
   }
 
   /* ---- Sub-list (belt gizmo examples) ---- */
@@ -341,7 +448,7 @@ const backgroundText = `Because members regularly interact with the public, comm
 
   .callout {
     margin-top: var(--space-2xl);
-    background: var(--color-surface);
+    background: var(--color-surface-alt);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     padding: var(--space-lg) var(--space-xl);
